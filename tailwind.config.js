@@ -13,6 +13,7 @@ export default {
       fontFamily: {
         primary: ['"Inknut Antiqua"', "sans-serif"], // Your primary font
         secondary: ['"Kalnia"', "serif"], // Your secondary font
+        tertiary: ['"Kumar One"', 'cursive'],
       },
     },
   },
