@@ -1,4 +1,4 @@
-import HeroSection from "./HeroSection";
+import Hero from "./Hero";
 
 const Header = () => {
   return (
