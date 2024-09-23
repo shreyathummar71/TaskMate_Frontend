@@ -1,5 +1,3 @@
-import Hero from "./Hero";
-
 const Header = () => {
   return (
     <>
@@ -9,11 +7,11 @@ const Header = () => {
           <span className="text-secondary">Mate</span>
         </h1>
         <nav>
-          <ul className="flex space-x-6">
+          <ul className="flex space-x-8">
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="#"
+                href="/Home"
               >
                 Home
               </a>
@@ -21,7 +19,7 @@ const Header = () => {
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="#"
+                href="/services"
               >
                 Services
               </a>
@@ -29,7 +27,7 @@ const Header = () => {
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="#"
+                href="/aboutus"
               >
                 About Us
               </a>
@@ -37,7 +35,7 @@ const Header = () => {
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="#"
+                href="/faq"
               >
                 FAQ
               </a>
@@ -45,16 +43,13 @@ const Header = () => {
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="#"
+                href="/blogs"
               >
                 Blogs
               </a>
             </li>
           </ul>
         </nav>
-      </div>
-      <div>
-        <Hero />
       </div>
     </>
   );
