@@ -8,7 +8,7 @@ const Feedback = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const cardsPerView = 4;
-  const delay = 3000; // 3 seconds delay between slides
+  const delay = 1500; // 1.5 seconds delay between slides
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,15 +56,17 @@ const Feedback = () => {
     <div className="py-10 px-5">
       <div className="flex justify-between items-center">
         {/* Previous Button */}
-        <button onClick={handlePrev} className="p-2 bg-gray-300 rounded">
-          Previous
+        <button onClick={handlePrev} className="p-2 bg-tertiary rounded">
+          &#8592; {/* Left Arrow */}
         </button>
 
         {/* Carousel Cards */}
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-4 gap-16">
           {visibleFeedback.length > 0 ? (
             visibleFeedback.map((item) => {
               const { rating, reviewText, cust_id, prof_id } = item;
+
+              const description = "Hi this is dummy description";
 
               const professionalName =
                 prof_id.firstName && prof_id.lastName
@@ -75,29 +77,31 @@ const Feedback = () => {
                 cust_id.firstName && cust_id.lastName
                   ? `${cust_id.firstName} ${cust_id.lastName}`
                   : cust_id.email || "Anonymous";
-
               return (
                 <div
                   key={item._id}
-                  className="card bg-tertiary shadow-lg rounded-lg p-6 max-w-xs mx-auto text-gray-500"
+                  className="card bg-tertiary relative shadow-lg rounded-lg p-6 max-w-xl h-auto mx-auto"
                 >
                   {/* Professional Image */}
-                  <div className="avatar ">
+                  <div className="flex justify-center mt-10">
                     <img
-                      className="w-9 h-9 mx-auto"
+                      className="w-32 h-32 mb-10"
                       src={prof_id.image || "https://via.placeholder.com/100"}
                       alt={professionalName}
                     />
                   </div>
+
                   {/* Professional Name */}
-                  <h2 className="text-xl font-semibold text-center mb-2">
+                  <h2 className="text-xl bg-tertiary font-semibold text-center mb-5 font-primary">
                     {professionalName}
                   </h2>
-                  <div className="bg-primary ">
+
+                  {/* Review Section */}
+                  <div className="bg-primary rounded-lg p-6 max-w-screen-2xl mx-0">
                     {/* Customer Name */}
-                    <p className="text-center mb-2">
-                      Reviewed by: {customerName}
-                    </p>
+                    <h6 className="text-center font-primary text-white mb-2">
+                      Review by: {customerName}
+                    </h6>
 
                     {/* Star Rating */}
                     <div className="text-center mb-4">
@@ -106,15 +110,20 @@ const Feedback = () => {
                         .map((_, i) => (
                           <span
                             key={i}
-                            className="inline-block text-yellow-400 text-xl"
+                            className="inline-block text-yellow-400 text-5xl"
                           >
                             &#9733;
                           </span>
                         ))}
                     </div>
 
+                    {/* Description Feedback */}
+                    <p className="text-center font-primary text-white text-sm">
+                      {description}
+                    </p>
+
                     {/* Review Text */}
-                    <p className="text-center text-gray-600 text-sm">
+                    <p className="text-right font-primary text-white text-sm mt-5">
                       {reviewText}
                     </p>
                   </div>
@@ -128,7 +137,7 @@ const Feedback = () => {
 
         {/* Next Button */}
         <button onClick={handleNext} className="p-2 bg-gray-300 rounded">
-          Next
+          &#8594; {/* Right Arrow */}
         </button>
       </div>
     </div>
