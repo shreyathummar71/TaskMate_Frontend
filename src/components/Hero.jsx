@@ -18,12 +18,12 @@ const Hero = () => {
               <br /> Local Service Providers!
             </h2>
             <div className="flex space-x-4">
-              <button className="bg-tertiary border border-secondary font-secondary text-white font-bold py-2 px-4 rounded-xl shadow-lg mb-6">
+              <button className="bg-tertiary border border-secondary font-secondary text-white font-semibold py-2 px-4 rounded-xl shadow-lg mb-6">
                 Get Started &raquo;
               </button>
             </div>
             <div className="flex space-x-4">
-              <button className="bg-tertiary border  border-secondary font-secondary text-white font-bold py-2 px-4 rounded-xl shadow-lg">
+              <button className="bg-tertiary border  border-secondary font-secondary text-white font-semibold py-2 px-4 rounded-xl shadow-lg">
                 Join as a Professional
               </button>
             </div>
