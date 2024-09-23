@@ -9,6 +9,8 @@ import Layout from "./components/Layout";
 import MainLayout from "./components/MainLayout";
 import AboutUs from "./pages/Aboutus";
 import ContactUs from "./pages/ContactUs";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 const App = () => {
   const router = createBrowserRouter(
