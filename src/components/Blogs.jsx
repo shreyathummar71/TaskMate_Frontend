@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 
 const Blogs = () => {
   return (
-    <div className="bg-primary text-white py-10 px-6 ">
+    <div className="bg-primary text-white py-10 px-6 my-2">
       {/* About Us Section */}
-      <div className="max-w-full mx-16">
-        <h2 className="text-2xl font-bold mb-6">About Us</h2>
+      <div className="max-w-full  mx-16">
+        <h2 className="text-2xl font-bold  mb-6">About Us</h2>
 
         {/* Who We Are Section */}
         <div className="mb-8">
