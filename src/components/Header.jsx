@@ -7,7 +7,7 @@ const Header = () => {
           <span className="text-secondary">Mate</span>
         </h1>
         <nav>
-          <ul className="flex space-x-8">
+          <ul className="flex space-x-20">
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
@@ -42,7 +42,7 @@ const Header = () => {
             </li>
             <li>
               <a
-                className="text-primary font-primary hover:text-yellow-400"
+                className="text-primary font-primary hover:text-yellow-400 mr-7"
                 href="/blogs"
               >
                 Blogs
