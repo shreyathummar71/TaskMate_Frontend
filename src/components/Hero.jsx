@@ -14,7 +14,7 @@ const Hero = () => {
         <div className="relative z-10 flex items-center justify-start h-full p-5">
           <div className="font-primary text-left text-white">
             <h2 className="text-2xl font-semibold font-primary mb-8">
-              Find <span className="text-yellow-400 mb-8">Trusted</span>
+              Find <span className="text-secondary mb-10">Trusted</span>
               <br /> Local Service Providers!
             </h2>
             <div className="flex space-x-4">
