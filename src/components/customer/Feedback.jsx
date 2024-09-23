@@ -85,19 +85,19 @@ const Feedback = () => {
                   {/* Professional Image */}
                   <div className="flex justify-center mt-10">
                     <img
-                      className="w-32 h-32 mb-10"
+                      className="w-32 h-32 mb-5"
                       src={prof_id.image || "https://via.placeholder.com/100"}
                       alt={professionalName}
                     />
                   </div>
 
                   {/* Professional Name */}
-                  <h2 className="text-xl bg-tertiary font-semibold text-center mb-5 font-primary">
+                  <h2 className="text-xl  font-semibold text-center mb-5 font-primary">
                     {professionalName}
                   </h2>
 
                   {/* Review Section */}
-                  <div className="bg-primary rounded-lg p-6 max-w-screen-2xl mx-0">
+                  <div className="bg-primary rounded-b-lg p-6 ">
                     {/* Customer Name */}
                     <h6 className="text-center font-primary text-white mb-2">
                       Review by: {customerName}

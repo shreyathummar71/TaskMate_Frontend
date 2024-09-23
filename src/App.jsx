@@ -7,7 +7,7 @@ import {
 import "./App.css";
 import Layout from "./components/Layout";
 import MainLayout from "./components/MainLayout";
-import AboutUs from "./pages/Aboutus";
+import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 
 const App = () => {
