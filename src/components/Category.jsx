@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -57,6 +58,7 @@ const Category = () => {
 
   return (
     <div className="relative w-full overflow-hidden px-20 float-start">
+      <Link to="/AllCategory">See All</Link>
       <div
         className="flex transition-transform duration-700 ease-in-out"
         style={{
