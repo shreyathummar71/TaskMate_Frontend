@@ -14,8 +14,10 @@ const Layout = () => {
       <Hero />
       <Category />
       <StaticSection />
-      <Feedback />
+
       <Blogs />
+
+      <Feedback />
       <Partners />
       <TaskmateBanner />
     </div>

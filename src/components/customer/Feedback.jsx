@@ -5,12 +5,13 @@ const Feedback = () => {
   const { feedback, loading, error } = useFetchFeedback(
     "https://backend-taskmate.onrender.com/feedback"
   );
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const cardsPerView = 4;
-  const delay = 1500; // 1.5 seconds delay between slides
+  const delay = 1000; // 1.5 seconds delay between slides
 
   useEffect(() => {
+    if (!feedback || feedback.length === 0) return;
+
     const interval = setInterval(() => {
       // Move to the next set of cards or wrap around
       setCurrentIndex((prevIndex) =>
@@ -30,6 +31,10 @@ const Feedback = () => {
 
   if (error) {
     return <div>Error: {error}</div>;
+  }
+
+  if (!feedback || feedback.length === 0) {
+    return <div>No feedback available</div>;
   }
 
   const handleNext = () => {
