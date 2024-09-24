@@ -35,11 +35,11 @@ const FAQ = () => {
   return (
     <>
       <div className="faq-container bg-white">
-        <div className="relative h-64 md:h-96 overflow-hidden  ">
+        <div className="relative h-64 md:h-96 overflow-hidden items-stretch text-center ">
           <img
             src="src/assets/images/faqBanner.jpeg"
             alt="Banner"
-            className="w-full h-full object-cover"
+            className="w-auto h-full object-cover inline-flex items-center"
           />
         </div>
         <div className="flex items-center justify-center mt-8">
