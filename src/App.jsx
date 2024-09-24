@@ -5,6 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./App.css";
+import { useEffect, useState } from "react";
 import Layout from "./components/Layout";
 import MainLayout from "./components/MainLayout";
 import AboutUs from "./pages/AboutUs";
@@ -18,6 +19,15 @@ import LoginCust from "./components/customer/LoginCust";
 import FAQ from "./pages/FAQ";
 
 const App = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (!user) {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    }
+  }, [user]);
+
+  console.log("USER Details", user);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -27,8 +37,11 @@ const App = () => {
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/AllCategory" element={<AllCategory />} />
           <Route path="/blogs" element={<Blogs />} />
-          <Route path="/signupCust" element={<SignupCust />} />
-          <Route path="/loginCust" element={<LoginCust />} />
+          <Route
+            path="/signupCust"
+            element={<SignupCust setUser={setUser} />}
+          />
+          <Route path="/loginCust" element={<LoginCust setUser={setUser} />} />
           <Route path="/signupProf" element={<SignupProf />} />
           <Route path="/faq" element={<FAQ />} />
         </Route>

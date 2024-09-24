@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import coverImage from "../../assets/images/cust_signup_cover.png";
 
-const LoginCust = () => {
+const LoginCust = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  console.log("I am inside Login page", setUser);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -33,6 +35,7 @@ const LoginCust = () => {
       data.user = "customer";
       localStorage.setItem("user", JSON.stringify(data));
       setIsLoading(false);
+      setUser(data);
     }
   };
 
