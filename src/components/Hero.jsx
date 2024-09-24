@@ -1,22 +1,12 @@
-import React, { useState } from "react";
-import SignupCust from "./customer/SignupCust";
-import SignupProf from "./professional/SignupProf";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
-  // Create a state variable to control whether the customer signup component should be displayed:
-  const [showSignupCust, setShowSignupCust] = useState(false);
-
-  // Create a state variable to control whether the Professional signup component should be displayed:
-  const [showSignupProf, setShowSignupProf] = useState(false);
-
-  // Create a function to handle the SignupCust button click:
+  const navigate = useNavigate();
   const handleSignupCustClick = () => {
-    setShowSignupCust(true);
+    navigate("/signupCust");
   };
-
-  // Create a function to handle the SignupProf button click:
   const handleSignupProfClick = () => {
-    setShowSignupProf(true);
+    navigate("/signupProf");
   };
 
   return (
@@ -28,12 +18,12 @@ const Hero = () => {
         }}
       >
         <div className="absolute inset-0 opacity-50"></div>
-        <div className="relative z-10 flex items-center justify-start h-full p-5">
+        <div className="relative z-10 flex items-center justify-start h-full ">
           <div className=" text-left text-white">
-            <p className="text-3xl font-semibold font-primary mb-4">
+            <p className="text-4xl font-semibold font-primary mb-4">
               Find <span className="text-secondary">Trusted</span>
             </p>
-            <p className="text-2xl font-semibold font-primary mb-8">
+            <p className="text-3xl font-semibold font-primary mb-8">
               Local Service Providers!
             </p>
             <div className="flex space-x-4 mt-5">
@@ -50,16 +40,14 @@ const Hero = () => {
                   ></img>
                 </span>
               </button>
-              {showSignupCust && <SignupCust />}
             </div>
             <div className="flex space-x-4">
               <button
                 className="bg-tertiary border  border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg"
-                onClick={setShowSignupProf}
+                onClick={handleSignupProfClick}
               >
                 Join as a Professional
               </button>
-              {showSignupProf && <SignupProf />}
             </div>
           </div>
         </div>
