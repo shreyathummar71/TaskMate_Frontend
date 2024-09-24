@@ -15,11 +15,11 @@ const StaticSection = () => {
             className="max-w-full w-full h-auto"
           />
         </div>
-        <div className="w-1/2 flex flex-col justify-center p-14 my-32">
-          <h2 className="text-3xl font-bold font-primary text-white ">
+        <div className="w-1/2 flex flex-col justify-center p-14">
+          <h2 className="text-3xl font-semibold font-primary text-white ">
             Your Happiness
           </h2>
-          <h2 className="text-3xl pb-10 pt-5 font-bold font-primary text-secondary">
+          <h2 className="text-3xl pb-10 pt-4 font-semibold font-primary text-secondary">
             Guaranteed
           </h2>
           <p className="mt-2 text-white font-secondary">
@@ -33,8 +33,8 @@ const StaticSection = () => {
       </div>
       <div className="section-2 bg-tertiary float-start w-full px-20 py-7">
         <div className="text-3xl text-white text-center font-primary py-4">
-          How <span className="text-primary">Task</span>
-          <span className="text-secondary">Mate</span> Works
+          How <span className="text-primary font-tertiary">Task</span>
+          <span className="text-secondary font-tertiary">Mate</span> Works
         </div>
         <div className="flex items-center justify-center text-center">
           <div>
@@ -45,7 +45,7 @@ const StaticSection = () => {
               />
             </div>
             <div className="text-primary font-primary py-3">Pick a time</div>
-            <p className="text-white font-secondary w-[50%] float-none m-auto">
+            <p className="text-white font-secondary w-[80%] float-none m-auto">
               No more delivery windows! Select the exact day and time for your
               Furniture Assembly.
             </p>
@@ -58,7 +58,7 @@ const StaticSection = () => {
               />
             </div>
             <div className="text-primary font-primary py-3">Book instantly</div>
-            <p className="text-white font-secondary w-[50%] float-none m-auto">
+            <p className="text-white font-secondary w-[80%] float-none m-auto">
               We'll confirm your appointment and take care of payment
               electronically and securely.
             </p>
@@ -73,7 +73,7 @@ const StaticSection = () => {
             <div className="text-primary font-primary py-3">
               Your pro arrives
             </div>
-            <p className="text-white font-secondary w-[50%] float-none m-auto">
+            <p className="text-white font-secondary w-[80%] float-none m-auto">
               An experienced, fully-equipped professional will show up on time
               at your doorstep!
             </p>
