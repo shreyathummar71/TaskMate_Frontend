@@ -130,7 +130,7 @@ const Footer = () => {
               Contact US
             </button>
           </a>
-          <div className="flex justify-center text-5xl mt-9 space-x-10">
+          <div className="flex justify-center text-3xl mt-9 space-x-10">
             <a href="#" className="hover:text-secondary">
               <i className="fab fa-facebook-f"></i>
             </a>
