@@ -13,14 +13,15 @@ const FAQ = () => {
       })
       .then((data) => {
         console.log("data", data); // Log to check data structure
-        if (Array.isArray(data)) {
-          // Filter for general audience FAQs
-          const generalFaqs = data.filter((faq) => faq.audience === "general");
-          console.log("Filtered general FAQs:", generalFaqs);
-        } else {
-          console.error("Expected an array but got:", data);
-          setFaqs([]);
-        }
+
+        // Assuming the data is an object with a property containing the array
+        const faqArray = data.faqs || [];
+        const generalFaqs = faqArray.filter(
+          (faq) => faq.audience === "general"
+        );
+
+        setFaqs(generalFaqs);
+        console.log("Filtered general FAQs:", generalFaqs);
       })
       .catch((error) => console.error("Error fetching FAQs:", error));
   }, []);
@@ -41,7 +42,6 @@ const FAQ = () => {
       </div>
 
       <div className="max-w-2xl mx-auto space-y-4 mt-8">
-        <h1>faq start</h1>
         {faqs.map((faq) => (
           <div key={faq._id} className="border-b border-gray-200">
             <details className="group py-4">
@@ -57,7 +57,6 @@ const FAQ = () => {
             </details>
           </div>
         ))}
-        <h1>faq end</h1>
       </div>
 
       <button className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center">
