@@ -11,6 +11,7 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import AllCategory from "./components/AllCategory";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import Blogs from "./components/Blogs";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/AllCategory" element={<AllCategory />} />
+          <Route path="/blogs" element={Blogs} />
         </Route>
       </>
     )
