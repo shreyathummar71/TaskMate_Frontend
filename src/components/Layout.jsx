@@ -3,8 +3,8 @@ import Hero from "./Hero";
 import Category from "./Category";
 import StaticSection from "./StaticSection";
 import Partners from "./Partners";
-import Feedback from "./customer/Feedback";
-import Blogs from "./Blogs";
+import Feedback from "./Feedback";
+import AboutSection from "./AboutSection";
 import TaskmateBanner from "./TaskmateBanner";
 
 const Layout = () => {
@@ -14,10 +14,8 @@ const Layout = () => {
       <Hero />
       <Category />
       <StaticSection />
-
-      <Blogs />
-
       <Feedback />
+      <AboutSection />
       <Partners />
       <TaskmateBanner />
     </div>
