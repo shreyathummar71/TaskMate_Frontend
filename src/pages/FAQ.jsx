@@ -15,7 +15,8 @@ const FAQ = () => {
         if (Array.isArray(data)) {
           // Filter for general audience FAQs
           const generalFaqs = data.filter((faq) => faq.audience === "general");
-          setFaqs(generalFaqs);
+          const faqsdata = setFaqs(generalFaqs);
+          console.log("In faqs data", faqsdata);
         } else {
           console.error("Expected an array but got:", data);
           setFaqs([]);
@@ -40,8 +41,9 @@ const FAQ = () => {
       </div>
 
       <div className="max-w-2xl mx-auto space-y-4 mt-8">
+        <h1>faq start</h1>
         {faqs.map((faq) => (
-          <div key={faq.id} className="border-b border-gray-200">
+          <div key={faq._id} className="border-b border-gray-200">
             <details className="group py-4">
               <summary className="font-semibold text-lg cursor-pointer flex justify-between items-center">
                 {faq.question}
@@ -55,6 +57,7 @@ const FAQ = () => {
             </details>
           </div>
         ))}
+        <h1>faq end</h1>
       </div>
 
       <button className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center">
