@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import buttonArrow from "../assets/images/buttonArrow.png";
 
 const SERVICE_DETAIL_API_URL = "https://backend-taskmate.onrender.com/services";
 
@@ -144,15 +145,11 @@ const ServiceDetail = () => {
       <div className="flex justify-center pb-8">
         <button
           onClick={() => navigate("/customer/login")}
-          className="bg-tertiary border border-secondary font-secondary font-semibold text-black  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
+          className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
         >
           <span class="mr-2">Get Started</span>
           <span>
-            <img
-              src="src/assets/images/buttonArrow.png"
-              alt="arrowButton"
-              width="20"
-            ></img>
+            <img src={buttonArrow} alt="arrowButton" width="20"></img>
           </span>
         </button>
       </div>
