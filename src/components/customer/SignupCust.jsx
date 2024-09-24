@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import coverImage from "../../assets/images/cust_signup_cover.png";
 
@@ -7,11 +7,21 @@ const SignupCust = ({ setUser }) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null); //setting success
+  const navigate = useNavigate(); // Initialize navigate
+
+  const clearMessages = () => {
+    setTimeout(() => {
+      setError(null);
+      setSuccess(null);
+    }, 3000); // Clear after 3 seconds
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setSuccess(null); //setting success
 
     const response = await fetch(
       "https://backend-taskmate.onrender.com/customer/signup",
@@ -28,12 +38,19 @@ const SignupCust = ({ setUser }) => {
       console.log(data);
       setIsLoading(false);
       setError(data.error);
+      clearMessages(); // Clear messages after 3 seconds
     }
     if (response.ok) {
       data.user = "customer";
       localStorage.setItem("user", JSON.stringify(data));
       setIsLoading(false);
       setUser(data);
+      setSuccess("Signed up successfully!");
+      setEmail(""); // Clear input fields after success
+      setPassword("");
+
+      clearMessages();
+      navigate("/loginCust");
     }
   };
 
@@ -97,6 +114,7 @@ const SignupCust = ({ setUser }) => {
                   <button
                     type="submit"
                     className="w-30 text-white font-primary py-2 px-4 rounded-3xl bg-primary hover:bg-secondary"
+                    disabled={isLoading} // Disable button while loading
                   >
                     Signup
                   </button>
@@ -105,6 +123,12 @@ const SignupCust = ({ setUser }) => {
                 {error && (
                   <div className="text-red-500 bg-secondary border border-red-500 font-primary rounded-3xl px-4 py-2 mt-2 text-center">
                     {error}
+                  </div>
+                )}
+                {/* Display success message if sign up is successful */}
+                {success && (
+                  <div className="text-green-500 bg-secondary border border-green-500 font-primary rounded-3xl px-4 py-2 mt-2 text-center">
+                    {success}
                   </div>
                 )}
               </form>
