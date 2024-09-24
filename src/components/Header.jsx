@@ -1,52 +1,40 @@
+import { Link } from "react-router-dom";
+
 const Header = () => {
   return (
     <>
-      <div className="sticky  top-0 z-50 bg-tertiary p-2  flex justify-between items-center">
-        <h1 className="text-3xl font-tertiary mt-2 ">
+      <div className="sticky top-0 z-50 bg-tertiary p-2 flex justify-between items-center">
+        {/* Home link on the TaskMate logo */}
+        <Link to="/" className="text-3xl font-tertiary mt-2">
           <span className="text-primary">TasK</span>
           <span className="text-secondary">Mate</span>
-        </h1>
+        </Link>
         <nav>
           <ul className="flex space-x-20">
             <li>
-              <a
-                className="text-primary font-primary hover:text-yellow-400"
-                href="/"
-              >
+              <Link className="text-primary font-primary hover:text-yellow-400" to="/">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="text-primary font-primary hover:text-yellow-400"
-                href="/AllCategory"
-              >
+              <Link className="text-primary font-primary hover:text-yellow-400" to="/AllCategory">
                 Services
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="text-primary font-primary hover:text-yellow-400"
-                href="/aboutus"
-              >
+              <Link className="text-primary font-primary hover:text-yellow-400" to="/aboutus">
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="text-primary font-primary hover:text-yellow-400"
-                href="/faq"
-              >
+              <Link className="text-primary font-primary hover:text-yellow-400" to="/faq">
                 FAQ
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="text-primary font-primary hover:text-yellow-400 mr-7"
-                href="/blogs"
-              >
+              <Link className="text-primary font-primary hover:text-yellow-400 mr-7" to="/blogs">
                 Blogs
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
