@@ -15,6 +15,7 @@ import Blogs from "./components/Blogs";
 import SignupCust from "./components/customer/SignupCust";
 import SignupProf from "./components/professional/SignupProf";
 import LoginCust from "./components/customer/LoginCust";
+import FAQ from "./pages/FAQ";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/signupCust" element={<SignupCust />} />
           <Route path="/login" element={<LoginCust />} />
           <Route path="/signupProf" element={<SignupProf />} />
+          <Route path="/faq" element={<FAQ />} />
         </Route>
       </>
     )

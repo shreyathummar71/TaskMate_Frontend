@@ -7,8 +7,8 @@ import googleHomeLogo from '../assets/images/patners/googlehome.png';
 
 const Partners = () => {
   return (
-    <div className="py-6 px-10">
-      <h2 className="text-left text-2xl text-primary font-primary mb-8">Our Partners</h2>
+    <div className="mt-10-40 pb-14 pr-5 pl-10">
+      <h2 className="text-left text-2xl text-primary font-primary mb-8 ">Our Partners</h2>
       <div className="grid grid-cols-3 gap-y-12 gap-x-36">
         <img src={equityResidentialLogo} alt="Equity Residential" className="h-12 w-auto" />
         <img src={nestLogo} alt="Nest" className="h-12 w-auto" />
