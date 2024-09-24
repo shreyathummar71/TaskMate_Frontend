@@ -35,7 +35,7 @@ const FAQ = () => {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white">
+          <h1 className=" font-primary text-4xl md:text-6xl font-bold text-white">
             Frequently Asked Questions
           </h1>
         </div>
@@ -58,17 +58,18 @@ const FAQ = () => {
           </div>
         ))}
       </div>
-
-      <button className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center">
-        <span class="mr-2 text-xl">Get Started</span>
-        <span>
-          <img
-            src="src/assets/images/buttonArrow.png"
-            alt="arrowButton"
-            width="20"
-          ></img>
-        </span>
-      </button>
+      <div className="text-center mt-8">
+        <button className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center">
+          <span class="mr-2 text-xl">Get Started</span>
+          <span>
+            <img
+              src="src/assets/images/buttonArrow.png"
+              alt="arrowButton"
+              width="20"
+            ></img>
+          </span>
+        </button>
+      </div>
     </>
   );
 };
