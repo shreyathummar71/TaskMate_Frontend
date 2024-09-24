@@ -34,50 +34,52 @@ const FAQ = () => {
 
   return (
     <>
-      <div className="relative h-64 md:h-96 overflow-hidden">
-        <img
-          src="src/assets/images/faqBanner.jpeg"
-          alt="Banner"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1 className=" font-primary text-4xl md:text-6xl font-bold text-white">
+      <div className="faq-container bg-white">
+        <div className="relative h-64 md:h-96 overflow-hidden  ">
+          <img
+            src="src/assets/images/faqBanner.jpeg"
+            alt="Banner"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex items-center justify-center mt-8">
+          <h1 className=" font-primary text-2xl  font-bold text-primary">
             Frequently Asked Questions
           </h1>
         </div>
-      </div>
 
-      <div className="max-w-2xl mx-auto space-y-4 mt-8">
-        {faqs.map((faq) => (
-          <div key={faq._id} className="border-b border-gray-200">
-            <details className="group py-4">
-              <summary className="font-semibold font-secondary  text-white text-lg cursor-pointer flex justify-between items-center">
-                {faq.question}
-                <span className="text-xl transform transition-transform group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-2 font-secondary text-white group-open:block">
-                {faq.answer}
-              </p>
-            </details>
-          </div>
-        ))}
-      </div>
-      <div className="text-center mt-8">
-        <button
-          className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
-          onClick={handleSignupCustClick}
-        >
-          <span class="mr-2 text-xl">Get Started</span>
-          <span>
-            <img
-              src="src/assets/images/buttonArrow.png"
-              alt="arrowButton"
-              width="20"
-            ></img>
-          </span>
-        </button>
+        <div className="max-w-2xl mx-auto  space-y-4 mt-8">
+          {faqs.map((faq) => (
+            <div key={faq._id} className="border-b border-gray-200">
+              <details className="group py-4">
+                <summary className="font-semibold font-primary  text-primary text-lg cursor-pointer flex justify-between items-center">
+                  {faq.question}
+                  <span className="text-xl transform transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-2  font-normal font-primary  text-primary group-open:block">
+                  {faq.answer}
+                </p>
+              </details>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <button
+            className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-primary py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
+            onClick={handleSignupCustClick}
+          >
+            <span class="mr-2 text-xl">Get Started</span>
+            <span>
+              <img
+                src="src/assets/images/buttonArrow.png"
+                alt="arrowButton"
+                width="20"
+              ></img>
+            </span>
+          </button>
+        </div>
       </div>
     </>
   );
