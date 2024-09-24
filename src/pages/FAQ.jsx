@@ -2,13 +2,18 @@ import React, { useEffect, useState } from "react";
 
 const FAQ = () => {
   const [faqs, setFaqs] = useState([]);
+
+  // Fetch data from the backend
   useEffect(() => {
-    // Fetch data from the backend
-    fetch("http://localhost:8081/faqs") // Replace with your actual API endpoint
+    fetch("http://localhost:8081/faqs")
       .then((response) => response.json())
-      .then((data) => setFaqs(data))
+      .then((data) => {
+        console.log(data); // Check if this is an array
+        setFaqs(data);
+      })
       .catch((error) => console.error("Error fetching FAQs:", error));
   }, []);
+
   return (
     <>
       <div class="relative h-64 md:h-96 overflow-hidden">
