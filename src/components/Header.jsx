@@ -1,9 +1,9 @@
 const Header = () => {
   return (
     <>
-      <div className="bg-tertiary p-4 flex justify-between items-center">
-        <h1 className=" font-primary text-2xl font-bold">
-          <span className="text-primary">Task</span>
+      <div className="sticky  top-0 z-50 bg-tertiary p-7 flex justify-between items-center">
+        <h1 className="text-4xl font-tertiary">
+          <span className="text-primary">TasK</span>
           <span className="text-secondary">Mate</span>
         </h1>
         <nav>
@@ -11,7 +11,7 @@ const Header = () => {
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="/Home"
+                href="/"
               >
                 Home
               </a>
@@ -19,7 +19,7 @@ const Header = () => {
             <li>
               <a
                 className="text-primary font-primary hover:text-yellow-400"
-                href="/services"
+                href="/AllCategory"
               >
                 Services
               </a>
