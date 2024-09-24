@@ -2,7 +2,7 @@ const Header = () => {
   return (
     <>
       <div className="sticky  top-0 z-50 bg-tertiary p-2  flex justify-between items-center">
-        <h1 className="text-4xl font-tertiary mt-2 mb-2">
+        <h1 className="text-3xl font-tertiary mt-2 ">
           <span className="text-primary">TasK</span>
           <span className="text-secondary">Mate</span>
         </h1>
