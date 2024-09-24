@@ -17,7 +17,7 @@ const StaticSection = () => {
         </div>
         <div className="w-1/2 flex flex-col justify-center p-14">
           <h2 className="text-3xl font-semibold font-primary text-white ">
-            Your Happiness
+            Your Happiness,
           </h2>
           <h2 className="text-3xl pb-10 pt-4 font-semibold font-primary text-secondary">
             Guaranteed
@@ -32,7 +32,7 @@ const StaticSection = () => {
         </div>
       </div>
       <div className="section-2 bg-tertiary float-start w-full px-20 py-7">
-        <div className="text-3xl text-white text-center font-primary py-4">
+        <div className="text-3xl text-white text-center font-primary py-4 mb-3">
           How <span className="text-primary font-tertiary">Task</span>
           <span className="text-secondary font-tertiary">Mate</span> Works
         </div>
