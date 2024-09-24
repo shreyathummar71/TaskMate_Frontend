@@ -49,13 +49,13 @@ const Feedback = () => {
   }
 
   // Calculate the visible feedback cards
-
   const visibleFeedback = [];
   for (let i = 0; i < cardsPerView; i++) {
     visibleFeedback.push(feedback[(currentIndex + i) % feedback.length]);
   }
+
   return (
-    <div className="py-10 px-5 float-start w-full">
+    <div className="py-16 px-5 float-start w-full">
       {/* Carousel Cards */}
       <div className="relative w-full h-auto max-w-full overflow-hidden ">
         <div className="flex transition-transform duration-700 ease-in-out float-start w-full gap-1">
@@ -77,35 +77,39 @@ const Feedback = () => {
             return (
               <div
                 key={item._id}
-                className="flex flex-col w-1/4 flex-shrink-0  px-4 rounded-lg"
+                className="flex flex-col w-1/4 flex-shrink-0 px-4 rounded-lg h-auto"
               >
-                <div className="bg-primary rounded-lg float-start w-full">
-                  {/* Upper Part with Tertiary Background */}
-                  <div className="bg-tertiary flex-1 flex flex-col items-center justify-center p-4 rounded-lg relative">
-                    <img
-                      className="w-32 h-32 mt-12"
-                      src={prof_id.image || "https://via.placeholder.com/100"}
-                      alt={professionalName}
-                    />
-                    <h2 className="text-xl font-semibold font-primary text-center text-white mt-6">
-                      {professionalName}
-                    </h2>
+                {/* Card Container with Fixed Heights */}
+                <div className="bg-primary rounded-2xl float-start w-full h-full flex flex-col justify-between">
+                  
+                  {/* Upper Part with Fixed Height */}
+                  <div className="bg-tertiary flex items-center justify-center p-4 rounded-2xl h-60">
+                    <div className="flex flex-col items-center">
+                      <img
+                        className="w-32 h-32 mb-4 object-cover"
+                        src={prof_id.image || "https://via.placeholder.com/100"}
+                        alt={professionalName}
+                      />
+                      <h2 className="text-xl font-semibold font-primary text-white text-center">
+                        {professionalName}
+                      </h2>
+                    </div>
                   </div>
 
-                  {/* Lower Part with Primary Background */}
-                  <div className="bg-primary flex-1 p-4 flex flex-col rounded-b-3xl">
+                  {/* Lower Part with Fixed Height */}
+                  <div className="bg-primary flex flex-col justify-between p-4 flex-1 rounded-b-3xl h-auto ">
                     {/* Customer Name */}
-                    <h6 className="text-center font-primary text-white mb-2">
+                    <h6 className="text-center text-xs font-primary text-white ">
                       Review by: {customerName}
                     </h6>
 
                     {/* Star Rating */}
-                    <div className="text-center mb-4 flex justify-center">
+                    <div className="text-center mb-3 flex justify-center">
                       {Array.from({ length: 5 }, (_, i) => (
                         <span
                           key={i}
-                          className={`inline-block text-4xl ${
-                            i < rating ? "text-yellow-400" : "text-tertiary "
+                          className={`inline-block text-5xl ${
+                            i < rating ? "text-secondary" : "text-tertiary"
                           }`}
                           style={{ width: "1em", height: "1em" }}
                         >
@@ -115,12 +119,14 @@ const Feedback = () => {
                     </div>
 
                     {/* Description Feedback */}
-                    <p className=" font-primary p-4 text-white text-sm text-left">
-                      {reviewText}
-                    </p>
+                    <div className="flex-grow ">
+                      <p className="font-primary text-white text-sm text-justify h-auto overflow-hidden text-ellipsis">
+                        {reviewText}
+                      </p>
+                    </div>
 
-                    {/* Review Text */}
-                    <p className="text-right font-primary text-white text-sm mt-5">
+                    {/* Rating Status */}
+                    <p className="text-right font-primary text-white text-xs mt-8">
                       {ratingStatus}
                     </p>
                   </div>

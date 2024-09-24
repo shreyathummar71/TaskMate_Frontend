@@ -4,10 +4,10 @@ const AboutSection = () => {
   return (
     <div className="float-start w-full">
       {" "}
-      <div className="text-white py-4 px-0 my-2">
-        <div className="max-w-full mx-9 bg-primary p-8 rounded-2xl">
+      <div className="text-white bg-primary">
+        <div className="max-w-full mx-9 p-8 rounded-2xl">
           {" "}
-          <h2 className="text-2xl font-primary font-bold mb-6">About Us</h2>
+          <h2 className="text-2xl font-primary  mb-6">About Us</h2>
           <div className="mb-8">
             <h3 className="text-xl font-bold font-primary text-secondary mb-4">
               Who We Are...
@@ -26,7 +26,7 @@ const AboutSection = () => {
             <h3 className="text-xl font-primary font-bold text-secondary mb-4">
               Why TaskMate?
             </h3>
-            <ul className="list-disc pl-5 space-y-2 text-lg font-primary">
+            <ul className="list-disc pl-5 space-y-2 text-lg font-primary ml-14">
               <li className="font-secondary">
                 <strong>Trusted Professionals:</strong> All service providers
                 are vetted and reviewed to ensure quality and reliability.
@@ -44,7 +44,7 @@ const AboutSection = () => {
           <div className="mt-8">
             <Link
               to="/aboutus"
-              className="text-white hover:underline float-right font-primary underline text-right text-sm mb-5"
+              className="text-white hover:underline float-right font-primary underline text-right text-sm mb-16"
             >
               Learn More About Task<span className="text-secondary">Mate</span>
             </Link>

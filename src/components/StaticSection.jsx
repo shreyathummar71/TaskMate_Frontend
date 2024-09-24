@@ -32,7 +32,7 @@ const StaticSection = () => {
         </div>
       </div>
       <div className="section-2 bg-tertiary float-start w-full px-20 py-7">
-        <div className="text-3xl text-white text-center font-primary py-4 mb-3">
+        <div className="text-3xl text-white text-center font-primary py-4 mb-8 mt-5">
           How <span className="text-primary font-tertiary">Task</span>
           <span className="text-secondary font-tertiary">Mate</span> Works
         </div>
