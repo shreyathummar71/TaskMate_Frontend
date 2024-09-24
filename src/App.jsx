@@ -17,6 +17,7 @@ import SignupCust from "./components/customer/SignupCust";
 import SignupProf from "./components/professional/SignupProf";
 import LoginCust from "./components/customer/LoginCust";
 import FAQ from "./pages/FAQ";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -42,6 +43,7 @@ const App = () => {
             element={<SignupCust setUser={setUser} />}
           />
           <Route path="/loginCust" element={<LoginCust setUser={setUser} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/signupProf" element={<SignupProf />} />
           <Route path="/faq" element={<FAQ />} />
         </Route>
