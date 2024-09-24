@@ -12,11 +12,11 @@ const FAQ = () => {
         return response.json();
       })
       .then((data) => {
+        console.log("data", data); // Log to check data structure
         if (Array.isArray(data)) {
           // Filter for general audience FAQs
           const generalFaqs = data.filter((faq) => faq.audience === "general");
-          const faqsdata = setFaqs(generalFaqs);
-          console.log("In faqs data", faqsdata);
+          console.log("Filtered general FAQs:", generalFaqs);
         } else {
           console.error("Expected an array but got:", data);
           setFaqs([]);
