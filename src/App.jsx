@@ -12,6 +12,7 @@ import ContactUs from "./pages/ContactUs";
 import AllCategory from "./components/AllCategory";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Blogs from "./components/Blogs";
+import ServiceDetail from "./components/ServiceDetail";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -21,7 +22,8 @@ const App = () => {
           <Route index element={<Layout />} />
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/AllCategory" element={<AllCategory />} />
+          <Route path="/allcategory" element={<AllCategory />} />
+          <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/blogs" element={Blogs} />
         </Route>
       </>
