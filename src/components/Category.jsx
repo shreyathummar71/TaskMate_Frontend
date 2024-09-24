@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 const Category = () => {
   const [categories, setCategories] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const cardsPerView = 4; // Show 4 cards at a time
+  const delay = 3000; // 3 seconds delay between slides
 
   // Fetch categories from the API
   useEffect(() => {
@@ -13,8 +15,7 @@ const Category = () => {
           "https://backend-taskmate.onrender.com/categories"
         );
         const data = await response.json();
-        // Duplicate first 4 categories for smooth infinite loop
-        setCategories([...data.categories, ...data.categories.slice(0, 4)]);
+        setCategories(data.categories || []); // Ensure categories is always an array
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -26,80 +27,68 @@ const Category = () => {
   // Handle automatic sliding
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => {
-        // Reset to the first item after reaching the end of the categories
-        if (prevIndex >= categories.length - 4) {
-          return 0;
-        }
-        return prevIndex + 1;
-      });
-    }, 3000); // Slide every 3 seconds
+      handleNext();
+    }, delay);
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [categories]);
+    return () => clearInterval(interval);
+  }, [currentIndex, categories]);
 
   // Function to manually go to the previous category
   const handlePrev = () => {
-    // setCurrentIndex((prevIndex) =>
-    //   prevIndex <= 0 ? categories.length - 4 : prevIndex - 1
-    // );
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + categories.length) % categories.length
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? categories.length - 1 : prevIndex - 1
     );
   };
 
   // Function to manually go to the next category
   const handleNext = () => {
-    // setCurrentIndex((prevIndex) =>
-    //   prevIndex >= categories.length - 4 ? 0 : prevIndex + 1
-    // );
     setCurrentIndex((prevIndex) => (prevIndex + 1) % categories.length);
   };
 
+  // Calculate the visible categories with a circular shift
+  const visibleCategories = [];
+  for (let i = 0; i < cardsPerView; i++) {
+    visibleCategories.push(categories[(currentIndex + i) % categories.length]);
+  }
+
   return (
-    <div className="relative w-full overflow-hidden px-20 float-start">
-      <Link to="/AllCategory">See All</Link>
-      <div
-        className="flex transition-transform duration-700 ease-in-out"
-        style={{
-          transform: `translateX(-${
-            (currentIndex / categories.length) * 100
-          }%)`, // Adjust for smooth sliding
-        }}
-      >
-        {categories
-          // .slice(currentIndex, currentIndex + 4)
-          .map((category, index) => (
-            <div key={index} className="w-1/4 flex-shrink-0 p-2">
-              {" "}
-              {/* Change to w-1/4 for four items */}
-              <div className="card bg-white shadow-xl">
+    <div className="relative w-full overflow-hidden px-10 float-start bg-white py-9">
+      <div className="float-end text-right w-full">
+        <Link
+          to="/AllCategory"
+          className="font-primary text-primary pb-2 float-end w-full"
+        >
+          See All »
+        </Link>
+      </div>
+      <div className="flex transition-transform duration-700 ease-in-out float-start w-full">
+        {visibleCategories.map((category, index) => {
+          // Check if category and image exist before rendering the card
+          if (!category) return null;
+
+          const imageUrl = category.image || "https://via.placeholder.com/150"; // Use a placeholder if image is missing
+
+          return (
+            <div key={index} className="w-1/4 p-2 text-center">
+              <div className="float-start w-full text-center">
                 <figure>
                   <img
-                    src={category.image}
-                    alt={category.name}
-                    className="h-48 w-full object-cover"
+                    src={imageUrl}
+                    alt={category.name || "Unknown Category"} // Fallback for missing name
+                    className="h-48 w-full object-cover font-primary rounded"
                   />
                 </figure>
-                <div className="card-body">
-                  <h2 className="card-title text-primary">{category.name}</h2>
+                <div className="card-body py-3">
+                  <h2 className="card-title text-primary font-primary text-base text-center block">
+                    {category.name || "No Name"}{" "}
+                    {/* Fallback for missing name */}
+                  </h2>
                 </div>
               </div>
             </div>
-          ))}
+          );
+        })}
       </div>
-      <button
-        onClick={handlePrev}
-        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-indigo-600 text-white rounded-full p-2"
-      >
-        &lt;
-      </button>
-      <button
-        onClick={handleNext}
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-indigo-600 text-white rounded-full p-2"
-      >
-        &gt;
-      </button>
     </div>
   );
 };
