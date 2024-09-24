@@ -1,7 +1,7 @@
 const SignupCust = () => {
   return (
     <>
-      <div>
+      <div className="bg-tertiary">
         <h2>Signup for customer goes Here</h2>{" "}
       </div>
     </>
