@@ -9,11 +9,11 @@ const Partners = () => {
   return (
     <div className="py-6 px-10">
       <h2 className="text-left text-2xl text-primary font-primary mb-8">Our Partners</h2>
-      <div className="grid grid-cols-3 gap-y-10 gap-x-12">
+      <div className="grid grid-cols-3 gap-y-12 gap-x-36">
         <img src={equityResidentialLogo} alt="Equity Residential" className="h-12 w-auto" />
         <img src={nestLogo} alt="Nest" className="h-12 w-auto" />
         <img src={walmartLogo} alt="Walmart" className="h-12 w-auto" />
-        <img src={wayfairLogo} alt="Wayfair" className="h-14 w-auto " />
+        <img src={wayfairLogo} alt="Wayfair" className="h-12 w-auto " />
         <img src={leesaLogo} alt="Leesa" className="h-12 w-auto" />
         <img src={googleHomeLogo} alt="Google Home" className="h-12 w-auto" />
       </div>
