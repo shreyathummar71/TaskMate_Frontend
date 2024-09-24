@@ -1,7 +1,44 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import coverImage from "../../assets/images/cust_signup_cover.png";
 
-const LoginCust = () => {
+const LoginCust = ({ setUser }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  console.log("I am inside Login page", setUser);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    const response = await fetch(
+      "https://backend-taskmate.onrender.com/customer/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.log(data);
+      setIsLoading(false);
+      setError(data.error);
+    }
+    if (response.ok) {
+      data.user = "customer";
+      localStorage.setItem("user", JSON.stringify(data));
+      setIsLoading(false);
+      setUser(data);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center h-screen relative">
       <div className="relative w-full h-full flex items-center justify-center">
@@ -23,7 +60,7 @@ const LoginCust = () => {
           {/* Form Container */}
           <div className="w-full max-w-md space-y-6">
             <div className="flex justify-center">
-              <h2 className="text-3xl font-bold text-primary font-primary -mt-14">
+              <h2 className="text-3xl font-bold text-primary font-primary mt-6">
                 TasK<span className="text-secondary">Mate</span>
               </h2>
             </div>
@@ -33,15 +70,17 @@ const LoginCust = () => {
 
             {/* Login Form */}
             <div className="flex justify-center max-w-full">
-              <form className="space-y-4 w-full">
+              <form onSubmit={submitHandler} className="space-y-4 w-full">
                 <div>
                   <label className="font-primary text-primary block">
                     E-Mail
                   </label>
                   <input
                     type="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
-                    className="w-full px-4 py-2 border border-secondary rounded-3xl focus:outline-none"
+                    className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                 </div>
                 <div>
@@ -50,18 +89,26 @@ const LoginCust = () => {
                   </label>
                   <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
-                    className="w-full px-4 py-2 border border-secondary rounded-3xl focus:outline-none"
+                    className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                 </div>
                 <div className="flex justify-center">
                   <button
                     type="submit"
-                    className="w-30 text-white font-primary py-2 px-4 rounded-3xl bg-primary"
+                    className="w-30 text-white font-primary py-2 px-4 rounded-3xl bg-primary hover:bg-secondary"
                   >
                     Login
                   </button>
                 </div>
+                {/* Error Message */}
+                {error && (
+                  <div className="text-red-500 bg-secondary border border-red-500 font-primary rounded-3xl px-4 py-2 mt-2 text-center">
+                    {error}
+                  </div>
+                )}
               </form>
             </div>
 

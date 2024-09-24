@@ -6,7 +6,7 @@ const MainLayout = () => {
   const location = useLocation();
 
   const isAuthRoute =
-    location.pathname === "/signupCust" || location.pathname === "/login";
+    location.pathname === "/signupCust" || location.pathname === "/loginCust";
   return (
     <>
       {/* Only render Header and Footer if not on the auth routes */}
