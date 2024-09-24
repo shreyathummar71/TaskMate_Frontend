@@ -5,11 +5,21 @@ const FAQ = () => {
 
   // Fetch data from the backend
   useEffect(() => {
-    fetch("http://localhost:8081/faqs")
-      .then((response) => response.json())
+    fetch("https://backend-taskmate.onrender.com/faqs")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         console.log(data); // Check if this is an array
-        setFaqs(data);
+        if (Array.isArray(data)) {
+          setFaqs(data);
+        } else {
+          console.error("Expected an array but got:", data);
+          setFaqs([]); // Fallback to empty array
+        }
       })
       .catch((error) => console.error("Error fetching FAQs:", error));
   }, []);
@@ -30,6 +40,7 @@ const FAQ = () => {
       </div>
 
       <div className="max-w-2xl mx-auto space-y-4">
+        <h2>FAQ</h2>
         {faqs.map((faq) => (
           <div key={faq.id} className="bg-white shadow-md rounded-lg p-4">
             <details className="group">
