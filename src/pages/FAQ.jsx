@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const FAQ = () => {
   const [faqs, setFaqs] = useState([]);
+
+  const navigate = useNavigate();
+  const handleSignupCustClick = () => {
+    navigate("/signupCust");
+  };
 
   useEffect(() => {
     fetch("https://backend-taskmate.onrender.com/faqs")
@@ -59,7 +65,10 @@ const FAQ = () => {
         ))}
       </div>
       <div className="text-center mt-8">
-        <button className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center">
+        <button
+          className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
+          onClick={handleSignupCustClick}
+        >
           <span class="mr-2 text-xl">Get Started</span>
           <span>
             <img
