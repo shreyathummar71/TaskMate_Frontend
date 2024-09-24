@@ -1,7 +1,7 @@
 const Header = () => {
   return (
     <>
-      <div className="sticky bg-tertiary p-4 flex justify-between items-center">
+      <div className="sticky  top-0 z-50 bg-tertiary p-4 flex justify-between items-center">
         <h1 className=" font-primary text-4xl font-bold">
           <span className="text-primary">TasK</span>
           <span className="text-secondary">Mate</span>
