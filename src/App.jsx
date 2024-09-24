@@ -13,6 +13,10 @@ import AllCategory from "./components/AllCategory";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Blogs from "./components/Blogs";
 import ServiceDetail from "./components/ServiceDetail";
+import SignupCust from "./components/customer/SignupCust";
+import SignupProf from "./components/professional/SignupProf";
+import LoginCust from "./components/customer/LoginCust";
+import FAQ from "./pages/FAQ";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -25,6 +29,12 @@ const App = () => {
           <Route path="/allcategory" element={<AllCategory />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/blogs" element={Blogs} />
+          <Route path="/AllCategory" element={<AllCategory />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/signupCust" element={<SignupCust />} />
+          <Route path="/login" element={<LoginCust />} />
+          <Route path="/signupProf" element={<SignupProf />} />
+          <Route path="/faq" element={<FAQ />} />
         </Route>
       </>
     )
