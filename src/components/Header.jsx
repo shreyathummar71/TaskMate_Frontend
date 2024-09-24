@@ -1,9 +1,9 @@
 const Header = () => {
   return (
     <>
-      <div className="bg-tertiary p-4 flex justify-between items-center">
-        <h1 className=" font-primary text-2xl font-bold">
-          <span className="text-primary">Task</span>
+      <div className="sticky  top-0 z-50 bg-tertiary p-4 flex justify-between items-center">
+        <h1 className=" font-primary text-4xl font-bold">
+          <span className="text-primary">TasK</span>
           <span className="text-secondary">Mate</span>
         </h1>
         <nav>
