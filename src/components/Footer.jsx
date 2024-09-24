@@ -2,7 +2,6 @@ const Footer = () => {
   return (
     <footer className="bg-primary text-white">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 p-4">
-        
         {/* Column 1 */}
         <div className="ml-4">
           <h3 className="font-primary mb-4 text-lg">
@@ -88,7 +87,10 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/services/furniture-assembly" className="hover:text-secondary">
+              <a
+                href="/services/furniture-assembly"
+                className="hover:text-secondary"
+              >
                 Furniture Assembly
               </a>
             </li>
@@ -151,7 +153,8 @@ const Footer = () => {
       <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
         <p>
           Copyright © Task
-          <span className="text-yellow-400">Mate</span>. 2024 All Rights Reserved
+          <span className="text-yellow-400">Mate</span>. 2024 All Rights
+          Reserved
         </p>
       </div>
     </footer>
