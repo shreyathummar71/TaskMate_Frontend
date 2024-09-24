@@ -51,13 +51,13 @@ const FAQ = () => {
         {faqs.map((faq) => (
           <div key={faq._id} className="border-b border-gray-200">
             <details className="group py-4">
-              <summary className="font-semibold text-lg cursor-pointer flex justify-between items-center">
+              <summary className="font-semibold font-secondary  text-white text-lg cursor-pointer flex justify-between items-center">
                 {faq.question}
                 <span className="text-xl transform transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-2 text-gray-600 group-open:block">
+              <p className="mt-2 font-secondary text-white group-open:block">
                 {faq.answer}
               </p>
             </details>
