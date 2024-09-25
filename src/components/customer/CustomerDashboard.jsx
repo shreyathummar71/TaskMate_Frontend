@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CustAllCategory from "./CustAllCategory";
+import CustMyBooking from "./CustMyBooking";
 import CustFavorites from "./CustFavorites";
 import FAQCustomer from "./FAQCustomer";
 import CustHelpCenter from "./CustHelpCenter";
