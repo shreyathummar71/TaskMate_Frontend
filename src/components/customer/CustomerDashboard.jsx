@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CustAllCategory from "./CustAllCategory";
-import CustMyBooking from "./CustMyBooking";
 import CustFavorites from "./CustFavorites";
 import FAQCustomer from "./FAQCustomer";
 import CustHelpCenter from "./CustHelpCenter";
@@ -15,12 +14,8 @@ const CustomerDashboard = () => {
         <ul className="p-8 text-center text-white font-primary">
           {/* Dashboard item is always styled as active */}
           <li
-            className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${
-              activeMenu === "dashboard"
-                ? "text-secondary"
-                : "hover:text-secondary"
-            }`}
-            onClick={() => setActiveMenu("dashboard")}
+            className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${activeMenu === 'dashboard' ? 'text-secondary' : 'hover:text-secondary'}`}
+            onClick={() => setActiveMenu('dashboard')}
           >
             Book a Service
           </li>
