@@ -12,6 +12,10 @@ const MainLayout = () => {
 
   // Check if the current route is an auth route (login/signup pages)
   const isAuthRoute =
+<<<<<<< HEAD
+    location.pathname === "/customer/signup" ||
+    location.pathname === "/customer/login";
+=======
     location.pathname === "/signupCust" ||
     location.pathname === "/loginCust" ||
     location.pathname === "/signupProf" ||
@@ -24,6 +28,7 @@ const MainLayout = () => {
   // Check if the user is authenticated
   const isAuthenticated = isCustomer || isProfessional;
 
+>>>>>>> main
   return (
     <>
       {/* Render appropriate Header: Default on landing page, custom after login */}
