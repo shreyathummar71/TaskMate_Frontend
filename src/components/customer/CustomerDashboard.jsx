@@ -3,7 +3,7 @@ import CustAllCategory from "./CustAllCategory";
 import CustMyBooking from "./CustMyBooking";
 import CustBookService from "./CustBookService";
 import CustFavorites from "./CustFavorites";
-import CustFAQ from "./CustMyBooking";
+import FAQCustomer from "./FAQCustomer";
 import CustHelpCenter from "./CustHelpCenter";
 
 
@@ -61,7 +61,7 @@ const CustomerDashboard = () => {
         {activeMenu === 'book-service' && <CustBookService />}
         {activeMenu === 'my-bookings' && <CustMyBooking />}
         {activeMenu === 'favorites' && <CustFavorites />}
-        {activeMenu === 'faq' && <CustFAQ />}
+        {activeMenu === 'faq' && <FAQCustomer />}
         {activeMenu === 'help-center' && <CustHelpCenter />}
       </div>
     </div>
