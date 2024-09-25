@@ -16,7 +16,7 @@ const LoginCust = ({ setUser }) => {
   useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => {
-        navigate("/customer/dashboard");
+        navigate("/customerDashboard");
       }, 3000); // Wait for 3 seconds before navigating
 
       // Cleanup the timer when component unmounts or loading state changes
@@ -51,14 +51,8 @@ const LoginCust = ({ setUser }) => {
       setIsLoading(false);
       setUser(data);
       setEmail(""); // Clear email
-<<<<<<< HEAD
       setPassword(""); // Clear password
       setLoading(true); // Trigger loading state (shows overlay and triggers navigation)
-=======
-      setPassword(""); // Clear
-      clearMessages();
-      navigate("/customerDashboard");
->>>>>>> main
     }
   };
 

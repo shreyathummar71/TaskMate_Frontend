@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import coverImage from "../../assets/images/cust_signup_cover.png";
 import HomeIcon from "../../assets/images/HomeIcon.png";
 
@@ -13,6 +13,18 @@ const SignupCust = ({ setUser }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Initialize navigate
+
+  // Effect to handle navigation after loading
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        navigate("/customerDashboard");
+      }, 3000); // Wait for 3 seconds before navigating
+
+      // Cleanup the timer when component unmounts or loading state changes
+      return () => clearTimeout(timer);
+    }
+  }, [loading, navigate]); // Only re-run this effect if 'loading' or 'navigate' changes
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -47,17 +59,6 @@ const SignupCust = ({ setUser }) => {
       setEmail(""); // Clear input fields after success
       setPassword("");
       setLoading(true); // Set loading to true to show overlay and image
-
-<<<<<<< HEAD
-      // navigate("/customer/dashboard");
-      setTimeout(() => {
-        setLoading(false); // Hide loading
-        navigate("/customer/dashboard"); // Navigate to dashboard
-      }, 3000); // Adjust the duration as needed
-=======
-      clearMessages();
-      navigate("/customerDashboard");
->>>>>>> main
     }
   };
 
