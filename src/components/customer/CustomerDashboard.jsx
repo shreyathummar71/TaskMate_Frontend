@@ -1,7 +1,6 @@
 import React, {  useState } from "react";
 import CustAllCategory from "./CustAllCategory";
 import CustMyBooking from "./CustMyBooking";
-import CustBookService from "./CustBookService";
 import CustFavorites from "./CustFavorites";
 import FAQCustomer from "./FAQCustomer";
 import CustHelpCenter from "./CustHelpCenter";
@@ -19,12 +18,6 @@ const CustomerDashboard = () => {
           <li
             className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${activeMenu === 'dashboard' ? 'text-secondary' : 'hover:text-secondary'}`}
             onClick={() => setActiveMenu('dashboard')}
-          >
-            Dashboard
-          </li>
-          <li
-            className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${activeMenu === 'book-service' ? 'text-secondary' : 'hover:text-secondary'}`}
-            onClick={() => setActiveMenu('book-service')}
           >
             Book a Service
           </li>
@@ -58,7 +51,6 @@ const CustomerDashboard = () => {
       {/* Main Content */}
       <div className="flex-grow pl-10 w-2/4">
         {activeMenu === 'dashboard' &&  <CustAllCategory />}
-        {activeMenu === 'book-service' && <CustBookService />}
         {activeMenu === 'my-bookings' && <CustMyBooking />}
         {activeMenu === 'favorites' && <CustFavorites />}
         {activeMenu === 'faq' && <FAQCustomer />}
