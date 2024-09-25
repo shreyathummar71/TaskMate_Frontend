@@ -99,7 +99,11 @@ const AllCategory = () => {
   return (
     <>
       <div class="relative">
-        <img src={categoryhero} alt="category hero section" />
+        <img
+          src={categoryhero}
+          alt="category hero section"
+          className=" w-full"
+        />
         <div class="absolute inset-0 bg-black opacity-50 "></div>
       </div>
       <div className="border-b-8 border-tertiary rounded-lg"></div>
