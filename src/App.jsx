@@ -21,6 +21,8 @@ import CustomerDashboard from "./components/customer/CustomerDashboard";
 import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
+import CustHelpByUs from "./components/customer/CustHelpByUs";
+import CustHelpByAI from "./components/customer/CustHelpByAI";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -49,6 +51,10 @@ const App = () => {
           <Route path="/loginCust" element={<LoginCust setUser={setUser} />} />
           <Route path="/signupProf" element={<SignupProf />} />
           <Route path="/faq" element={<FAQ />} />
+
+          {/* Route for Help Center */}
+          <Route path="/custHelpByUs" element={<CustHelpByUs />} />
+          <Route path="/custHelpByAI" element={<CustHelpByAI />} />
 
           {/* Protected Customer and Professional Dashboard Routes */}
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
