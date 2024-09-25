@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import { useEffect, useState } from "react";
+import LoadingSpinner from "./components/LoadingSpinner"; // loading component
 import Layout from "./components/Layout";
 import MainLayout from "./components/MainLayout";
 import AboutUs from "./pages/AboutUs";
@@ -24,15 +25,35 @@ import MyAccountCust from "./components/customer/MyAccountCust";
 import LoginProf from "./components/professional/LoginProf";
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true); //State to handle spinner
   const [user, setUser] = useState(null);
+
+  //Spinning process while loading the app
+  useEffect(() => {
+    const loadApp = setTimeout(() => {
+      setIsLoading(false); // Set loading to false when app is ready
+    }, 600); // Simulating 3 seconds of loading time, adjust as needed
+
+    return () => clearTimeout(loadApp); // Cleanup
+  }, []);
 
   useEffect(() => {
     if (!user) {
-      setUser(JSON.parse(localStorage.getItem("user")));
+      const storedUser = JSON.parse(localStorage.getItem("user")); // Retrieve user from localStorage
+      if (storedUser) {
+        // Check if the stored user is a customer or a professional
+        if (storedUser.data && storedUser.data.user) {
+          const userType = storedUser.data.user; // Assuming this contains "customer" or "professional"
+          setUser({
+            ...storedUser,
+            role: userType === "professional" ? "professional" : "customer",
+          });
+        }
+      }
     }
   }, [user]);
 
-  console.log("USER Details", user);
+  // console.log("USER Details", user);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -54,8 +75,14 @@ const App = () => {
             element={<LoginCust setUser={setUser} />}
           />
           {/* <Routes for Professional for login and password  */}
-          <Route path="/professional/signup" element={<SignupProf />} />
-          <Route path="/professional/login" element={<LoginProf />} />
+          <Route
+            path="/professional/signup"
+            element={<SignupProf setUser={setUser} />}
+          />
+          <Route
+            path="/professional/login"
+            element={<LoginProf setUser={setUser} />}
+          />
 
           <Route path="/faq" element={<FAQ />} />
 
@@ -76,7 +103,15 @@ const App = () => {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <div>
+        {isLoading ? (
+          // Show loading spinner while app is loading
+          <LoadingSpinner />
+        ) : (
+          // Show the app with router once loading is complete
+          <RouterProvider router={router} />
+        )}
+      </div>
     </>
   );
 };

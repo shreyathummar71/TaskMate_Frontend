@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useFetchFeedback from "../utils/useFetchFeedback";
+import userImage from "../assets/images/user.png";
 
 const Feedback = () => {
   const { feedback, loading, error } = useFetchFeedback(
@@ -81,13 +82,12 @@ const Feedback = () => {
               >
                 {/* Card Container with Fixed Heights */}
                 <div className="bg-primary rounded-2xl float-start w-full h-full flex flex-col justify-between">
-                  
                   {/* Upper Part with Fixed Height */}
                   <div className="bg-tertiary flex items-center justify-center p-4 rounded-2xl h-60">
                     <div className="flex flex-col items-center">
                       <img
                         className="w-32 h-32 mb-4 object-cover"
-                        src={prof_id.image || "https://via.placeholder.com/100"}
+                        src={prof_id.image || userImage}
                         alt={professionalName}
                       />
                       <h2 className="text-xl font-semibold font-primary text-white text-center">

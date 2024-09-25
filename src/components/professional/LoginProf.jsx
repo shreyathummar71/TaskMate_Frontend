@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import coverImage from "../../assets/images/prof_login_cover.png";
 import HomeIcon from "../../assets/images/HomeIcon.png";
 
-const LoginProf = ({}) => {
+const LoginProf = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +49,7 @@ const LoginProf = ({}) => {
       data.user = "professional";
       localStorage.setItem("user", JSON.stringify(data));
       setIsLoading(false);
-      // setUser(data);
+      setUser(data);
       setEmail(""); // Clear email
       setPassword(""); // Clear password
       setLoading(true); // Trigger loading state (shows overlay and triggers navigation)
@@ -87,16 +87,17 @@ const LoginProf = ({}) => {
 
         {/* Form Section */}
         <div
-          className="absolute right-40 top-1/2 w-[582px] h-[508px] rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
+          className="absolute right-40 top-1/2 w-[456px] h-[508px] rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
           style={{ backgroundColor: "rgba(183, 186, 191, 0.6)" }}
         >
+          {" "}
           <div className="w-full max-w-md space-y-6">
             <div className="flex justify-center">
-              <h2 className="text-3xl font-bold text-primary font-primary mt-6">
+              <h2 className="text-3xl font-bold text-primary font-tertiary mt-2">
                 TasK<span className="text-secondary">Mate</span>
               </h2>
             </div>
-            <h2 className="text-3xl font-semibold text-white font-primary p-1">
+            <h2 className="text-3xl font-semibold text-white font-primary px-2 py-1">
               Login
             </h2>
 
@@ -149,7 +150,7 @@ const LoginProf = ({}) => {
                 {/* Display Error msg */}
                 <div className="relative">
                   {error && (
-                    <div className="text-red-800  font-primary absolute top-0 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
+                    <div className="text-red-800 text-xs  font-primary absolute top-0 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
                       {error}
                     </div>
                   )}
@@ -157,7 +158,7 @@ const LoginProf = ({}) => {
               </form>
             </div>
 
-            <p className="text-sm text-white font-primary text-center pt-7">
+            <p className="text-sm text-white font-primary text-center pt-4">
               Don't have an account?{" "}
               <Link to="/professional/signup" className="text-white">
                 <span className="text-secondary">Signup</span> here

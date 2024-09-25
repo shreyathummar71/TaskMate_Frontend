@@ -91,17 +91,17 @@ const SignupCust = ({ setUser }) => {
 
         {/* Form Section */}
         <div
-          className="absolute right-40 top-1/2 w-[582px] h-[680px] rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
+          className="absolute right-40 top-1/2 w-[500px] h-[660px] text-xs  rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
           style={{ backgroundColor: "rgba(183, 186, 191, 0.6)" }}
         >
           {/* Form Container */}
           <div className="w-full max-w-md space-y-6">
             <div className="flex justify-center">
-              <h2 className="text-3xl font-bold text-primary font-tertiary mt-6">
+              <h2 className="text-3xl font-bold text-primary font-tertiary mt-0">
                 TasK<span className="text-secondary">Mate</span>
               </h2>
             </div>
-            <h2 className="text-3xl font-semibold text-white font-primary p-1">
+            <h2 className="text-3xl font-semibold text-white font-primary px-2 py-1">
               Signup
             </h2>
 
@@ -187,7 +187,7 @@ const SignupCust = ({ setUser }) => {
               </form>
             </div>
 
-            <p className="text-sm text-white font-primary text-center pt-12">
+            <p className="text-sm text-white font-primary text-center pt-5">
               Already have an account?{" "}
               <Link to="/customer/login" className="text-white">
                 <span className="text-secondary">Log in</span> here

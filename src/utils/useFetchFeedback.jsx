@@ -14,7 +14,6 @@ const useFetchFeedback = (url) => {
         }
         const data = await response.json();
         setFeedback(data);
-        console.log("Inside useFetchFeedback", data);
       } catch (error) {
         setError(error.message);
       } finally {
