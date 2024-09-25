@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const FAQ = () => {
   const [faqs, setFaqs] = useState([]);
@@ -46,6 +46,16 @@ const FAQ = () => {
           <h1 className=" font-primary text-2xl  font-bold text-primary">
             Frequently Asked Questions
           </h1>
+        </div>
+        <div className="inline-flex items-start ml-10">
+          <Link to="/faqCustomer" className="text-lg font-tertiary mt-2 mr-4">
+            <span className="text-primary">FAQ</span>
+            <span className="text-secondary">Customer</span>
+          </Link>
+          <Link to="/faqProfessional" className="text-lg font-tertiary mt-2">
+            <span className="text-primary">FAQ</span>
+            <span className="text-secondary">Professional</span>
+          </Link>
         </div>
 
         <div className="max-w-2xl mx-auto  space-y-4 mt-8">
