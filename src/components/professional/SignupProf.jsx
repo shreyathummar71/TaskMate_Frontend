@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import coverImage from "../../assets/images/prof_signup_cover.png";
 import HomeIcon from "../../assets/images/HomeIcon.png";
 
-const SignupProf = ({}) => {
+const SignupProf = ({ setUser }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,7 +53,7 @@ const SignupProf = ({}) => {
       data.user = "professional";
       localStorage.setItem("user", JSON.stringify(data));
       setIsLoading(false);
-      // setUser(data);
+      setUser(data);
       setFirstName("");
       setLastName("");
       setEmail(""); // Clear input fields after success
@@ -91,17 +91,17 @@ const SignupProf = ({}) => {
 
         {/* Form Section */}
         <div
-          className="absolute right-40 top-1/2 w-[582px] h-[680px] rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
+          className="absolute right-40 top-1/2 w-[500px] h-[680px] rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
           style={{ backgroundColor: "rgba(183, 186, 191, 0.6)" }}
         >
           {/* Form Container */}
           <div className="w-full max-w-md space-y-6">
             <div className="flex justify-center">
-              <h2 className="text-3xl font-bold text-primary font-tertiary mt-6">
+              <h2 className="text-3xl font-bold text-primary font-tertiary mt-2">
                 TasK<span className="text-secondary">Mate</span>
               </h2>
             </div>
-            <h2 className="text-3xl font-semibold text-white font-primary p-1">
+            <h2 className="text-3xl font-semibold text-white font-primary px-2 py-1">
               Signup
             </h2>
 
@@ -179,7 +179,7 @@ const SignupProf = ({}) => {
                 {/* Display Error msg */}
                 <div className="relative">
                   {error && (
-                    <div className="text-red-800 float-left w-full font-primary absolute top-0 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
+                    <div className="text-red-800 text-sm float-left w-full font-primary absolute top-0 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
                       {error}
                     </div>
                   )}
@@ -187,7 +187,7 @@ const SignupProf = ({}) => {
               </form>
             </div>
 
-            <p className="text-sm text-white font-primary text-center pt-12">
+            <p className="text-sm text-white font-primary text-center pt-5">
               Already have an account?{" "}
               <Link to="/professional/login" className="text-white">
                 <span className="text-secondary">Log in</span> here
