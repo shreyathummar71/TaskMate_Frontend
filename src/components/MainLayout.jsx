@@ -12,8 +12,8 @@ const MainLayout = () => {
 
   // Check if the current route is an auth route (login/signup pages)
   const isAuthRoute =
-    location.pathname === "/signupCust" ||
-    location.pathname === "/loginCust" ||
+    location.pathname === "/customer/signup" ||
+    location.pathname === "/customer/login" ||
     location.pathname === "/signupProf" ||
     location.pathname === "/loginProf";
 
