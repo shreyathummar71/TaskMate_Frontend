@@ -5,23 +5,16 @@ import coverImage from "../../assets/images/cust_signup_cover.png";
 const LoginCust = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null); //setting success
   const navigate = useNavigate(); // Initialize navigate
 
-  const clearMessages = () => {
-    setTimeout(() => {
-      setError(null);
-      setSuccess(null);
-    }, 1500); // Clear after 3 seconds
-  };
-
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    clearMessages();
 
     const response = await fetch(
       "https://backend-taskmate.onrender.com/customer/login",
@@ -38,7 +31,6 @@ const LoginCust = ({ setUser }) => {
       console.log(data);
       setIsLoading(false);
       setError(data.error);
-      clearMessages();
     }
     if (response.ok) {
       data.user = "customer";
@@ -48,7 +40,6 @@ const LoginCust = ({ setUser }) => {
       setSuccess("Logged in successfully!"); //setting success
       setEmail(""); // Clear email
       setPassword(""); // Clear
-      clearMessages();
       navigate("/dashboard");
     }
   };
@@ -97,17 +88,28 @@ const LoginCust = ({ setUser }) => {
                     className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                 </div>
-                <div>
+                <div className="relative">
                   <label className="block text-primary font-primary">
                     Password
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
                     className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
+                  {/* Font Awesome Eye Icon */}
+                  <div
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0  top-5  right-4 flex items-center cursor-pointer text-white"
+                  >
+                    <i
+                      className={
+                        showPassword ? "fas fa-eye-slash" : "fas fa-eye"
+                      }
+                    ></i>
+                  </div>
                 </div>
                 <div className="flex justify-center">
                   <button
@@ -117,12 +119,14 @@ const LoginCust = ({ setUser }) => {
                     Login
                   </button>
                 </div>
-                {/* Error Message */}
-                {error && (
-                  <div className="text-red-500 bg-secondary border border-red-500 font-primary rounded-3xl px-4 py-2 mt-2 text-center">
-                    {error}
-                  </div>
-                )}
+                {/* Display Error msg */}
+                <div className="relative">
+                  {error && (
+                    <div className="text-red-800 font-primary absolute top-0 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
+                      {error}
+                    </div>
+                  )}
+                </div>
                 {/* Display success message if login is successful */}
                 {success && (
                   <div className="text-green-800 bg-secondary border border-green-800 font-primary rounded-3xl px-4 py-2 mt-2 text-center">
@@ -132,7 +136,7 @@ const LoginCust = ({ setUser }) => {
               </form>
             </div>
 
-            <p className="text-sm text-white font-primary text-center">
+            <p className="text-sm text-white font-primary text-center pt-7">
               Don’t have an account?{" "}
               <Link to="/signupCust" className="text-white">
                 <span className="text-secondary">Signup</span> here
