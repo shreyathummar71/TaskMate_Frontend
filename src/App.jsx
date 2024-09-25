@@ -21,6 +21,7 @@ import CustomerDashboard from "./components/customer/CustomerDashboard";
 import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
+import LoginProf from "./components/professional/LoginProf";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -42,6 +43,8 @@ const App = () => {
           <Route path="/allcategory" element={<AllCategory />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/blogs" element={<Blogs />} />
+
+          {/* <Routes for Customer for login and password  */}
           <Route
             path="/customer/signup"
             element={<SignupCust setUser={setUser} />}
@@ -50,9 +53,10 @@ const App = () => {
             path="/customer/login"
             element={<LoginCust setUser={setUser} />}
           />
-          {/* <Route path="customer/dashboard" element={<Dashboard />} /> */}
+          {/* <Routes for Professional for login and password  */}
+          <Route path="/professional/signup" element={<SignupProf />} />
+          <Route path="/professional/login" element={<LoginProf />} />
 
-          <Route path="/signupProf" element={<SignupProf />} />
           <Route path="/faq" element={<FAQ />} />
 
           {/* Protected Customer and Professional Dashboard Routes */}
