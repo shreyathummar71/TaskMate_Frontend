@@ -20,8 +20,6 @@ import LoginCust from "./components/customer/LoginCust";
 import CustomerDashboard from "./components/customer/CustomerDashboard";
 import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
-import FAQCustomer from "./pages/FAQCustomer";
-import FAQProfessional from "./pages/FAQProfessional";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -50,8 +48,6 @@ const App = () => {
           <Route path="/loginCust" element={<LoginCust setUser={setUser} />} />
           <Route path="/signupProf" element={<SignupProf />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/faqCustomer" element={<FAQCustomer />} />
-          <Route path="/faqProfessional" element={<FAQProfessional />} />
 
           {/* Protected Customer and Professional Dashboard Routes */}
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
