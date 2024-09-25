@@ -1,6 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import CustHelpByUs from "./CustHelpByUs";
+import CustHelpByAI from "./CustHelpByAI";
+import FAQCustomer from "./FAQCustomer";
 
 const CustHelpCenter = () => {
+  const navigate = useNavigate();
+  const handleHelpByUSClick = () => {
+    navigate("/CustHelpByUs");
+  };
+  const handleHelpByAIClick = () => {
+    navigate("/CustHelpByAI");
+  };
+
+  const handleFAQClick = () => {
+    navigate("/FAQCustomer");
+  };
   return (
     <div>
       <div className="help-center-container bg-gray-100 p-8">
@@ -15,7 +30,10 @@ const CustHelpCenter = () => {
             <p className="text-gray-700">
               Contact our support team for personalized assistance.
             </p>
-            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={handleHelpByUSClick}
+            >
               Contact Us
             </button>
           </div>
@@ -28,7 +46,10 @@ const CustHelpCenter = () => {
             <p className="text-gray-700">
               Get instant answers with our AI-powered chatbot.
             </p>
-            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={handleHelpByAIClick}
+            >
               Chat Now
             </button>
           </div>
@@ -39,7 +60,10 @@ const CustHelpCenter = () => {
             <p className="text-gray-700">
               Browse frequently asked questions for quick help.
             </p>
-            <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={handleFAQClick}
+            >
               View FAQs
             </button>
           </div>
