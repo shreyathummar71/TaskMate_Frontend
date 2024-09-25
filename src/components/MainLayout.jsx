@@ -14,8 +14,8 @@ const MainLayout = () => {
   const isAuthRoute =
     location.pathname === "/customer/signup" ||
     location.pathname === "/customer/login" ||
-    location.pathname === "/signupProf" ||
-    location.pathname === "/loginProf";
+    location.pathname === "/professional/signup" ||
+    location.pathname === "/professional/login";
 
   // Check if user is a customer or professional
   const isCustomer = user && user.user === "customer";

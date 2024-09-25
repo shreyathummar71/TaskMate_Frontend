@@ -6,7 +6,7 @@ const Hero = () => {
     navigate("/customer/signup");
   };
   const handleSignupProfClick = () => {
-    navigate("/signupProf");
+    navigate("/professional/signup");
   };
 
   return (

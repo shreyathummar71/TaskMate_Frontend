@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ProfFooter = () => {
   return (
@@ -14,19 +15,22 @@ const ProfFooter = () => {
             Happiness Guarantee
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
-          <li>
-              <Link to="/professionalDashboard" className="hover:text-secondary">
-              My Dashboard
+            <li>
+              <Link
+                to="/professionalDashboard"
+                className="hover:text-secondary"
+              >
+                My Dashboard
               </Link>
             </li>
             <li>
               <Link to="/professionalbooking" className="hover:text-secondary">
-              Manage Booking
+                Manage Booking
               </Link>
             </li>
             <li>
               <Link to="/AllCategory" className="hover:text-secondary">
-              Job Listings
+                Job Listings
               </Link>
             </li>
             <li>
@@ -89,10 +93,7 @@ const ProfFooter = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/AllCategory"
-                className="hover:text-secondary"
-              >
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Furniture Assembly
               </Link>
             </li>
@@ -155,8 +156,7 @@ const ProfFooter = () => {
       <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
         <p>
           Copyright © Task
-          <span className="text-secondary">Mate</span>. 2024 All Rights
-          Reserved
+          <span className="text-secondary">Mate</span>. 2024 All Rights Reserved
         </p>
       </div>
     </footer>
