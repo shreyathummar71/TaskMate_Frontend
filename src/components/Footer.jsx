@@ -59,38 +59,38 @@ const Footer = () => {
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
             <li>
-              <Link to="/services/cleaning" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Cleaning
               </Link>
             </li>
             <li>
-              <Link to="/services/handyman" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Handyman
               </Link>
             </li>
             <li>
-              <Link to="/services/plumbing" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Plumbing
               </Link>
             </li>
             <li>
-              <Link to="/services/electrical" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Electrical
               </Link>
             </li>
             <li>
-              <Link to="/services/moving" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Moving Help
               </Link>
             </li>
             <li>
-              <Link to="/services/painting" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Painting
               </Link>
             </li>
             <li>
               <Link
-                to="/services/furniture-assembly"
+                to="/AllCategory"
                 className="hover:text-secondary"
               >
                 Furniture Assembly
