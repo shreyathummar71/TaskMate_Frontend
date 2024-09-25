@@ -37,7 +37,7 @@ const FAQ = () => {
       <div className="faq-container bg-white">
         <div className="relative h-64 md:h-96 overflow-hidden items-stretch text-center ">
           <img
-            src="src/assets/images/faqBanner.jpeg"
+            src="src/assets/images/FAQ.png"
             alt="Banner"
             className="w-auto h-full object-cover inline-flex items-center"
           />
