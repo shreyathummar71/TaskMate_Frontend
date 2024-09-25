@@ -15,8 +15,9 @@ const CustHeader = () => {
       if (user.firstName) {
         setFirstName(user.firstName);
       }
-      if (user.profilePicture) {
-        setProfilePicture(user.profilePicture);
+      if (user.profileImage) {
+        // Change from profilePicture to profileImage
+        setProfilePicture(user.profileImage); // Change here as well
       }
     }
   }, []);
@@ -78,20 +79,21 @@ const CustHeader = () => {
         </div>
 
         {/* Dropdown Menu */}
+        {/* Dropdown Menu */}
         {dropdownOpen && (
           <div
-            ref={dropdownRef} // Attach ref to the dropdown menu
-            className="absolute right-0 top-10 mt-2 bg-white rounded shadow-lg w-48"
+            ref={dropdownRef}
+            className="absolute right-0 top-10 mt-2 bg-white rounded-lg shadow-2xl transition duration-200 ease-in-out w-48 z-10"
           >
             <button
               onClick={navigateToAccount}
-              className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-gray-200"
+              className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-gray-200 rounded-t-lg"
             >
               My Account
             </button>
             <button
               onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-gray-200"
+              className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-gray-200 rounded-b-lg"
             >
               Logout
             </button>
