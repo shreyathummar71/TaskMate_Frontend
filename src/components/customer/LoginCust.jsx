@@ -49,7 +49,7 @@ const LoginCust = ({ setUser }) => {
       setEmail(""); // Clear email
       setPassword(""); // Clear
       clearMessages();
-      navigate("/dashboard");
+      navigate("/customerDashboard");
     }
   };
 

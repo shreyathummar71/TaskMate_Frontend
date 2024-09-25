@@ -50,7 +50,7 @@ const SignupCust = ({ setUser }) => {
       setPassword("");
 
       clearMessages();
-      navigate("/loginCust");
+      navigate("/customerDashboard");
     }
   };
 
