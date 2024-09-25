@@ -116,7 +116,7 @@ const AllCategory = () => {
                 <li
                   key={category._id}
                   onClick={() => handleCategoryClick(category)}
-                  className={`cursor-pointer p-2 bg-primary mb-8 rounded-xl text-sm hover:text-secondary ${
+                  className={`cursor-pointer p-2 bg-primary mb-9 rounded-xl text-16px hover:text-secondary ${
                     selectedCategory?._id === category._id
                       ? "text-secondary"
                       : ""

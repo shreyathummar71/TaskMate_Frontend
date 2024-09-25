@@ -50,10 +50,11 @@ const ServiceDetail = () => {
         <img
           src={service.image}
           alt={service.name}
-          className="max-w-full w-full h-auto object-cover mb-4"
+          className="max-w-full w-full  object-cover mb-4"
+          style={{ height: '650px' }}
         />
         <div className="absolute inset-0 bg-black opacity-50"></div>
-        <h2 className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
+        <h2 className="absolute inset-0 flex items-center justify-center text-2xl font-bold font-primary text-white">
           {service.name}
         </h2>
       </div>
@@ -74,7 +75,7 @@ const ServiceDetail = () => {
                   className="flex items-center font-secondary text-black mb-8"
                 >
                   <span className="text-lg">🔧</span>
-                  {point}
+                  <span className="ml-2">{point}</span>
                 </li>
               ))}
           </ul>
@@ -87,7 +88,7 @@ const ServiceDetail = () => {
                   className="flex items-center font-secondary text-black mb-8"
                 >
                   <span className="text-lg">🔧</span>
-                  {point}
+                  <span className="ml-2">{point}</span>
                 </li>
               ))}
           </ul>
@@ -144,7 +145,7 @@ const ServiceDetail = () => {
       {/* Get Started Button */}
       <div className="flex justify-center pb-8">
         <button
-          onClick={() => navigate("/customer/login")}
+          onClick={() => navigate("/signupCust")}
           className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
         >
           <span class="mr-2">Get Started</span>

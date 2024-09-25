@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="bg-primary text-white">
@@ -13,39 +15,39 @@ const Footer = () => {
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
             <li>
-              <a href="/" className="hover:text-secondary">
+              <Link to="/" className="hover:text-secondary">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/services" className="hover:text-secondary">
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Services
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/aboutus" className="hover:text-secondary">
+              <Link to="/aboutus" className="hover:text-secondary">
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/faq" className="hover:text-secondary">
+              <Link to="/faq" className="hover:text-secondary">
                 FAQ
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/blogs" className="hover:text-secondary">
+              <Link to="/blogs" className="hover:text-secondary">
                 Blogs
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/help" className="hover:text-secondary">
+              <Link to="/help" className="hover:text-secondary">
                 Help
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/contactus" className="hover:text-secondary">
+              <Link to="/contactus" className="hover:text-secondary">
                 Contact Us
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -57,42 +59,42 @@ const Footer = () => {
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
             <li>
-              <a href="/services/cleaning" className="hover:text-secondary">
+              <Link to="/services/cleaning" className="hover:text-secondary">
                 Cleaning
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/services/handyman" className="hover:text-secondary">
+              <Link to="/services/handyman" className="hover:text-secondary">
                 Handyman
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/services/plumbing" className="hover:text-secondary">
+              <Link to="/services/plumbing" className="hover:text-secondary">
                 Plumbing
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/services/electrical" className="hover:text-secondary">
+              <Link to="/services/electrical" className="hover:text-secondary">
                 Electrical
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/services/moving" className="hover:text-secondary">
+              <Link to="/services/moving" className="hover:text-secondary">
                 Moving Help
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/services/painting" className="hover:text-secondary">
+              <Link to="/services/painting" className="hover:text-secondary">
                 Painting
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="/services/furniture-assembly"
+              <Link
+                to="/services/furniture-assembly"
                 className="hover:text-secondary"
               >
                 Furniture Assembly
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -127,11 +129,11 @@ const Footer = () => {
             <br />
             We're here to help – get in touch with us today!
           </p>
-          <a href="/contactus">
+          <Link to="/contactus">
             <button className="bg-tertiary font-secondary bg-opacity-50 border border-secondary text-white px-6 py-2 rounded-md hover:bg-yellow-400 hover:text-white">
               Contact US
             </button>
-          </a>
+          </Link>
           <div className="flex justify-center text-3xl mt-9 space-x-10">
             <a href="#" className="hover:text-secondary">
               <i className="fab fa-facebook-f"></i>
