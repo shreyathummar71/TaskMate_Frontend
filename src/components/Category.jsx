@@ -70,7 +70,7 @@ const Category = () => {
 
           return (
             <div key={index} className="w-1/4 p-2 text-center">
-              <div className="float-start w-full text-center">
+              <div className="float-start w-full text-center bg-primary rounded-lg">
                 <figure>
                   <img
                     src={imageUrl}
@@ -79,7 +79,7 @@ const Category = () => {
                   />
                 </figure>
                 <div className="card-body py-3">
-                  <h2 className="card-title text-primary font-primary text-base text-center block">
+                  <h2 className="card-title text-white font-primary text-base text-center block">
                     {category.name || "No Name"}{" "}
                     {/* Fallback for missing name */}
                   </h2>
