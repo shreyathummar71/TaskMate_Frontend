@@ -12,7 +12,7 @@ const CustomerDashboard = () => {
   return (
     <div className="flex bg-white p-8 mb-20">
       {/* Sidebar */}
-      <div className="w-96 bg-tertiary rounded-2xl h-auto">
+      <div className="w-80 bg-tertiary rounded-2xl h-auto">
         <ul className="p-8 text-center text-white font-primary">
           {/* Dashboard item is always styled as active */}
           <li
@@ -77,13 +77,15 @@ const CustomerDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow pl-10">
-        {activeMenu === "dashboard" && <CustAllCategory />}
-        {activeMenu === "book-service" && <CustBookService />}
-        {activeMenu === "my-bookings" && <CustMyBooking />}
-        {activeMenu === "favorites" && <CustFavorites />}
-        {activeMenu === "faq" && <FAQCustomer />}
-        {activeMenu === "help-center" && <CustHelpCenter />}
+
+      <div className="flex-grow pl-10 w-2/4">
+        {activeMenu === 'dashboard' &&  <CustAllCategory />}
+        {activeMenu === 'book-service' && <CustBookService />}
+        {activeMenu === 'my-bookings' && <CustMyBooking />}
+        {activeMenu === 'favorites' && <CustFavorites />}
+        {activeMenu === 'faq' && <FAQCustomer />}
+        {activeMenu === 'help-center' && <CustHelpCenter />}
+
       </div>
     </div>
   );

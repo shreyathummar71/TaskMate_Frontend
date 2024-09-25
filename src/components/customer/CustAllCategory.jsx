@@ -28,7 +28,7 @@ const CategorySection = () => {
 
   return (
     <div>
-      <h2 className="text-2xl mb-4 font-primary">All Categories</h2>
+      <h2 className="text-xl mb-4 font-primary">All Categories</h2>
       <div className="grid grid-cols-3 gap-8">
         {categories.map((category) => (
           <div key={category._id} className="bg-gray-100 rounded-lg overflow-hidden shadow-lg">
@@ -39,7 +39,7 @@ const CategorySection = () => {
                 className="w-full h-64 object-cover"
               />
               <div className="absolute bottom-0 w-full bg-primary text-white text-center font-primary py-3">
-                <h3 className="text-lg font-semibold">{category.name || "No Name"}</h3>
+                <h3 className="text-lg ">{category.name || "No Name"}</h3>
               </div>
             </div>
           </div>
