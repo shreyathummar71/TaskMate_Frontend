@@ -22,6 +22,7 @@ import ProfessionalDashboard from "./components/professional/ProfessionalDashboa
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
 import LoginProf from "./components/professional/LoginProf";
+import MyAccountProf from "./components/professional/MyAccountProf";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -68,6 +69,10 @@ const App = () => {
           <Route
             path="/customerDashboard/myaccount"
             element={<MyAccountCust />}
+          />
+          <Route
+            path="/professionalDashboard/myaccount"
+            element={<MyAccountProf />}
           />
         </Route>
       </>

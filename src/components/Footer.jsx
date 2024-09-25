@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-primary text-white">
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 p-4">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 p-4 pt-7">
         {/* Column 1 */}
         <div className="ml-4">
           <h3 className="font-primary mb-4 text-lg">
@@ -89,10 +89,7 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/AllCategory"
-                className="hover:text-secondary"
-              >
+              <Link to="/AllCategory" className="hover:text-secondary">
                 Furniture Assembly
               </Link>
             </li>
