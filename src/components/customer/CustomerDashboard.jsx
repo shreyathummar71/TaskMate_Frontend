@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import CustAllCategory from "./CustAllCategory";
 import CustMyBooking from "./CustMyBooking";
 import CustFavorites from "./CustFavorites";
@@ -15,6 +14,7 @@ const CustomerDashboard = () => {
 
   // Ref for the main content section
   const mainContentRef = useRef(null);
+  const bookServiceRef = useRef(null); // Ref for "Book a Service" li element
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -23,11 +23,10 @@ const CustomerDashboard = () => {
     }
   }, []);
 
-  // Scroll to the main content section
-  const scrollToSection = () => {
-    if (mainContentRef.current) {
-      // Scroll to the ref element smoothly
-      mainContentRef.current.scrollIntoView({ behavior: "smooth" });
+  // Scroll to the Book a Service section
+  const scrollToBookService = () => {
+    if (bookServiceRef.current) {
+      bookServiceRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -38,7 +37,7 @@ const CustomerDashboard = () => {
           src={custdashboard}
           alt="category hero section"
           className="w-full  object-cover"
-          style={{ height: '600px' }}
+          style={{ height: "600px" }}
         />
 
         <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex">
@@ -62,8 +61,8 @@ const CustomerDashboard = () => {
             <div className="flex justify-center pb-8">
               <button
                 onClick={() => {
-                  setActiveMenu("book-service"); // Set active menu to 'book-service'
-                  scrollToSection(); // Scroll to the main content
+                  setActiveMenu("dashboard"); // Set active menu to "Book a Service"
+                  scrollToBookService(); // Scroll to the "Book a Service" li element
                 }}
                 className="border border-secondary bg-tertiary bg-opacity-40 font-secondary  text-xl font-semibold text-white mt-7 py-2 px-6 rounded-xl shadow-lg mb-6 inline-flex items-center"
               >
@@ -84,6 +83,7 @@ const CustomerDashboard = () => {
         <div className="w-80 bg-tertiary rounded-2xl h-auto">
           <ul className="p-8 text-center text-white font-primary">
             <li
+              ref={bookServiceRef} // Ref for "Book a Service" li element
               className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${
                 activeMenu === "dashboard"
                   ? "text-secondary"
