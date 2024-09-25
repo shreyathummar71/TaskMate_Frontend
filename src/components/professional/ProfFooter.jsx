@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import React from "react";
 
-const Footer = () => {
+const ProfFooter = () => {
   return (
     <footer className="bg-primary text-white">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 p-4">
@@ -14,14 +14,19 @@ const Footer = () => {
             Happiness Guarantee
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
+          <li>
+              <Link to="/professionalDashboard" className="hover:text-secondary">
+              My Dashboard
+              </Link>
+            </li>
             <li>
-              <Link to="/" className="hover:text-secondary">
-                Home
+              <Link to="/professionalbooking" className="hover:text-secondary">
+              Manage Booking
               </Link>
             </li>
             <li>
               <Link to="/AllCategory" className="hover:text-secondary">
-                Services
+              Job Listings
               </Link>
             </li>
             <li>
@@ -30,17 +35,12 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="/faq" className="hover:text-secondary">
+              <Link to="/professionalfaq" className="hover:text-secondary">
                 FAQ
               </Link>
             </li>
             <li>
-              <Link to="/blogs" className="hover:text-secondary">
-                Blogs
-              </Link>
-            </li>
-            <li>
-              <Link to="/help" className="hover:text-secondary">
+              <Link to="/professionalhelp" className="hover:text-secondary">
                 Help
               </Link>
             </li>
@@ -155,7 +155,7 @@ const Footer = () => {
       <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
         <p>
           Copyright © Task
-          <span className="text-yellow-400">Mate</span>. 2024 All Rights
+          <span className="text-secondary">Mate</span>. 2024 All Rights
           Reserved
         </p>
       </div>
@@ -163,4 +163,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default ProfFooter;

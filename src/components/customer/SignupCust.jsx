@@ -48,11 +48,16 @@ const SignupCust = ({ setUser }) => {
       setPassword("");
       setLoading(true); // Set loading to true to show overlay and image
 
+<<<<<<< HEAD
       // navigate("/customer/dashboard");
       setTimeout(() => {
         setLoading(false); // Hide loading
         navigate("/customer/dashboard"); // Navigate to dashboard
       }, 3000); // Adjust the duration as needed
+=======
+      clearMessages();
+      navigate("/customerDashboard");
+>>>>>>> main
     }
   };
 

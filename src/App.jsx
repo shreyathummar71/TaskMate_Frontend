@@ -13,11 +13,14 @@ import ContactUs from "./pages/ContactUs";
 import AllCategory from "./components/AllCategory";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Blogs from "./components/Blogs";
+import ServiceDetail from "./components/ServiceDetail";
 import SignupCust from "./components/customer/SignupCust";
 import SignupProf from "./components/professional/SignupProf";
 import LoginCust from "./components/customer/LoginCust";
+import CustomerDashboard from "./components/customer/CustomerDashboard";
+import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
-import Dashboard from "./components/Dashboard";
+import MyAccountCust from "./components/customer/MyAccountCust";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -36,7 +39,8 @@ const App = () => {
           <Route index element={<Layout />} />
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/AllCategory" element={<AllCategory />} />
+          <Route path="/allcategory" element={<AllCategory />} />
+          <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route
             path="/customer/signup"
@@ -46,9 +50,21 @@ const App = () => {
             path="/customer/login"
             element={<LoginCust setUser={setUser} />}
           />
-          <Route path="customer/dashboard" element={<Dashboard />} />
+          {/* <Route path="customer/dashboard" element={<Dashboard />} /> */}
+
           <Route path="/signupProf" element={<SignupProf />} />
           <Route path="/faq" element={<FAQ />} />
+
+          {/* Protected Customer and Professional Dashboard Routes */}
+          <Route path="/customerDashboard" element={<CustomerDashboard />} />
+          <Route
+            path="/professionalDashboard"
+            element={<ProfessionalDashboard />}
+          />
+          <Route
+            path="/customerDashboard/myaccount"
+            element={<MyAccountCust />}
+          />
         </Route>
       </>
     )

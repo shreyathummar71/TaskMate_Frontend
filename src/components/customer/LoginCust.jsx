@@ -51,8 +51,14 @@ const LoginCust = ({ setUser }) => {
       setIsLoading(false);
       setUser(data);
       setEmail(""); // Clear email
+<<<<<<< HEAD
       setPassword(""); // Clear password
       setLoading(true); // Trigger loading state (shows overlay and triggers navigation)
+=======
+      setPassword(""); // Clear
+      clearMessages();
+      navigate("/customerDashboard");
+>>>>>>> main
     }
   };
 

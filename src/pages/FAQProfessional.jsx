@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const FAQ = () => {
+const FAQProfessional = () => {
   const [faqs, setFaqs] = useState([]);
 
   const navigate = useNavigate();
-  const handleSignupCustClick = () => {
-    navigate("/signupCust");
+  const handleSignupProfClick = () => {
+    navigate("/signupProf");
   };
 
   useEffect(() => {
@@ -22,12 +22,12 @@ const FAQ = () => {
 
         // Assuming the data is an object with a property containing the array
         const faqArray = data.faqs || [];
-        const generalFaqs = faqArray.filter(
-          (faq) => faq.audience === "general"
+        const professionalFaqs = faqArray.filter(
+          (faq) => faq.audience === "professional"
         );
 
-        setFaqs(generalFaqs);
-        console.log("Filtered general FAQs:", generalFaqs);
+        setFaqs(professionalFaqs);
+        console.log("Filtered professional FAQs:", professionalFaqs);
       })
       .catch((error) => console.error("Error fetching FAQs:", error));
   }, []);
@@ -46,16 +46,6 @@ const FAQ = () => {
           <h1 className=" font-primary text-2xl  font-bold text-primary">
             Frequently Asked Questions
           </h1>
-        </div>
-        <div className="inline-flex items-start ml-10">
-          <Link to="/faqCustomer" className="text-lg font-tertiary mt-2 mr-4">
-            <span className="text-primary">FAQ</span>
-            <span className="text-secondary">Customer</span>
-          </Link>
-          <Link to="/faqProfessional" className="text-lg font-tertiary mt-2">
-            <span className="text-primary">FAQ</span>
-            <span className="text-secondary">Professional</span>
-          </Link>
         </div>
 
         <div className="max-w-2xl mx-auto  space-y-4 mt-8">
@@ -78,7 +68,7 @@ const FAQ = () => {
         <div className="text-center mt-8">
           <button
             className="bg-tertiary  bg-opacity-50 border text-center border-secondary font-secondary font-semibold text-primary py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
-            onClick={handleSignupCustClick}
+            onClick={handleSignupProfClick}
           >
             <span class="mr-2 text-xl">Get Started</span>
             <span>
@@ -94,4 +84,4 @@ const FAQ = () => {
     </>
   );
 };
-export default FAQ;
+export default FAQProfessional;

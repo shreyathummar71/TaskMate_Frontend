@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Footer = () => {
+const CustFooter = () => {
   return (
     <footer className="bg-primary text-white">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 p-4">
@@ -14,9 +14,14 @@ const Footer = () => {
             Happiness Guarantee
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
+          <li>
+              <Link to="/customerDashboard" className="hover:text-secondary">
+              My Dashboard
+              </Link>
+            </li>
             <li>
-              <Link to="/" className="hover:text-secondary">
-                Home
+              <Link to="/customerbooking" className="hover:text-secondary">
+              My Booking
               </Link>
             </li>
             <li>
@@ -30,17 +35,12 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="/faq" className="hover:text-secondary">
+              <Link to="/customerfaq" className="hover:text-secondary">
                 FAQ
               </Link>
             </li>
             <li>
-              <Link to="/blogs" className="hover:text-secondary">
-                Blogs
-              </Link>
-            </li>
-            <li>
-              <Link to="/help" className="hover:text-secondary">
+              <Link to="/customerhelp" className="hover:text-secondary">
                 Help
               </Link>
             </li>
@@ -155,12 +155,11 @@ const Footer = () => {
       <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
         <p>
           Copyright © Task
-          <span className="text-yellow-400">Mate</span>. 2024 All Rights
+          <span className="text-secondary">Mate</span>. 2024 All Rights
           Reserved
         </p>
       </div>
     </footer>
   );
 };
-
-export default Footer;
+export default CustFooter;

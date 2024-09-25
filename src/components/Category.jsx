@@ -55,7 +55,7 @@ const Category = () => {
     <div className="relative w-full overflow-hidden px-10 float-start bg-white py-9">
       <div className="float-end text-right w-full">
         <Link
-          to="/AllCategory"
+          to="/allcategory"
           className="font-primary text-primary pb-2 float-end w-full"
         >
           See All »
@@ -75,7 +75,7 @@ const Category = () => {
                   <img
                     src={imageUrl}
                     alt={category.name || "Unknown Category"} // Fallback for missing name
-                    className="h-48 w-full object-cover font-primary rounded"
+                    className="h-48 w-full object-cover font-primary rounded-lg"
                   />
                 </figure>
                 <div className="card-body py-3">
