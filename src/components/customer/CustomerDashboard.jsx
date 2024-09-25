@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CustAllCategory from "./CustAllCategory";
 import CustMyBooking from "./CustMyBooking";
-import CustBookService from "./CustBookService";
 import CustFavorites from "./CustFavorites";
 import FAQCustomer from "./FAQCustomer";
 import CustHelpCenter from "./CustHelpCenter";
