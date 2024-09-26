@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 const CustHelpCenter = () => {
   const navigate = useNavigate();
   const handleHelpByUSClick = () => {
-    navigate("/CustHelpByUs");
+    navigate("/custHelpByUs");
   };
   const handleHelpByAIClick = () => {
-    navigate("/CustHelpByAI");
+    navigate("/custHelpByAI");
   };
 
   const handleFAQClick = () => {
