@@ -31,7 +31,7 @@ const Hero = () => {
                 className="bg-tertiary  bg-opacity-50 border border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
                 onClick={handleSignupCustClick}
               >
-                <span class="mr-2 text-xl">Get Started</span>
+                <span className="mr-2 text-xl">Get Started</span>
                 <span>
                   <img
                     src="src/assets/images/buttonArrow.png"

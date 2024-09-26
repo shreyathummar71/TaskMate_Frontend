@@ -11,8 +11,12 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.6.0",
+<<<<<<< HEAD
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "date-fns": "^4.1.0",
+=======
+    "axios": "^1.7.7",
+>>>>>>> 46cdcf9b658a4f0e7dc2e6288de5e2af2d9c8303
     "react": "^18.3.1",
     "react-datepicker": "^7.4.0",
     "react-dom": "^18.3.1",
