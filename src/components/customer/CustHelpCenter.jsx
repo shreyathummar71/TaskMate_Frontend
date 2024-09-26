@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustHelpByUs from "./CustHelpByUs";
 import CustHelpByAIInterface from "./CustHelpByAIInterface";
+import FAQCustomer from "./FAQCustomer";
 
 const CustHelpCenter = () => {
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showAIInterface, setShowAIInterface] = useState(false);
+  const [showFAQCustomer, setShowFAQCustomer] = useState(false);
   const navigate = useNavigate();
 
   const handleHelpByUSClick = () => {
@@ -12,31 +15,31 @@ const CustHelpCenter = () => {
   };
 
   const handleHelpByAIClick = () => {
-    navigate("/custHelpByAI");
+    setShowAIInterface(true);
   };
 
   const handleFAQClick = () => {
-    navigate("/FAQCustomer");
+    setShowFAQCustomer(true);
   };
 
   return (
     <div className="flex flex-col">
-      {!showContactForm ? (
-        <div className="help-center-container bg-tertiary p-8">
+      {!showContactForm && !showAIInterface && !showFAQCustomer ? (
+        <div className="help-center-container font-primary bg-tertiary p-8">
           <h1 className="text-3xl font-bold text-primary font-primary mb-6">
             Help Center
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Help by Us */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg font-primary shadow-md">
               <h2 className="text-xl font-primary font-semibold text-primary mb-4">
                 Help by Us
               </h2>
-              <p className="font-secondary text-primary font-normal">
+              <p className="font-primary text-primary font-normal">
                 Contact our support team for personalized assistance.
               </p>
               <button
-                className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+                className="mt-2 bg-tertiary bg-opacity-50  border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
                 onClick={handleHelpByUSClick}
               >
                 Help by Us
@@ -48,14 +51,14 @@ const CustHelpCenter = () => {
               <h2 className="text-xl font-primary font-semibold text-primary mb-4">
                 Help by AI
               </h2>
-              <p className="font-secondary text-primary font-normal">
+              <p className="font-primary text-primary font-normal">
                 Get instant answers with our AI-powered chatbot.
               </p>
               <button
                 className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
                 onClick={handleHelpByAIClick}
               >
-                Chat Now
+                Ask Now
               </button>
             </div>
 
@@ -64,7 +67,7 @@ const CustHelpCenter = () => {
               <h2 className="text-xl font-primary font-semibold text-primary mb-4">
                 FAQ
               </h2>
-              <p className="font-secondary text-primary font-normal">
+              <p className="font-primary text-primary font-normal">
                 Browse frequently asked questions for quick help.
               </p>
               <button
@@ -76,7 +79,7 @@ const CustHelpCenter = () => {
             </div>
           </div>
         </div>
-      ) : (
+      ) : showContactForm ? (
         <div>
           <div className="relative">
             <button
@@ -86,6 +89,30 @@ const CustHelpCenter = () => {
               Back to Help Center
             </button>
             <CustHelpByUs />
+          </div>
+        </div>
+      ) : showAIInterface ? (
+        <div>
+          <div className="relative">
+            <button
+              className="absolute top-0 right-0 mt-2 mr-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              onClick={() => setShowAIInterface(false)}
+            >
+              Back to Help Center
+            </button>
+            <CustHelpByAIInterface />
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div className="relative">
+            <button
+              className="absolute top-0 right-0 mt-2 mr-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              onClick={() => setShowFAQCustomer(false)}
+            >
+              Back to Help Center
+            </button>
+            <FAQCustomer />
           </div>
         </div>
       )}
