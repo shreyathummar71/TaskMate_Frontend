@@ -23,9 +23,9 @@ import ProfessionalDashboard from "./components/professional/ProfessionalDashboa
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
 import CustHelpByUs from "./components/customer/CustHelpByUs";
-import CustHelpByAI from "./components/customer/CustHelpByAI";
 import LoginProf from "./components/professional/LoginProf";
 import MyAccountProf from "./components/professional/MyAccountProf";
+import CustHelpByAIInterface from "./components/customer/CustHelpByAIInterface";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true); //State to handle spinner
@@ -91,7 +91,7 @@ const App = () => {
 
           {/* Route for Help Center */}
           <Route path="/custHelpByUs" element={<CustHelpByUs />} />
-          <Route path="/custHelpByAI" element={<CustHelpByAI />} />
+          <Route path="/custHelpByAI" element={<CustHelpByAIInterface />} />
 
           {/* Protected Customer and Professional Dashboard Routes */}
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
