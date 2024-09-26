@@ -1,4 +1,4 @@
-import coverImage from "../assets/images/hero_background.png";
+import coverImage from "../assets/images/Bg_spinning.png";
 
 const LoadingSpinner = () => {
   return (

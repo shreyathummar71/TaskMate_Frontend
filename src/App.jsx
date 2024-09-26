@@ -33,7 +33,7 @@ const App = () => {
   useEffect(() => {
     const loadApp = setTimeout(() => {
       setIsLoading(false); // Set loading to false when app is ready
-    }, 600); // Simulating 3 seconds of loading time, adjust as needed
+    }, 2000); // Simulating 2 seconds of loading time, adjust as needed
 
     return () => clearTimeout(loadApp); // Cleanup
   }, []);
