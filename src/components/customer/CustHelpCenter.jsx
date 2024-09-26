@@ -1,8 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CustHelpByUs from "./CustHelpByUs";
-import CustHelpByAI from "./CustHelpByAI";
-import FAQCustomer from "./FAQCustomer";
 
 const CustHelpCenter = () => {
   const navigate = useNavigate();
