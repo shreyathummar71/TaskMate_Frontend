@@ -47,6 +47,7 @@ const CustHelpByUs = () => {
   };
 
   return (
+    
     <div className="md:w-3/5 p-4" style={{ width: "65%" }}>
       <section className="form-fields space-y-6 bg-primary rounded-3xl p-5 text-primary">
         <div className="text-xl font-normal mb-4 font-primary text-secondary">
