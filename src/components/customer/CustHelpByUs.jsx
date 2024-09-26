@@ -29,9 +29,13 @@ const CustHelpByUs = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8081/contact", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        "https://backend-taskmate.onrender.com/contact",
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       if (response.status === 200) {
         alert("Form submitted successfully!");
         setFormData({ name: "", email: "", message: "", uploadImage: null });
