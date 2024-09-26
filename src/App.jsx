@@ -22,6 +22,8 @@ import CustomerDashboard from "./components/customer/CustomerDashboard";
 import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
+import CustHelpByUs from "./components/customer/CustHelpByUs";
+import CustHelpByAI from "./components/customer/CustHelpByAI";
 import LoginProf from "./components/professional/LoginProf";
 import MyAccountProf from "./components/professional/MyAccountProf";
 
@@ -86,6 +88,10 @@ const App = () => {
           />
 
           <Route path="/faq" element={<FAQ />} />
+
+          {/* Route for Help Center */}
+          <Route path="/custHelpByUs" element={<CustHelpByUs />} />
+          <Route path="/custHelpByAI" element={<CustHelpByAI />} />
 
           {/* Protected Customer and Professional Dashboard Routes */}
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
