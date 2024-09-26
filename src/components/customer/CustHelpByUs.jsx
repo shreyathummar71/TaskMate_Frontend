@@ -47,90 +47,96 @@ const CustHelpByUs = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-      <h2 className="text-2xl font-bold mb-6 text-center">Contact Us</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Message
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            rows="4"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          ></textarea>
-        </div>
-        <div>
-          <label
-            htmlFor="uploadImage"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Upload Image
-          </label>
-          <input
-            type="file"
-            id="uploadImage"
-            name="uploadImage"
-            onChange={handleFileChange}
-            accept="image/*"
-            className="mt-1 block w-full text-sm text-gray-500
+    <div className="md:w-3/5 p-4" style={{ width: "65%" }}>
+      <section className="form-fields space-y-6 bg-primary rounded-3xl p-5 text-primary">
+        <div className="text-xl font-normal mb-4 font-primary text-secondary">
+          <h2 className="text-2xl font-bold mb-6 text-center">Contact Us</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="font-semibold pr-4 py-2 font-primary"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="form-input block w-full mt-1 text-primary bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="font-semibold pr-4 py-2 font-primary"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="form-input block w-full mt-1 text-primary bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label
+                name="message"
+                placeholder="How can we help?"
+                rows="5"
+                className="font-semibold pr-4 py-2 font-primary"
+              >
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows="4"
+                className="form-input block w-full mt-1  text-primary bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              ></textarea>
+            </div>
+            <div>
+              <label
+                name="uploadImage"
+                className="font-semibold pr-4 py-2 font-primary"
+              >
+                Attachment
+              </label>
+              <input
+                type="file"
+                id="uploadImage"
+                name="uploadImage"
+                onChange={handleFileChange}
+                accept="image/*"
+                className="mt-1 block w-full text-sm text-gray-500
               file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700
-              hover:file:bg-indigo-100"
-          />
+              file:rounded-xl
+              file:text-sm file:font-primary
+              file:bg-tertiary file:text-white
+              hover:file:bg-secondary file:border file:border-secondary"
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
         </div>
-        <div>
-          <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+      </section>
     </div>
   );
 };
