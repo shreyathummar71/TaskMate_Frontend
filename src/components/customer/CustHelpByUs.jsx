@@ -50,7 +50,7 @@ const CustHelpByUs = () => {
     <div className="md:w-3/5 p-4" style={{ width: "65%" }}>
       <section className="form-fields space-y-6 bg-primary rounded-3xl p-5 text-primary">
         <div className="text-xl font-normal mb-4 font-primary text-secondary">
-          <h2 className="text-2xl font-bold mb-6 text-center">Contact Us</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">Help By Us</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
@@ -71,7 +71,7 @@ const CustHelpByUs = () => {
             </div>
             <div>
               <label
-                htmlFor="email"
+                name="email"
                 className="font-semibold pr-4 py-2 font-primary"
               >
                 Email
