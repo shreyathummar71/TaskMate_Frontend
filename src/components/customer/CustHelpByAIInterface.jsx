@@ -9,7 +9,7 @@ const CustHelpByAIInterface = () => {
     // Fetch existing chat messages from the backend
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/api/chat");
+        const response = await axios.get("http://localhost:8081/aihelpcenter");
         setMessages(response.data);
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -26,22 +26,34 @@ const CustHelpByAIInterface = () => {
     setMessages([...messages, newMessage]);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8081/api/ai-response",
-        { message: input }
-      );
-      const aiResponse = response.data.response;
+      const response = await axios.post("http://localhost:8081/aihelpcenter", {
+        message: input,
+      });
+      const aiResponse = response.data.messages;
       setMessages([
         ...messages,
         newMessage,
         { role: "assistant", content: aiResponse },
       ]);
+      console.log("aiResponse :", response);
     } catch (error) {
       console.error("Error with AI request:", error);
       alert("An error occurred. Please try again.");
     }
 
     setInput("");
+  };
+
+  const renderMessageContent = (message) => {
+    if (Array.isArray(message)) {
+      const assistantMessage = message.find((msg) => msg.role === "assistant");
+      return assistantMessage ? assistantMessage.content : "";
+    } else if (typeof message === "object" && message.content) {
+      return message.content;
+    } else if (typeof message === "string") {
+      return message;
+    }
+    return "";
   };
 
   return (
@@ -61,11 +73,11 @@ const CustHelpByAIInterface = () => {
               <span
                 className={`inline-block px-3 py-2 rounded-lg ${
                   msg.role === "user"
-                    ? "bg-blue-500 text-white"
+                    ? "bg-blue-500 text-black"
                     : "bg-gray-300 text-black"
                 }`}
               >
-                {msg.content}
+                {renderMessageContent(msg.content)}
               </span>
             </div>
           ))}
@@ -75,7 +87,7 @@ const CustHelpByAIInterface = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message..."
-          className="w-full p-2 border font-primary text-tertiary bg-gray-300 rounded-md"
+          className="w-full p-2 border font-primary text-primary bg-gray-300 rounded-md"
         />
         <button
           onClick={handleSend}
