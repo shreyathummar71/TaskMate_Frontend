@@ -12,10 +12,10 @@ const MainLayout = () => {
 
   // Check if the current route is an auth route (login/signup pages)
   const isAuthRoute =
-    location.pathname === "/signupCust" ||
-    location.pathname === "/loginCust" ||
-    location.pathname === "/signupProf" ||
-    location.pathname === "/loginProf";
+    location.pathname === "/customer/signup" ||
+    location.pathname === "/customer/login" ||
+    location.pathname === "/professional/signup" ||
+    location.pathname === "/professional/login";
 
   // Check if user is a customer or professional
   const isCustomer = user && user.user === "customer";

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ProfFooter = () => {
   return (
@@ -14,38 +15,41 @@ const ProfFooter = () => {
             Happiness Guarantee
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
-          <li>
-              <Link to="/professionalDashboard" className="hover:text-secondary">
-              My Dashboard
+            <li>
+              <Link
+                to="/professionalDashboard"
+                className="hover:text-secondary"
+              >
+                My Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/professionalbooking" className="hover:text-secondary">
-              Manage Booking
+              <Link to="" className="hover:text-secondary">
+                Manage Booking
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-              Job Listings
+              <Link to="" className="hover:text-secondary">
+                Job Listings
               </Link>
             </li>
             <li>
-              <Link to="/aboutus" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 About Us
               </Link>
             </li>
             <li>
-              <Link to="/professionalfaq" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 FAQ
               </Link>
             </li>
             <li>
-              <Link to="/professionalhelp" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Help
               </Link>
             </li>
             <li>
-              <Link to="/contactus" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Contact Us
               </Link>
             </li>
@@ -59,40 +63,37 @@ const ProfFooter = () => {
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Cleaning
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Handyman
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Plumbing
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Electrical
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Moving Help
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="" className="hover:text-secondary">
                 Painting
               </Link>
             </li>
             <li>
-              <Link
-                to="/AllCategory"
-                className="hover:text-secondary"
-              >
+              <Link to="" className="hover:text-secondary">
                 Furniture Assembly
               </Link>
             </li>
@@ -155,8 +156,7 @@ const ProfFooter = () => {
       <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
         <p>
           Copyright © Task
-          <span className="text-secondary">Mate</span>. 2024 All Rights
-          Reserved
+          <span className="text-secondary">Mate</span>. 2024 All Rights Reserved
         </p>
       </div>
     </footer>

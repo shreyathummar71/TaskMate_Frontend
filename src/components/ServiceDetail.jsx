@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate, Link } from "react-router-dom"; // Import Link and useNavigate
 import buttonArrow from "../assets/images/buttonArrow.png";
 
 const SERVICE_DETAIL_API_URL = "https://backend-taskmate.onrender.com/services";
@@ -10,6 +10,16 @@ const ServiceDetail = () => {
   const [service, setService] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Check if user is logged in as a customer
+  const isCustomer = (() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      return userData?.user === "customer"; // Check if the logged-in user is a customer
+    }
+    return false;
+  })();
 
   useEffect(() => {
     const fetchServiceDetail = async () => {
@@ -50,7 +60,7 @@ const ServiceDetail = () => {
         <img
           src={service.image}
           alt={service.name}
-          className="max-w-full w-full  object-cover mb-4"
+          className="max-w-full w-full object-cover mb-4"
           style={{ height: '650px' }}
         />
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -142,18 +152,38 @@ const ServiceDetail = () => {
         </div>
       </div>
 
-      {/* Get Started Button */}
-      <div className="flex justify-center pb-8">
-        <button
-          onClick={() => navigate("/signupCust")}
-          className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
-        >
-          <span class="mr-2">Get Started</span>
-          <span>
-            <img src={buttonArrow} alt="arrowButton" width="20"></img>
-          </span>
-        </button>
-      </div>
+      {/* Conditionally Render Buttons for Logged-in Customer */}
+      {isCustomer && (
+        <div className="flex justify-center gap-4 pb-8">
+          <Link
+            to={`/find-professional/${service._id}`}
+            className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg inline-flex items-center hover:bg-secondary"
+          >
+            Find Professional
+          </Link>
+          <button
+            onClick={() => navigate(-1)} // Go back to the previous page (services)
+            className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg inline-flex items-center hover:bg-secondary"
+          >
+            Back to All Services
+          </button>
+        </div>
+      )}
+
+      {/* Display the "Get Started" button for non-customer views */}
+      {!isCustomer && (
+        <div className="flex justify-center pb-8">
+          <button
+            onClick={() => navigate("/signupCust")}
+            className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
+          >
+            <span className="mr-2">Get Started</span>
+            <span>
+              <img src={buttonArrow} alt="arrowButton" width="20" />
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
