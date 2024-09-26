@@ -109,7 +109,7 @@ const SignupCust = ({ setUser }) => {
             <div className="flex justify-center max-w-full">
               <form onSubmit={submitHandler} className="space-y-4 w-full">
                 <div>
-                  <label className="font-primary text-primary block">
+                  <label className="font-primary text-primary block text-base">
                     FirstName
                   </label>
                   <input
@@ -121,7 +121,7 @@ const SignupCust = ({ setUser }) => {
                   />
                 </div>
                 <div>
-                  <label className="font-primary text-primary block">
+                  <label className="font-primary text-primary text-base block">
                     LastName
                   </label>
                   <input
@@ -133,7 +133,7 @@ const SignupCust = ({ setUser }) => {
                   />
                 </div>
                 <div>
-                  <label className="font-primary text-primary block">
+                  <label className="font-primary text-primary text-base block">
                     E-Mail
                   </label>
                   <input
@@ -145,7 +145,7 @@ const SignupCust = ({ setUser }) => {
                   />
                 </div>
                 <div className="relative">
-                  <label className="block text-primary font-primary">
+                  <label className="block text-primary text-base font-primary">
                     Password
                   </label>
                   <input

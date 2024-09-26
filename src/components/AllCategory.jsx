@@ -98,7 +98,7 @@ const AllCategory = () => {
 
   return (
     <>
-      <div class="relative">
+      <div className="relative">
         <img
           src={categoryhero}
           alt="category hero section"
