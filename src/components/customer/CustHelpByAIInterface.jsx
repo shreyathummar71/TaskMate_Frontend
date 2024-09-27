@@ -62,7 +62,7 @@ const CustHelpByAIInterface = ({ onClose }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <h2 className="text-2xl font-bold mb-6 font-primary text-primary text-center">
         Help By AI
       </h2>
@@ -104,7 +104,7 @@ const CustHelpByAIInterface = ({ onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
+            className="w-full py-2 px-4 border font-secondary border-secondary bg-tertiary text-white rounded-md hover:bg-secondary"
           >
             Cancel
           </button>
