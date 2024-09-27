@@ -10,7 +10,7 @@ const ProfHelpByAIInterface = ({ onClose }) => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
-          "https://backend-taskmate.onrender.com/helpByAIProfessional"
+          "http://localhost:8081/helpbyaiprofessional"
         );
         setMessages(response.data);
       } catch (error) {
@@ -29,7 +29,7 @@ const ProfHelpByAIInterface = ({ onClose }) => {
 
     try {
       const response = await axios.post(
-        "https://backend-taskmate.onrender.com/helpByAIProfessional",
+        "http://localhost:8081/helpbyaiprofessional",
         {
           message: input,
         }
