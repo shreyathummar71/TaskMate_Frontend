@@ -48,7 +48,7 @@ const ProfessionalDashboard = () => {
           style={{ height: "600px" }}
         />
 
-        <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex">
+        <div className="absolute inset-0 bg-black bg-opacity-60 text-white flex">
           <div className="w-1/3 flex justify-center items-center pl-10">
             <img
               src={profilePicture || userimg}

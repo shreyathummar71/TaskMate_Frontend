@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2"; // Import Bar chart from Chart.js
+import getProfessionalIdFromToken from "../../utils/getProfId";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,48 +22,36 @@ ChartJS.register(
 );
 
 const ProfEarning = () => {
-  const [profId, setProfId] = useState(""); // State to hold profId
+  const [professionalId, setProfessionalId] = useState(null); // State to hold profId
   const [earningsData, setEarningsData] = useState(null); // State to hold earnings data
   const [loading, setLoading] = useState(true); // State to manage loading state
-
-  useEffect(() => {
-    // Retrieve the profId from local storage
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.profId) {
-      setProfId(user.profId); // Set profId from local storage
-    } else {
-      console.error("profId is undefined in local storage");
-    }
-  }, []);
+  const [timeFrame, setTimeFrame] = useState("weekly"); // State to manage the selected time frame
 
   useEffect(() => {
     const fetchEarningsData = async () => {
-      if (!profId) {
-        console.error("profId is undefined");
-        return; // Early return if profId is not defined
-      }
+      const id = await getProfessionalIdFromToken();
+      setProfessionalId(id);
 
-      try {
-        const response = await fetch(
-          `http://localhost:8081/booking/professional/${profId}/earnings`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+      if (id) {
+        try {
+          const response = await fetch(
+            `https://backend-taskmate.onrender.com/booking/professional/${id}/earnings?timeFrame=${timeFrame}`
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          console.log("API Response Data:", data);
+          setEarningsData(data);
+        } catch (error) {
+          console.error("Error fetching earnings data:", error);
+        } finally {
+          setLoading(false);
         }
-        const data = await response.json();
-        console.log("API Response Data:", data);
-        setEarningsData(data);
-      } catch (error) {
-        console.error("Error fetching earnings data:", error);
-      } finally {
-        setLoading(false);
       }
     };
-
-    if (profId) {
-      fetchEarningsData(); // Fetch earnings data only if profId is available
-    }
-  }, [profId]); // Dependency array includes profId
+    fetchEarningsData(); // Fetch earnings data only if profId is available
+  }, [professionalId, timeFrame]); // Dependency array includes profId and timeFrame
 
   // Show loading message while data is being fetched
   if (loading) return <p className="text-center text-xl">Loading...</p>;
@@ -76,9 +65,8 @@ const ProfEarning = () => {
   const dates = Object.keys(earningsData); // Extract dates from earnings data
   const earnings = Object.values(earningsData); // Extract earnings values
 
-  // Log the extracted dates and earnings
-  console.log("Extracted Dates:", dates);
-  console.log("Extracted Earnings:", earnings);
+  // Calculate total earnings
+  const totalEarnings = earnings.reduce((total, amount) => total + amount, 0);
 
   // Configure chart data
   const data = {
@@ -87,8 +75,8 @@ const ProfEarning = () => {
       {
         label: "Earnings (€)", // Label for the dataset
         data: earnings, // Set Y-axis data to earnings
-        backgroundColor: "rgba(75, 192, 192, 0.6)", // Bar color
-        borderColor: "rgba(75, 192, 192, 1)", // Border color
+        backgroundColor: "rgba(39, 51, 67, 0.6)", // Bar color using the specified hex code with alpha for transparency
+        borderColor: "rgba(39, 51, 67, 1)", // Border color using the specified hex code
         borderWidth: 1, // Border width
       },
     ],
@@ -110,10 +98,54 @@ const ProfEarning = () => {
 
   // Render the chart
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center mb-4">Earnings Overview</h2>
+    <div className="max-w-2xl mx-auto p-4 bg-white">
+      <h2 className="text-2xl font-bold font-primary text-primary text-center mb-4">
+        Earnings Overview
+      </h2>
+
+      {/* Tabs for weekly, monthly, and yearly earnings
+      <div className="flex justify-center space-x-4 mb-4">
+        <button
+          onClick={() => setTimeFrame("weekly")}
+          className={`px-4 py-2 rounded ${
+            timeFrame === "weekly"
+              ? "bg-primary text-white"
+              : "bg-gray-200 text-black"
+          }`}
+        >
+          Weekly
+        </button>
+        <button
+          onClick={() => setTimeFrame("monthly")}
+          className={`px-4 py-2 rounded ${
+            timeFrame === "monthly"
+              ? "bg-primary text-white"
+              : "bg-gray-200 text-black"
+          }`}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => setTimeFrame("yearly")}
+          className={`px-4 py-2 rounded ${
+            timeFrame === "yearly"
+              ? "bg-primary text-white"
+              : "bg-gray-200 text-black"
+          }`}
+        >
+          Yearly
+        </button>
+      </div> */}
+
       <div className="bg-gray-100 p-4 rounded-lg">
         <Bar data={data} options={options} /> {/* Render Bar chart */}
+      </div>
+
+      {/* Display total earnings as a button */}
+      <div className="mt-4 text-right">
+        <button className="bg-primary text-white px-4 py-2 rounded">
+          Total Earnings: €{totalEarnings.toFixed(2)}
+        </button>
       </div>
     </div>
   );
