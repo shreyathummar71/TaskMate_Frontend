@@ -36,14 +36,14 @@ const FAQCustomer = () => {
   return (
     <div className="faq-container bg-white max-w-2xl ml-0 mx-auto mt-8 text-start ">
       {/* Title */}
-      {/* <div className="flex items-start justify-start mt-8"> */}
-      <h1 className=" font-primary text-2xl font-bold text-primary mb-4">
-        Frequently Asked Questions
-      </h1>
-      {/* </div> */}
+      <div className="flex items-center justify-center mt-8">
+        <h1 className=" font-primary text-2xl font-bold text-primary">
+          Frequently Asked Questions
+        </h1>
+      </div>
 
       {/* FAQ List */}
-      <div className="  space-y-4 ">
+      <div className="max-w-2xl mx-auto space-y-4 mt-8 text-start">
         {faqs.map((faq) => (
           <div key={faq._id} className="border-b border-gray-200">
             <details className="group py-4">
