@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2"; // Import Bar chart from Chart.js
+import getProfessionalIdFromToken from "../../utils/getProfId";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,48 +22,35 @@ ChartJS.register(
 );
 
 const ProfEarning = () => {
-  const [profId, setProfId] = useState(""); // State to hold profId
+  const [professionalId, setProfessionalId] = useState(null); // State to hold profId
   const [earningsData, setEarningsData] = useState(null); // State to hold earnings data
   const [loading, setLoading] = useState(true); // State to manage loading state
 
   useEffect(() => {
-    // Retrieve the profId from local storage
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.profId) {
-      setProfId(user.profId); // Set profId from local storage
-    } else {
-      console.error("profId is undefined in local storage");
-    }
-  }, []);
-
-  useEffect(() => {
     const fetchEarningsData = async () => {
-      if (!profId) {
-        console.error("profId is undefined");
-        return; // Early return if profId is not defined
-      }
+      const id = await getProfessionalIdFromToken();
+      setProfessionalId(id);
 
-      try {
-        const response = await fetch(
-          `http://localhost:8081/booking/professional/${profId}/earnings`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+      if (id) {
+        try {
+          const response = await fetch(
+            `http://localhost:8081/booking/professional/${id}/earnings`
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          console.log("API Response Data:", data);
+          setEarningsData(data);
+        } catch (error) {
+          console.error("Error fetching earnings data:", error);
+        } finally {
+          setLoading(false);
         }
-        const data = await response.json();
-        console.log("API Response Data:", data);
-        setEarningsData(data);
-      } catch (error) {
-        console.error("Error fetching earnings data:", error);
-      } finally {
-        setLoading(false);
       }
     };
-
-    if (profId) {
-      fetchEarningsData(); // Fetch earnings data only if profId is available
-    }
-  }, [profId]); // Dependency array includes profId
+    fetchEarningsData(); // Fetch earnings data only if profId is available
+  }, [professionalId]); // Dependency array includes profId
 
   // Show loading message while data is being fetched
   if (loading) return <p className="text-center text-xl">Loading...</p>;
