@@ -9,7 +9,9 @@ const CustHelpByAIInterface = () => {
     // Fetch existing chat messages from the backend
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/aihelpcenter");
+        const response = await axios.get(
+          "https://backend-taskmate.onrender.com/aihelpcenter"
+        );
         setMessages(response.data);
       } catch (error) {
         console.error("Error fetching messages:", error);
