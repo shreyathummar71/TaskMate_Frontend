@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const CustHelpByUs = () => {
+const CustHelpByUs = ({ onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,9 +47,8 @@ const CustHelpByUs = () => {
   };
 
   return (
-    
     <div className="md:w-3/5 p-4" style={{ width: "65%" }}>
-      <section className="form-fields space-y-6 bg-primary rounded-3xl p-5 text-primary">
+      <section className="form-fields space-y-6 rounded-3xl p-5 text-primary  ">
         <div className="text-xl font-normal mb-4 font-primary text-secondary">
           <h2 className="text-2xl font-bold mb-6 text-center">Help By Us</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -67,7 +66,7 @@ const CustHelpByUs = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="form-input block w-full mt-1 text-primary bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="form-input block w-full mt-1 text-primary bg-white border p-4 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
             </div>
             <div>
@@ -84,7 +83,7 @@ const CustHelpByUs = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="form-input block w-full mt-1 text-primary bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="form-input block w-full mt-1 text-primary bg-white border p-4 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
             </div>
             <div>
@@ -127,12 +126,19 @@ const CustHelpByUs = () => {
               hover:file:bg-secondary file:border file:border-secondary"
               />
             </div>
-            <div>
+            <div className="flex justify-end space-x-8 ">
               <button
                 type="submit"
                 className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
               >
                 Send Message
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
+              >
+                Cancel
               </button>
             </div>
           </form>
