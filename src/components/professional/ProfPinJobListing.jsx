@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
-import AddJob from "./AddJob";
+import { FaThumbtack } from "react-icons/fa";
 import userimg from "/src/assets/images/user.png"; 
-import { FaThumbtack } from "react-icons/fa"; 
 
 const PROFESSIONAL_JOBS_API_URL = "https://backend-taskmate.onrender.com/newJob/professional";
-const DELETE_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";
+const PIN_JOB_API_URL = "https://backend-taskmate.onrender.com/dashboard"; // API for pinning jobs
 
-const ProfJobListing = ({ onPinJob }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const ProfPinJobListing = ({ onPinJob }) => {
   const [jobs, setJobs] = useState([]);
+  const [pinnedJobs, setPinnedJobs] = useState([]); // State to track pinned jobs
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [pinnedJobs, setPinnedJobs] = useState([]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -58,47 +55,50 @@ const ProfJobListing = ({ onPinJob }) => {
     fetchJobs();
   }, []);
 
-  const handlePinJob = (job) => {
-    const updatedPinnedJobs = pinnedJobs.includes(job._id)
-      ? pinnedJobs.filter((id) => id !== job._id)
-      : [...pinnedJobs, job._id];
-    setPinnedJobs(updatedPinnedJobs);
-    onPinJob(jobs.filter((j) => updatedPinnedJobs.includes(j._id))); // Pass full job objects to the dashboard
-  };
-
-  const isJobPinned = (jobId) => pinnedJobs.includes(jobId);
-
-  const handleDeleteJob = async (jobId) => {
+  // Handle pin/unpin functionality
+  const handlePinJob = async (job) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = user ? user.token : null;
 
     if (!token) {
-      setError("User is not logged in.");
-      return;
+      return; // Ensure user is logged in
     }
+
+    const isPinned = pinnedJobs.includes(job._id);
 
     try {
-      const response = await fetch(`${DELETE_JOB_API_URL}/${jobId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = isPinned
+        ? await fetch(`${PIN_JOB_API_URL}/${job._id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        : await fetch(PIN_JOB_API_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ prof_id: user.id, job_id: job._id }),
+          });
 
       if (response.ok) {
-        setJobs(jobs.filter((job) => job._id !== jobId));
+        // Update pinned jobs in state
+        const updatedPinnedJobs = isPinned
+          ? pinnedJobs.filter((id) => id !== job._id)
+          : [...pinnedJobs, job._id];
+        setPinnedJobs(updatedPinnedJobs);
+        onPinJob(); // Refresh the dashboard's pinned jobs
       } else {
-        setError("Failed to delete job.");
+        console.error("Failed to pin/unpin job");
       }
     } catch (error) {
-      setError("An error occurred while deleting the job.");
+      console.error("Error pinning/unpinning job:", error);
     }
   };
 
-  const handleEditJob = (job) => {
-    setSelectedJob(job);
-    setIsModalOpen(true);
-  };
+  const isJobPinned = (jobId) => pinnedJobs.includes(jobId);
 
   if (loading) {
     return <p>Loading job listings...</p>;
@@ -110,24 +110,6 @@ const ProfJobListing = ({ onPinJob }) => {
 
   return (
     <div className="relative">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl text-primary font-primary">Job Listings</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-primary text-white font-medium font-primary py-2 px-4 rounded-lg shadow-md hover:bg-secondary"
-        >
-          <i className="fas fa-plus mr-2 text-secondary"></i>
-          Add Job
-        </button>
-      </div>
-
-      <AddJob
-        isModalOpen={isModalOpen}
-        handleCloseModal={() => setIsModalOpen(false)}
-        job={selectedJob}
-        clearFormOnAdd={true}
-      />
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-12">
         {jobs.length > 0 ? (
           jobs.map((job) => (
@@ -154,7 +136,7 @@ const ProfJobListing = ({ onPinJob }) => {
               </div>
 
               <div className="p-4 ">
-                <p className="text-sm mb-1 ">
+                <p className="text-sm mb-1">
                   <span className="text-secondary">Service : </span>
                   <span>{job.service_id?.name || "N/A"}</span>
                 </p>
@@ -175,24 +157,6 @@ const ProfJobListing = ({ onPinJob }) => {
                   <span>{new Date(job.date).toLocaleDateString("en-GB")}</span>
                 </p>
               </div>
-
-              {/* Edit and Remove Buttons */}
-              <div className="pr-4">
-              <div className="mt-3 flex justify-end space-x-3">
-                <button
-                  className="bg-tertiary   text-primary py-2 px-4 rounded-lg text-sm hover:bg-secondary hover:text-white"
-                  onClick={() => handleEditJob(job)}
-                >
-                  Edit Job
-                </button>
-                <button
-                  className="bg-tertiary  text-primary py-2 px-4 rounded-lg text-sm hover:bg-secondary hover:text-white"
-                  onClick={() => handleDeleteJob(job._id)}
-                >
-                  Remove
-                </button>
-              </div>
-              </div>
             </div>
           ))
         ) : (
@@ -203,4 +167,4 @@ const ProfJobListing = ({ onPinJob }) => {
   );
 };
 
-export default ProfJobListing;
+export default ProfPinJobListing;
