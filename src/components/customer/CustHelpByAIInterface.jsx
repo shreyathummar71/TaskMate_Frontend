@@ -28,9 +28,12 @@ const CustHelpByAIInterface = () => {
     setMessages([...messages, newMessage]);
 
     try {
-      const response = await axios.post("http://localhost:8081/aihelpcenter", {
-        message: input,
-      });
+      const response = await axios.post(
+        "https://backend-taskmate.onrender.com/aihelpcenter",
+        {
+          message: input,
+        }
+      );
       const aiResponse = response.data.messages;
       setMessages([
         ...messages,
