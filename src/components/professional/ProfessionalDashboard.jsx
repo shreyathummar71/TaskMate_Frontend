@@ -13,6 +13,7 @@ import profdashboard from "/src/assets/images/profdashboard.png";
 const ProfessionalDashboard = () => {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [profilePicture, setProfilePicture] = useState("");
+  const [profId, setProfId] = useState(""); // State to hold profId
 
   // Ref for scrolling to the Job Listings section
   const jobListingRef = useRef(null);
@@ -26,8 +27,14 @@ const ProfessionalDashboard = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.profileImage) {
-      setProfilePicture(user.profileImage);
+    if (user) {
+      if (user.profileImage) {
+        setProfilePicture(user.profileImage);
+      }
+      // Assuming user object contains a profId property
+      if (user.profId) {
+        setProfId(user.profId); // Set profId from user data
+      }
     }
   }, []);
 
@@ -37,7 +44,7 @@ const ProfessionalDashboard = () => {
         <img
           src={profdashboard}
           alt="category hero section"
-          className="w-full  object-cover"
+          className="w-full object-cover"
           style={{ height: "600px" }}
         />
 
@@ -46,7 +53,7 @@ const ProfessionalDashboard = () => {
             <img
               src={profilePicture || userimg}
               alt="dashboard illustration"
-              className="rounded-full w-[50%] h-auto p-3 border-2 border-secondary overflow-hidden "
+              className="rounded-full w-[50%] h-auto p-3 border-2 border-secondary overflow-hidden"
             />
           </div>
           <div className="flex flex-col justify-center items-start mt-16">
@@ -54,7 +61,7 @@ const ProfessionalDashboard = () => {
               Welcome to Your Dashboard!
             </h1>
             <p className="mt-6 text-2xl text-center font-secondary">
-              ready to take on your next job?
+              Ready to take on your next job?
             </p>
             <p className="text-2xl mt-4 text-center font-secondary">
               Manage your tasks, schedule, and earnings with ease
@@ -62,10 +69,10 @@ const ProfessionalDashboard = () => {
             <div className="flex justify-center pb-8">
               <button
                 onClick={() => {
-                  setActiveMenu("JobListing"); // Set active menu to 'JobListing'
-                  scrollToSection(); // Scroll to the Job Listing section
+                  setActiveMenu("JobListing");
+                  scrollToSection();
                 }}
-                className="border border-secondary bg-tertiary bg-opacity-40 font-secondary  text-xl font-semibold text-white mt-7 py-2 px-6 rounded-xl shadow-lg mb-6 inline-flex items-center"
+                className="border border-secondary bg-tertiary bg-opacity-40 font-secondary text-xl font-semibold text-white mt-7 py-2 px-6 rounded-xl shadow-lg mb-6 inline-flex items-center"
               >
                 <span className="mr-2">My Jobs</span>
                 <span>
@@ -94,7 +101,7 @@ const ProfessionalDashboard = () => {
               Dashboard
             </li>
             <li
-              ref={jobListingRef} // Attach the ref to the Job Listings item
+              ref={jobListingRef}
               className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${
                 activeMenu === "JobListing"
                   ? "text-secondary"
@@ -161,7 +168,8 @@ const ProfessionalDashboard = () => {
           {activeMenu === "JobListing" && <ProfJobListing />}
           {activeMenu === "ManageBooking" && <ProfManageBooking />}
           {activeMenu === "Schedule" && <ProfSchedule />}
-          {activeMenu === "Earnings" && <ProfEarning />}
+          {activeMenu === "Earnings" && <ProfEarning profId={profId} />}{" "}
+          {/* Pass profId here */}
           {activeMenu === "FAQ" && <FAQProfessional />}
           {activeMenu === "HelpCenter" && <ProfHelpCenter />}
         </div>

@@ -27,6 +27,7 @@ import LoginProf from "./components/professional/LoginProf";
 import MyAccountProf from "./components/professional/MyAccountProf";
 import CustHelpByAIInterface from "./components/customer/CustHelpByAIInterface";
 import FAQCustomer from "./components/customer/FAQCustomer";
+import ProfEarning from "./components/professional/ProfEarning";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true); //State to handle spinner
@@ -110,6 +111,13 @@ const App = () => {
             element={<MyAccountProf />}
           />
         </Route>
+        {/* <ProfEarning profId={someProfId} /> */}
+        <Route
+          path="/professional/:profId/earnings"
+          element={<ProfEarning />}
+        />
+
+        {/* Keep this as is */}
       </>
     )
   );
