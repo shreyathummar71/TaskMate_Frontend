@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const CustHelpByAIInterface = () => {
+const CustHelpByAIInterface = ({ onClose }) => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -94,12 +94,21 @@ const CustHelpByAIInterface = () => {
           placeholder="Type your message..."
           className="w-full p-2 border font-primary text-primary bg-gray-300 rounded-md"
         />
-        <button
-          onClick={handleSend}
-          className="w-full py-2 px-4 border font-secondary border-secondary bg-tertiary text-white rounded-md hover:bg-secondary"
-        >
-          Send
-        </button>
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={handleSend}
+            className="w-full py-2 px-4 border font-secondary border-secondary bg-tertiary text-white rounded-md hover:bg-secondary"
+          >
+            Send
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
