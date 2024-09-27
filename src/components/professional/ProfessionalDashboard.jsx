@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import TopJobListing from "./profTopJobListing";
+import ProfPinJobListing from "./ProfPinJobListing";
 import ProfJobListing from "./ProfJobListing";
 import ProfManageBooking from "./ProfManageBooking";
 import ProfSchedule from "./ProfSchedule";
@@ -164,7 +164,7 @@ const ProfessionalDashboard = () => {
 
         {/* Main Content */}
         <div className="flex-grow pl-10 w-2/4">
-          {activeMenu === "dashboard" && <TopJobListing />}
+          {activeMenu === "dashboard" && <ProfPinJobListing />}
           {activeMenu === "JobListing" && <ProfJobListing />}
           {activeMenu === "ManageBooking" && <ProfManageBooking />}
           {activeMenu === "Schedule" && <ProfSchedule />}
