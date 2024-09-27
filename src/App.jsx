@@ -22,8 +22,11 @@ import CustomerDashboard from "./components/customer/CustomerDashboard";
 import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
+import CustHelpByUs from "./components/customer/CustHelpByUs";
 import LoginProf from "./components/professional/LoginProf";
 import MyAccountProf from "./components/professional/MyAccountProf";
+import CustHelpByAIInterface from "./components/customer/CustHelpByAIInterface";
+import FAQCustomer from "./components/customer/FAQCustomer";
 import ProfEarning from "./components/professional/ProfEarning";
 
 const App = () => {
@@ -34,7 +37,7 @@ const App = () => {
   useEffect(() => {
     const loadApp = setTimeout(() => {
       setIsLoading(false); // Set loading to false when app is ready
-    }, 600); // Simulating 3 seconds of loading time, adjust as needed
+    }, 2000); // Simulating 2 seconds of loading time, adjust as needed
 
     return () => clearTimeout(loadApp); // Cleanup
   }, []);
@@ -87,6 +90,11 @@ const App = () => {
           />
 
           <Route path="/faq" element={<FAQ />} />
+
+          {/* Route for Help Center */}
+          <Route path="/custHelpByUs" element={<CustHelpByUs />} />
+          <Route path="/custHelpByAI" element={<CustHelpByAIInterface />} />
+          <Route path="/custFAQ" element={<FAQCustomer />} />
 
           {/* Protected Customer and Professional Dashboard Routes */}
           <Route path="/customerDashboard" element={<CustomerDashboard />} />

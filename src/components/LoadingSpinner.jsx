@@ -1,4 +1,4 @@
-import coverImage from "../assets/images/hero_background.png";
+import coverImage from "../assets/images/Bg_spinning.png";
 
 const LoadingSpinner = () => {
   return (
@@ -8,7 +8,7 @@ const LoadingSpinner = () => {
         <img
           src={coverImage}
           alt="Cover"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-fill"
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-[rgba(14,14,14,0.6)]" />
@@ -22,7 +22,7 @@ const LoadingSpinner = () => {
           width="80px"
           height="80px"
           viewBox="0 0 128 128"
-          xml:space="preserve"
+          xmlSpace="preserve"
         >
           <rect x="0" y="0" width="100%" height="100%" fill="#171D22" />
           <g>
