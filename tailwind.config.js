@@ -12,7 +12,7 @@ export default {
       },
       fontFamily: {
         primary: ['"Inknut Antiqua"', "sans-serif"], // Your primary font
-        secondary: ['"Roboto"', "serif"], // Your secondary font
+        secondary: ['"poppins"', "serif"], // Your secondary font
         tertiary: ['"Kumar One"', "cursive"],
       },
     },
