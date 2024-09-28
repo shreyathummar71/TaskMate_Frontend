@@ -11,7 +11,7 @@ const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
 const SERVICES_API_URL = "https://backend-taskmate.onrender.com/services";
 const ADD_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";
 
-const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
+const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved }) => {
   const [formData, setFormData] = useState({
     categoryId: "",
     service_id: "",
@@ -35,7 +35,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [loadingCities, setLoadingCities] = useState(false);
 
-  // Fetch European countries on component mount
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -56,7 +55,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     fetchCountries();
   }, []);
 
-  // Fetch cities based on selected country
   useEffect(() => {
     if (selectedCountry) {
       const fetchCities = async () => {
@@ -81,7 +79,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     }
   }, [selectedCountry]);
 
-  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -95,7 +92,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     fetchCategories();
   }, []);
 
-  // Fetch services based on selected category
   useEffect(() => {
     if (selectedCategory) {
       const fetchServices = async () => {
@@ -112,10 +108,8 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     }
   }, [selectedCategory]);
 
-  // Reset form data when adding a new job (clear form) or editing an existing job
   useEffect(() => {
     if (job) {
-      // Pre-fill form with the job data when editing
       setFormData({
         categoryId: job.categoryId?._id || "",
         service_id: job.service_id?._id || "",
@@ -131,7 +125,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
       setSelectedCategory(job.categoryId);
       setSelectedCountry(job.country);
     } else if (clearFormOnAdd) {
-      // Clear form when adding a new job
       setFormData({
         categoryId: "",
         service_id: "",
@@ -149,7 +142,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     }
   }, [job, clearFormOnAdd]);
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -163,17 +155,14 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     }
   };
 
-  // Handle file input change
   const handleFileChange = (e) => {
     setFormData((prev) => ({ ...prev, referenceImage: e.target.files[0] }));
   };
 
-  // Submit form data to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = JSON.parse(localStorage.getItem("user")).token; // Retrieve the token from localStorage
-
+    const token = JSON.parse(localStorage.getItem("user")).token;
     const data = new FormData();
     data.append("categoryId", formData.categoryId);
     data.append("service_id", formData.service_id);
@@ -183,14 +172,18 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
     data.append("country", formData.country);
     data.append("city", formData.city);
     data.append("description", formData.description);
-    data.append("referenceImage", formData.referenceImage);
+    if (formData.referenceImage) {
+      data.append("referenceImage", formData.referenceImage);
+    }
     data.append("chargesPerHour", formData.chargesPerHour);
 
     try {
-      const response = await fetch(ADD_JOB_API_URL, {
-        method: job ? "PUT" : "POST", // PUT for editing, POST for adding
+      const url = job ? `${ADD_JOB_API_URL}/${job._id}` : ADD_JOB_API_URL;
+      const method = job ? "PUT" : "POST";
+      const response = await fetch(url, {
+        method,
         headers: {
-          Authorization: `Bearer ${token}`, // Attach token in the request
+          Authorization: `Bearer ${token}`,
         },
         body: data,
       });
@@ -199,6 +192,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
         const result = await response.json();
         console.log(job ? "Job updated successfully" : "Job added successfully", result);
         handleCloseModal();
+        onJobSaved(result.job); // Call callback to update the job list in parent component
       } else {
         console.error("Failed to save job:", response.statusText);
       }
@@ -256,9 +250,8 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
                 </select>
               </div>
 
-              {/* Country and City in a row */}
+              {/* Country and City */}
               <div className="flex space-x-4 mb-3">
-                {/* Country dropdown */}
                 <div className="w-1/2">
                   <label className="block text-sm font-secondary mb-2 text-white">Country</label>
                   <select
@@ -281,7 +274,6 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
                   </select>
                 </div>
 
-                {/* City dropdown */}
                 <div className="w-1/2">
                   <label className="block text-sm font-secondary mb-2 text-white">City</label>
                   <select
@@ -312,12 +304,12 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd }) => {
                 <DatePicker
                   selected={formData.date}
                   onChange={(date) => setFormData((prev) => ({ ...prev, date }))}
-                  className="block w-[200%] px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
               </div>
 
-              {/* Time Range Pickers */}
+              {/* Time Pickers */}
               <div className="flex space-x-4 mb-3">
                 <div className="w-1/2">
                   <label className="block text-sm font-secondary mb-2 text-white">Start Time</label>
