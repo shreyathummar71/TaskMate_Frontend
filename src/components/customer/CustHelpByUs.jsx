@@ -9,6 +9,8 @@ const CustHelpByUs = ({ onClose }) => {
     uploadImage: null,
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -20,6 +22,8 @@ const CustHelpByUs = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Start the submission process
+
     const data = new FormData();
     data.append("name", formData.name);
     data.append("email", formData.email);
@@ -39,111 +43,104 @@ const CustHelpByUs = ({ onClose }) => {
       if (response.status === 200) {
         alert("Form submitted successfully!");
         setFormData({ name: "", email: "", message: "", uploadImage: null });
+        onClose(); // Close the modal after successful submission
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false); // End the submission process
     }
   };
 
   return (
-    <div className="md:w-3/5 p-4" style={{ width: "65%" }}>
-      <section className="form-fields space-y-6 rounded-3xl p-5 text-primary  ">
-        <div className="text-xl font-normal mb-4 font-primary text-secondary">
-          <h2 className="text-2xl font-bold mb-6 text-center">Help By Us</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="name"
-                className="font-semibold pr-4 py-2 font-primary"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="form-input block w-full mt-1 text-primary bg-white border p-4 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-            <div>
-              <label
-                name="email"
-                className="font-semibold pr-4 py-2 font-primary"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="form-input block w-full mt-1 text-primary bg-white border p-4 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-            <div>
-              <label
-                name="message"
-                placeholder="How can we help?"
-                rows="5"
-                className="font-semibold pr-4 py-2 font-primary"
-              >
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows="4"
-                className="form-input block w-full mt-1  text-primary bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              ></textarea>
-            </div>
-            <div>
-              <label
-                name="uploadImage"
-                className="font-semibold pr-4 py-2 font-primary"
-              >
-                Attachment
-              </label>
-              <input
-                type="file"
-                id="uploadImage"
-                name="uploadImage"
-                onChange={handleFileChange}
-                accept="image/*"
-                className="mt-1 block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-xl
-              file:text-sm file:font-primary
-              file:bg-tertiary file:text-white
-              hover:file:bg-secondary file:border file:border-secondary"
-              />
-            </div>
-            <div className="flex justify-end space-x-8 ">
-              <button
-                type="submit"
-                className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
-              >
-                Send Message
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-tertiary bg-opacity-50 border border-secondary text-white font-primary py-2 px-4 rounded-xl hover:bg-secondary"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-primary p-8 rounded-lg shadow-lg w-[90%] max-w-lg h-[80%] max-h-[700px] overflow-auto">
+        <h2 className="text-xl font-primary text-secondary text-center mb-4">
+          Help By Us
+        </h2>
+
+        <form onSubmit={handleSubmit}>
+          {/* Name Field */}
+          <div className="mb-3">
+            <label className="block text-sm font-secondary mb-2 text-white">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              required
+            />
+          </div>
+
+          {/* Email Field */}
+          <div className="mb-3">
+            <label className="block text-sm font-secondary mb-2 text-white">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              required
+            />
+          </div>
+
+          {/* Message Field */}
+          <div className="mb-3">
+            <label className="block text-sm font-secondary mb-2 text-white">
+              Message
+            </label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              rows="4"
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              required
+            ></textarea>
+          </div>
+
+          {/* File Upload */}
+          <div className="mb-6">
+            <label className="block text-sm font-secondary mb-2 text-white">
+              Attachment
+            </label>
+            <input
+              type="file"
+              name="uploadImage"
+              onChange={handleFileChange}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary "
+              accept="image/*"
+            />
+          </div>
+
+          {/* Submit and Cancel Buttons */}
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`${
+                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+              } bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white`}
+            >
+              {isSubmitting ? "Sending..." : "Send Message"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

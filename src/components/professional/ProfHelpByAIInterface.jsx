@@ -62,52 +62,57 @@ const ProfHelpByAIInterface = ({ onClose }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-      <h2 className="text-2xl font-bold mb-6 font-primary text-primary text-center">
-        Help By AI
-      </h2>
-      <div className="space-y-4">
-        <div className="h-64 overflow-y-auto bg-gray-100 p-4 rounded-md">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`mb-2 ${
-                msg.role === "user" ? "text-right" : "text-left"
-              }`}
-            >
-              <span
-                className={`inline-block px-3 py-2 rounded-lg ${
-                  msg.role === "user"
-                    ? "bg-blue-500 text-black"
-                    : "bg-gray-300 text-black"
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-primary p-8 rounded-lg shadow-lg w-[90%] max-w-lg h-auto max-h-[700px] overflow-auto">
+        <h2 className="text-xl font-primary text-secondary text-center mb-4">
+          Help By AI
+        </h2>
+
+        <div className="space-y-4">
+          <div className="h-80 overflow-y-auto bg-tertiary bg-opacity-60 p-4 rounded-md">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`mb-2 ${
+                  msg.role === "user" ? "text-right" : "text-left"
                 }`}
               >
-                {renderMessageContent(msg.content)}
-              </span>
-            </div>
-          ))}
-        </div>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          className="w-full p-2 border font-primary text-primary bg-gray-300 rounded-md"
-        />
-        <div className="flex justify-end space-x-2">
-          <button
-            onClick={handleSend}
-            className="w-full py-2 px-4 border font-secondary border-secondary bg-tertiary text-white rounded-md hover:bg-secondary"
-          >
-            Send
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full py-2 px-4 border font-secondary border-secondary bg-tertiary text-white rounded-md hover:bg-secondary"
-          >
-            Cancel
-          </button>
+                <span
+                  className={`inline-block px-3 py-2 rounded-lg ${
+                    msg.role === "user"
+                      ? "bg-secondary text-white"
+                      : "bg-primary text-white"
+                  }`}
+                >
+                  {renderMessageContent(msg.content)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your message..."
+            className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+          />
+
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={handleSend}
+              className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
+            >
+              Send
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
