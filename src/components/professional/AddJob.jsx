@@ -304,7 +304,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
                 <DatePicker
                   selected={formData.date}
                   onChange={(date) => setFormData((prev) => ({ ...prev, date }))}
-                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  className="block w-[220%] px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
               </div>
