@@ -1,6 +1,8 @@
 // FindProfessional.js
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import ProfessionalsListByService from "./ProfessionalsListByService";
+import CustAllCategory from "./CustAllCategory";
 
 const FindProfessional = () => {
   const { serviceId } = useParams(); // Get the serviceId from the URL
@@ -16,6 +18,8 @@ const FindProfessional = () => {
       <h1 className="text-lg font-semibold">
         Find Professional for Service ID: {serviceId}
       </h1>
+      <CustAllCategory initialServiceId={serviceId} />
+      {/* <ProfessionalsListByService serviceId={serviceId} /> */}
       <button
         className="mt-4 px-6 py-2 bg-tertiary text-white rounded-xl hover:bg-secondary"
         onClick={handleContactProfessional} // Attach the click event handler

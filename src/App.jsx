@@ -29,6 +29,7 @@ import CustHelpByAIInterface from "./components/customer/CustHelpByAIInterface";
 import FAQCustomer from "./components/customer/FAQCustomer";
 import ProfEarning from "./components/professional/ProfEarning";
 import ProfDetailPage from "./components/customer/ProfDetailPage";
+import FindProfessional from "./components/customer/FindProfessional";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true); //State to handle spinner
@@ -117,7 +118,15 @@ const App = () => {
             path="/professional/:profId/earnings"
             element={<ProfEarning />}
           />
-          <Route path="/professional-detail" element={<ProfDetailPage />} />
+          {/* <Route path="/professional-detail" element={<ProfDetailPage />} /> */}
+          <Route
+            path="/find-professional/:serviceId"
+            element={<FindProfessional />}
+          />
+          <Route
+            path="/professional-detail/:professionalId"
+            element={<ProfDetailPage />}
+          />
           {/* Keep this as is */}
         </Route>
       </>
