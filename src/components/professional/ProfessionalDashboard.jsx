@@ -31,9 +31,8 @@ const ProfessionalDashboard = () => {
       if (user.profileImage) {
         setProfilePicture(user.profileImage);
       }
-      // Assuming user object contains a profId property
-      if (user.profId) {
-        setProfId(user.profId); // Set profId from user data
+      if (user.id) {
+        setProfId(user.id); // Set profId from user data
       }
     }
   }, []);
@@ -168,8 +167,7 @@ const ProfessionalDashboard = () => {
           {activeMenu === "JobListing" && <ProfJobListing />}
           {activeMenu === "ManageBooking" && <ProfManageBooking />}
           {activeMenu === "Schedule" && <ProfSchedule />}
-          {activeMenu === "Earnings" && <ProfEarning profId={profId} />}{" "}
-          {/* Pass profId here */}
+          {activeMenu === "Earnings" && <ProfEarning profId={profId} />}
           {activeMenu === "FAQ" && <FAQProfessional />}
           {activeMenu === "HelpCenter" && <ProfHelpCenter />}
         </div>
