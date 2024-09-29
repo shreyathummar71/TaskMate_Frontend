@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "../../assets/images/user.png";
+import { useNavigate } from "react-router-dom";
+import BackArrow from "../../assets/images/Back_Arrow.png";
+import Dropdown from "../../assets/images/Dropdown.png";
 
 const MyAccountCust = () => {
   const [customerId, setCustomerId] = useState(null);
@@ -8,8 +11,8 @@ const MyAccountCust = () => {
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("********");
-  const [profileImage, setProfileImage] = useState("");
+  const [password, setPassword] = useState("✸✸✸✸✸✸✸✸");
+  const [profileImage, setProfileImage] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState({
     street: "",
@@ -20,6 +23,19 @@ const MyAccountCust = () => {
   const [aboutMe, setAboutMe] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [fileError, setFileError] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      if (user.profileImage) {
+        // Change from profilePicture to profileImage
+        setProfileImage(user.profileImage); // Change here as well
+      }
+    }
+  }, []);
 
   // Fetch customer ID and data
   useEffect(() => {
@@ -60,32 +76,59 @@ const MyAccountCust = () => {
     };
 
     fetchCustomerData();
-  }, [customerId]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    const updatedData = {
+    // Convert profileImage to Base64 if it's not the default image
+    let base64Image = null;
+    if (profileImage && profileImage !== userImage) {
+      const response = await fetch(profileImage);
+      const blob = await response.blob();
+      const reader = new FileReader();
+
+      // Read the blob as a Base64 data URL
+      reader.onloadend = () => {
+        base64Image = reader.result;
+        console.log("Base64 image prepared:", base64Image); // Debugging log
+
+        // Now submit the data
+        submitData(base64Image);
+      };
+      reader.readAsDataURL(blob);
+    } else {
+      // If the image is the default one, just submit without image
+      submitData(null);
+    }
+  };
+
+  const submitData = async (base64Image) => {
+    const userData = {
       firstName,
       lastName,
-      email,
-      // password, // Currently no password update option
-      profileImage,
       gender,
+      email,
+      // password,
       phoneNumber,
       address,
       aboutMe,
+      profileImage: base64Image, // Include Base64 image string
     };
+
+    console.log("Submitting user data:", userData); // Debugging log
 
     try {
       const response = await fetch(
         `https://backend-taskmate.onrender.com/customer/${customerId}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          headers: {
+            "Content-Type": "application/json", // Set content type to JSON
+          },
+          body: JSON.stringify(userData), // Send JSON body
         }
       );
 
@@ -99,7 +142,6 @@ const MyAccountCust = () => {
       setError("Something went wrong. Please try again later.");
     }
   };
-
   const handleCancel = () => {
     console.log("This is my Cancel button");
     // Resetting all fields if you want to implement reset functionality
@@ -115,6 +157,39 @@ const MyAccountCust = () => {
     setSuccess(null);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 61 * 1024) {
+        // Check if file size exceeds 60 KB
+        setFileError("Image size should not exceed 60 KB."); // Set the error message
+        return; // Exit the function early if the file is too large
+      }
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImage(reader.result); // Update profileImage with base64 string
+        };
+        reader.readAsDataURL(file);
+        setFileError(null);
+      } else {
+        setProfileImage(userImage);
+        setFileError(null); // Set to default if no file
+      }
+    }
+  };
+
+  const handleDropdownClick = () => {
+    const dropdown = document.getElementById("gender");
+    if (dropdown) {
+      dropdown.click();
+    }
+  };
+
+  const handleBackButton = () => {
+    navigate("/customerDashboard");
+  };
+
   return (
     <div className="relative flex justify-start items-center min-h-screen bg-primary py-6 ">
       <div className="flex flex-col w-96 items-center mb-96 -mx-12 -mt-28">
@@ -123,9 +198,31 @@ const MyAccountCust = () => {
           alt="Profile"
           className="rounded-full w-52 h-52 object-cover mb-4 border-secondary border-4 p-2" // Changed mb-40 to mb-4
         />
-        <h2 className="text-white text-lg font-semibold mb-2">{`${firstName} ${lastName}`}</h2>
+        <input
+          type="file"
+          id="profileImageInput"
+          accept="image/*"
+          onChange={handleImageChange}
+          style={{ display: "none" }}
+        />
+        {/* Edit Image Button */}
+        <button
+          type="button"
+          onClick={() => document.getElementById("profileImageInput").click()} // Opens the file input dialog
+          className="bg-primary text-white font-primary rounded-md  hover:underline transition duration-200"
+        >
+          Edit Image
+        </button>
+        <h2 className="text-white text-lg font-semibold mt-7">{`${firstName} ${lastName}`}</h2>
         <p className="text-gray-400 text-center">{email}</p>
+        {fileError && (
+          <div className="text-red-800 text-sm font-light font-primary mt-1">
+            {fileError}
+          </div>
+        )}
       </div>
+      {/* Error Message for File Size */}
+
       <div className="">
         <h1 className="text-white font-primary font-bold text-2xl top-1 left-16 relative">
           My Account
@@ -174,6 +271,7 @@ const MyAccountCust = () => {
                     className="box-border text-center mt-2 w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   />
                 </div>
+
                 <div className="flex flex-col w-full">
                   <label
                     className="text-white mt-4 font-primary"
@@ -181,25 +279,35 @@ const MyAccountCust = () => {
                   >
                     Gender
                   </label>
-                  <select
-                    id="gender"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
-                  >
-                    <option value="" className="bg-tertiary">
-                      Select Gender
-                    </option>
-                    <option value="male" className="bg-tertiary">
-                      Male
-                    </option>
-                    <option value="female" className="bg-tertiary">
-                      Female
-                    </option>
-                    <option value="other" className="bg-tertiary">
-                      Other
-                    </option>
-                  </select>
+                  <div className="flex items-center gap-2 relative">
+                    <select
+                      id="gender"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
+                    >
+                      <option value="" className="bg-tertiary">
+                        Select Gender
+                      </option>
+                      <option value="male" className="bg-tertiary">
+                        Male
+                      </option>
+                      <option value="female" className="bg-tertiary">
+                        Female
+                      </option>
+                      <option value="other" className="bg-tertiary">
+                        Other
+                      </option>
+                    </select>
+                    {/* Drop down icon*/}
+
+                    <img
+                      src={Dropdown}
+                      alt="Dropdown"
+                      className="w-5 h-4 absolute right-1 mr-2"
+                      onClick={handleDropdownClick}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -346,26 +454,42 @@ const MyAccountCust = () => {
               </div>
 
               {/* Buttons Section */}
-              <div className="flex justify-end mt-4 gap-6">
-                <button
-                  type="submit"
-                  className="bg-primary text-white font-primary rounded-md py-2 px-4  hover:bg-tertiary transition duration-200"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="bg-primary text-white font-primary rounded-md py-2 px-4  hover:bg-tertiary transition duration-200"
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-between  mt-4 gap-6">
+                <div>
+                  <button
+                    type="submit"
+                    onClick={handleBackButton}
+                    className=" flex text-center text-white font-primary rounded-md py-2 px-2 mx-4 transition duration-200"
+                  >
+                    <img
+                      src={BackArrow}
+                      alt="Back Arrow"
+                      className="mr-2  w-4 h-4"
+                    />
+                    Back to Dashboard
+                  </button>
+                </div>
+                <div>
+                  <button
+                    type="submit"
+                    className="bg-primary text-white font-primary rounded-md py-2 px-6  mx-4 hover:bg-tertiary transition duration-200"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="bg-primary text-white font-primary rounded-md py-2 px-4  hover:bg-tertiary transition duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
 
             <div className="relative">
               {error && (
-                <div className="text-red-800 text-xs font-primary absolute top-0 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
+                <div className="text-red-800 text-lg font-extrabold  font-primary absolute -top-8 left-1/2 transform -translate-x-1/2 text-bold px-2 py-0 text-center">
                   {error}
                 </div>
               )}
