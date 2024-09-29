@@ -68,29 +68,36 @@ const ProfessionalsListByService = ({ serviceId }) => {
       {professionals.map((professional) => (
         <div
           key={professional._id}
-          className="text-center flex flex-col justify-between rounded-md bg-primary"
+          className="text-center flex flex-col justify-between rounded-md bg-tertiary"
         >
-          <img
-            src={professional.profileImage || "/default-avatar.png"}
-            alt={professional.firstName}
-            className="w-32 h-32 m-auto rounded-full"
-          />
-          <h3 className="text-sm mt-2 text-gray-700">
-            {professional.firstName} {professional.lastName}
-          </h3>
-          <p className="text-sm text-gray-600 text-center">
-            {professional.jobProfile.experience} years experience
-          </p>
+          {/* Professional Profile Image */}
 
-          <div className="mb-2 text-center">
-            <div className="text-center">
-              {renderStars(professional.averageRating)}
+          <div className="items-center pb-4 text-center bg-tertiary  rounded-md">
+            <img
+              src={professional.profileImage || "/default-avatar.png"}
+              alt={professional.firstName}
+              className="w-32 h-32 m-auto rounded-full"
+            />
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+                Name : {professional.firstName} {professional.lastName}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
+                work Experience : {professional.jobProfile.experience} years
+              </p>
+            </div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+                Average Rating : {renderStars(professional.averageRating)}
+              </p>
             </div>
           </div>
 
           <Link
             to={`/professional-detail/${professional._id}`}
-            className="block mt-3 text-center bg-tertiary text-white px-4 py-2 rounded hover:bg-secondary"
+            className="block mt-3 text-center bg-primary text-white px-4 py-2 rounded hover:bg-secondary"
           >
             View Profile
           </Link>
