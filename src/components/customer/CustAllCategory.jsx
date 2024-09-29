@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Import Link
 import FindProfessional from "./FindProfessional";
+import ProfessionalsListByService from "./ProfessionalsListByService";
 
 const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
 const SERVICES_API_URL = "https://backend-taskmate.onrender.com/services";
 
-const CategorySection = () => {
+const CustAllCategory = () => {
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -184,15 +185,16 @@ const CategorySection = () => {
         </div>
       )}
 
-      {/* Conditionally render FindProfessional when professional is true */}
-      {professional && !allservices && (
-        <div className="text-secondary text-lg font-extrabold font-primary text-center mt-8">
-          <FindProfessional serviceId={selectedServiceId} />{" "}
-          {/* Pass serviceId as prop */}
+      {professional && selectedServiceId && (
+        <div>
+          <h2 className="text-2xl font-bold mb-4">
+            Professionals for Selected Service
+          </h2>
+          <ProfessionalsListByService serviceId={selectedServiceId} />
         </div>
       )}
     </div>
   );
 };
 
-export default CategorySection;
+export default CustAllCategory;
