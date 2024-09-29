@@ -15,10 +15,11 @@ const ProfessionalsListByService = ({ serviceId }) => {
             `http://localhost:8081/professional/services/${serviceId}`
           );
           if (!response.ok) {
-            throw new Error("Failed to fetch professionals");
+            throw new Error("No professionals available for this service");
           }
           const data = await response.json();
           setProfessionals(data);
+          console.log(professionals);
         } catch (err) {
           setError(err.message);
         } finally {
@@ -31,7 +32,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
   }, [serviceId]);
 
   if (loading) return <div>Loading professionals...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div> {error}</div>;
 
   // Function to render stars based on average rating
   const renderStars = (rating) => {
@@ -74,7 +75,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
 
           <div className="items-center pb-4 text-center bg-tertiary  rounded-md">
             <img
-              src={professional.profileImage || "/default-avatar.png"}
+              src={professional.profileImage || "/assets/images/pro.png"}
               alt={professional.firstName}
               className="w-32 h-32 m-auto rounded-full"
             />
