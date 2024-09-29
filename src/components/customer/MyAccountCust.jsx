@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import BackArrow from "../../assets/images/Back_Arrow.png";
 import Dropdown from "../../assets/images/Dropdown.png";
 
+// API URLs
+const geoNamesUsername = "dhruvi.balar";
+
 const MyAccountCust = () => {
   const [customerId, setCustomerId] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -24,8 +27,72 @@ const MyAccountCust = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [fileError, setFileError] = useState(null);
+  const [cities, setCities] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [states, setStates] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(false);
 
   const navigate = useNavigate();
+
+  //fetching cities & States:-
+
+  useEffect(() => {
+    const fetchStates = async () => {
+      try {
+        const response = await fetch(
+          `http://api.geonames.org/childrenJSON?geonameId=6255148&username=${geoNamesUsername}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+
+        // Ensure the response has expected structure
+        if (data && Array.isArray(data.geonames)) {
+          setStates(data.geonames);
+        } else {
+          console.error("Unexpected response format for states:", data);
+          setStates([]); // Ensure states is always an array
+        }
+      } catch (error) {
+        console.error("Error fetching states", error);
+        setStates([]); // Set to empty array in case of error
+      }
+    };
+
+    fetchStates();
+  }, []);
+
+  // Fetch cities when a state is selected
+  const fetchCities = async (stateCode, countryCode) => {
+    setLoadingCities(true);
+    try {
+      const response = await fetch(
+        `http://api.geonames.org/searchJSON?adminCode1=${stateCode}&country=${countryCode}&maxRows=10&username=${geoNamesUsername}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      // Ensure the response has expected structure
+      if (data && Array.isArray(data.geonames)) {
+        setCities(data.geonames);
+      } else {
+        console.error("Unexpected response format for cities:", data);
+        setCities([]); // Ensure cities is always an array
+      }
+    } catch (error) {
+      console.error("Error fetching cities", error);
+      setCities([]); // Set to empty array in case of error
+    }
+    setLoadingCities(false);
+  };
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -77,6 +144,27 @@ const MyAccountCust = () => {
 
     fetchCustomerData();
   }, []);
+
+  //city and state
+  const handleStateChange = (e) => {
+    const selectedStateCode = e.target.value;
+    setSelectedState(selectedStateCode);
+
+    // Assuming you have a way to get the country code based on state
+    const stateDetails = states.find(
+      (state) => state.adminCode1 === selectedStateCode
+    );
+    if (stateDetails) {
+      fetchCities(selectedStateCode, stateDetails.countryCode); // Fetch cities using selected state's country code
+    } else {
+      setCities([]); // Reset cities if no state is selected
+      setSelectedCity("");
+    }
+  };
+
+  const handleCityChange = (e) => {
+    setSelectedCity(e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -304,7 +392,7 @@ const MyAccountCust = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-1 mr-2"
+                      className="w-5 h-4 absolute right-2 mr-2"
                       onClick={handleDropdownClick}
                     />
                   </div>
@@ -403,8 +491,58 @@ const MyAccountCust = () => {
                     className="box-border text-center w-[209px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   />
                 </div>
+                {/* <div className="flex flex-col w-full font-primary"> */}
+
+                <div className="flex flex-col w-full font-primary">
+                  <label className="text-white py-1" htmlFor="state">
+                    State
+                  </label>
+                  <select
+                    id="state"
+                    value={selectedState}
+                    onChange={handleStateChange}
+                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                  >
+                    <option value="">Select State</option>
+                    {Array.isArray(states) && states.length > 0 ? (
+                      states.map((state) => (
+                        <option key={state.adminCode1} value={state.adminCode1}>
+                          {state.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">No states available</option>
+                    )}
+                  </select>
+                </div>
+
                 <div className="flex flex-col w-full font-primary">
                   <label className="text-white py-1" htmlFor="city">
+                    City
+                  </label>
+                  <select
+                    id="city"
+                    disabled={!selectedState || loadingCities}
+                    value={selectedState}
+                    onChange={handleCityChange}
+                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                  >
+                    <option value="">Select City</option>
+                    {loadingCities ? (
+                      <option value="">Loading Cities...</option>
+                    ) : Array.isArray(cities) && cities.length > 0 ? (
+                      cities.map((city) => (
+                        <option key={city.geonameId} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">No cities available</option>
+                    )}
+                  </select>
+                </div>
+
+                {/* <label className="text-white py-1" htmlFor="city">
                     City
                   </label>
                   <input
@@ -433,7 +571,7 @@ const MyAccountCust = () => {
                     }
                     className="box-border text-center w-[209px] h-[45px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* About Me Section */}
