@@ -49,14 +49,14 @@ const CustomerDashboard = () => {
           style={{ height: "600px" }}
         />
         <div className="absolute inset-0 bg-black bg-opacity-50 text-white flex">
-          <div className="w-1/3 flex justify-center items-center pl-10">
+          <div className="w-1/3 flex justify-center items-center pl-10 animate-slideUp">
             <img
               src={profilePicture || userimg}
               alt="dashboard illustration"
               className="rounded-full w-[50%] h-auto p-3 border-2 border-secondary overflow-hidden "
             />
           </div>
-          <div className="flex flex-col justify-center items-start mt-16">
+          <div className="flex flex-col justify-center items-start mt-16 animate-slideUp">
             <h1 className="text-4xl font-semibold text-secondary font-primary">
               Welcome to Your Dashboard!
             </h1>
@@ -72,7 +72,7 @@ const CustomerDashboard = () => {
                   setActiveMenu("bookService");
                   scrollToBookService();
                 }}
-                className="border border-secondary bg-tertiary bg-opacity-40 font-secondary text-xl font-semibold text-white mt-7 py-2 px-6 rounded-xl shadow-lg mb-6 inline-flex items-center"
+                className="border border-secondary bg-tertiary bg-opacity-40 font-secondary text-xl font-semibold text-white mt-7 py-2 px-6 rounded-xl shadow-lg mb-6 inline-flex items-center hover:bg-secondary"
               >
                 <span className="mr-2">Book Now</span>
                 <span>

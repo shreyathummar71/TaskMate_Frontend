@@ -18,7 +18,7 @@ const Hero = () => {
         }}
       >
         <div className="absolute inset-0 opacity-50"></div>
-        <div className="relative z-20 flex items-center justify-start h-full ">
+        <div className="relative z-20 flex items-center justify-start h-full animate-slideUp ">
           <div className=" text-left text-white">
             <p className="text-4xl font-semibold font-primary mb-7 mt-20">
               Find <span className="text-secondary">Trusted</span>
