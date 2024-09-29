@@ -6,7 +6,7 @@ import ProfessionalsListByService from "./ProfessionalsListByService";
 const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
 const SERVICES_API_URL = "https://backend-taskmate.onrender.com/services";
 
-const CustAllCategory = ({ initialServiceId }) => {
+const CustAllCategory = () => {
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -16,12 +16,6 @@ const CustAllCategory = ({ initialServiceId }) => {
   const [professional, setProfessional] = useState(false); // Controls FindProfessional component
   const [allservices, setallServices] = useState(true); // Controls the visibility of the categories/services
   const [selectedServiceId, setSelectedServiceId] = useState(null); // New state for selected service ID
-
-  useEffect(() => {
-    if (initialServiceId) {
-      handleFindProfessionalClick(initialServiceId);
-    }
-  }, [initialServiceId]);
 
   // Fetch categories from the API
   useEffect(() => {
@@ -190,14 +184,6 @@ const CustAllCategory = ({ initialServiceId }) => {
           )}
         </div>
       )}
-
-      {/* Conditionally render FindProfessional when professional is true */}
-      {/* {professional && !allservices && (
-        <div className="text-secondary text-lg font-extrabold font-primary text-center mt-8">
-          <FindProfessional serviceId={selectedServiceId} />{" "}
-          {/* Pass serviceId as prop 
-        </div>
-      )} */}
 
       {professional && selectedServiceId && (
         <div>
