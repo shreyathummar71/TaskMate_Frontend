@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import hero_background from "../assets/images/hero_background.png";
+import buttonArrow from "../assets/images/buttonArrow.png";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ const Hero = () => {
       <section
         className="relative h-screen bg-cover bg-center p-7"
         style={{
-          backgroundImage: "url('src/assets/images/hero_background.png')",
+          backgroundImage: `url(${hero_background})`,
         }}
       >
         <div className="absolute inset-0 opacity-50"></div>
@@ -33,11 +35,7 @@ const Hero = () => {
               >
                 <span className="mr-2 text-xl">Get Started</span>
                 <span>
-                  <img
-                    src="src/assets/images/buttonArrow.png"
-                    alt="arrowButton"
-                    width="20"
-                  ></img>
+                  <img src={buttonArrow} alt="arrowButton" width="20"></img>
                 </span>
               </button>
             </div>
