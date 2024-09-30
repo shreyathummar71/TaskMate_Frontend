@@ -73,6 +73,11 @@ const CustAllCategory = () => {
     setallServices(false); // Hide categories/services
     console.log(serviceId); // Optional: Log the service ID for debugging
   };
+  const handleBackToServices = () => {
+    setProfessional(false);
+    setallServices(true);
+    setSelectedServiceId(null);
+  };
 
   if (error) {
     return <div className="text-center text-red-500">{error}</div>;
@@ -187,10 +192,20 @@ const CustAllCategory = () => {
 
       {professional && selectedServiceId && (
         <div>
-          <h2 className="text-2xl font-bold mb-4">
-            Professionals for Selected Service
-          </h2>
-          <ProfessionalsListByService serviceId={selectedServiceId} />
+          {/* Header row with Service Name and Back Button */}
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-xl font-primary">{selectedServiceId}</h2>
+            <button
+              onClick={handleBackToServices} // Reset selected category to null
+              className="bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+            >
+              Back to Services
+            </button>
+          </div>
+
+          <div>
+            <ProfessionalsListByService serviceId={selectedServiceId} />
+          </div>
         </div>
       )}
     </div>
