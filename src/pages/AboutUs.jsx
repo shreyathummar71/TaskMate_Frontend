@@ -52,7 +52,7 @@ const AboutUs = () => {
                 <h2 className="text-2xl mb-4 font-primary text-secondary">Mission & Vision</h2>
 
                 <h3 className="text-lg mb-4 font-primary text-primary">Mission:</h3>
-                <p className="font-secondary mb-6 ml-7">
+                <p className="font-secondary text-black  mb-6 ml-7">
                   Our mission is to provide a seamless, reliable platform for
                   customers to easily find and book home services while empowering
                   local professionals with flexible work opportunities. By
@@ -63,7 +63,7 @@ const AboutUs = () => {
                 </p>
 
                 <h3 className="text-lg mb-4 font-primary text-primary">Vision:</h3>
-                <p className="font-secondary ml-7">
+                <p className="font-secondary text-black ml-7">
                   Our vision is to revolutionize the way home services are
                   accessed and delivered, creating a world where finding help for
                   household needs is as simple as a click. We envision a
