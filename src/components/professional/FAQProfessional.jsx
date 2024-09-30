@@ -42,7 +42,7 @@ const FAQProfessional = () => {
   return (
     <div className="faq-container bg-white max-w-2xl ml-0 mx-auto mt-8 text-start ">
       {/* Title */}
-      <h1 className="font-primary text-2xl font-bold text-primary mb-4">
+      <h1 className="font-primary text-2xl font-bold text-primary mb-6">
         Frequently Asked Questions for Professionals
       </h1>
 
@@ -57,7 +57,7 @@ const FAQProfessional = () => {
                   +
                 </span>
               </summary>
-              <p className="mt-2 font-normal font-primary text-primary group-open:block">
+              <p className="mt-2 font-normal font-secondary text-tertiary group-open:block">
                 {faq.answer}
               </p>
             </details>

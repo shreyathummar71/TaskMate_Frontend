@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import hero_background from "../assets/images/hero_background.png";
+import buttonArrow from "../assets/images/buttonArrow.png";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -14,11 +16,11 @@ const Hero = () => {
       <section
         className="relative h-screen bg-cover bg-center p-7"
         style={{
-          backgroundImage: "url('src/assets/images/hero_background.png')",
+          backgroundImage: `url(${hero_background})`,
         }}
       >
         <div className="absolute inset-0 opacity-50"></div>
-        <div className="relative z-20 flex items-center justify-start h-full ">
+        <div className="relative z-20 flex items-center justify-start h-full animate-slideUp ">
           <div className=" text-left text-white">
             <p className="text-4xl font-semibold font-primary mb-7 mt-20">
               Find <span className="text-secondary">Trusted</span>
@@ -31,13 +33,9 @@ const Hero = () => {
                 className="bg-tertiary  bg-opacity-50 border border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
                 onClick={handleSignupCustClick}
               >
-                <span class="mr-2 text-xl">Get Started</span>
+                <span className="mr-2 text-xl">Get Started</span>
                 <span>
-                  <img
-                    src="src/assets/images/buttonArrow.png"
-                    alt="arrowButton"
-                    width="20"
-                  ></img>
+                  <img src={buttonArrow} alt="arrowButton" width="20"></img>
                 </span>
               </button>
             </div>

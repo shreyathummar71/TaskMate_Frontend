@@ -22,7 +22,7 @@ const LoadingSpinner = () => {
           width="80px"
           height="80px"
           viewBox="0 0 128 128"
-          xml:space="preserve"
+          xmlSpace="preserve"
         >
           <rect x="0" y="0" width="100%" height="100%" fill="#171D22" />
           <g>

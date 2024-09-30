@@ -22,8 +22,14 @@ import CustomerDashboard from "./components/customer/CustomerDashboard";
 import ProfessionalDashboard from "./components/professional/ProfessionalDashboard";
 import FAQ from "./pages/FAQ";
 import MyAccountCust from "./components/customer/MyAccountCust";
+import CustHelpByUs from "./components/customer/CustHelpByUs";
 import LoginProf from "./components/professional/LoginProf";
 import MyAccountProf from "./components/professional/MyAccountProf";
+import CustHelpByAIInterface from "./components/customer/CustHelpByAIInterface";
+import FAQCustomer from "./components/customer/FAQCustomer";
+import ProfEarning from "./components/professional/ProfEarning";
+import ProfDetailPage from "./components/customer/ProfDetailPage";
+import FindProfessional from "./components/customer/FindProfessional";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true); //State to handle spinner
@@ -87,6 +93,11 @@ const App = () => {
 
           <Route path="/faq" element={<FAQ />} />
 
+          {/* Route for Help Center */}
+          <Route path="/custHelpByUs" element={<CustHelpByUs />} />
+          <Route path="/custHelpByAI" element={<CustHelpByAIInterface />} />
+          <Route path="/custFAQ" element={<FAQCustomer />} />
+
           {/* Protected Customer and Professional Dashboard Routes */}
           <Route path="/customerDashboard" element={<CustomerDashboard />} />
           <Route
@@ -101,6 +112,22 @@ const App = () => {
             path="/professionalDashboard/myaccount"
             element={<MyAccountProf />}
           />
+
+          {/* <ProfEarning profId={someProfId} /> */}
+          <Route
+            path="/professional/:profId/earnings"
+            element={<ProfEarning />}
+          />
+          {/* <Route path="/professional-detail" element={<ProfDetailPage />} /> */}
+          <Route
+            path="/find-professional/:serviceId"
+            element={<FindProfessional />}
+          />
+          <Route
+            path="/professional-detail/:professionalId"
+            element={<ProfDetailPage />}
+          />
+          {/* Keep this as is */}
         </Route>
       </>
     )
