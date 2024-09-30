@@ -29,7 +29,7 @@ const MyAccountCust = () => {
   const [fileError, setFileError] = useState(null);
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [SelectedCity, setSelectedCity] = useState("");
   const [states, setStates] = useState([]);
   const [loadingCities, setLoadingCities] = useState(false);
 
@@ -41,7 +41,7 @@ const MyAccountCust = () => {
     const fetchStates = async () => {
       try {
         const response = await fetch(
-          `http://api.geonames.org/childrenJSON?geonameId=6255148&username=${geoNamesUsername}`
+          `http://api.geonames.org/childrenJSON?geonameId=2921044&username=${geoNamesUsername}`
         );
 
         if (!response.ok) {
@@ -52,6 +52,7 @@ const MyAccountCust = () => {
 
         // Ensure the response has expected structure
         if (data && Array.isArray(data.geonames)) {
+          console.log("fetching states", data.geonames);
           setStates(data.geonames);
         } else {
           console.error("Unexpected response format for states:", data);
@@ -79,19 +80,23 @@ const MyAccountCust = () => {
       }
 
       const data = await response.json();
-
-      // Ensure the response has expected structure
-      if (data && Array.isArray(data.geonames)) {
-        setCities(data.geonames);
+      if (Array.isArray(data.geonames)) {
+        const uniqueCities = data.geonames.map((city) => ({
+          ...city,
+          uniqueId: `${city.name}-${city.adminCode1}`,
+        }));
+        console.log("cities", uniqueCities);
+        setCities(uniqueCities);
       } else {
-        console.error("Unexpected response format for cities:", data);
-        setCities([]); // Ensure cities is always an array
+        console.error("Unexpected response format for cities:", uniqueCities);
+        setCities([]);
       }
     } catch (error) {
       console.error("Error fetching cities", error);
-      setCities([]); // Set to empty array in case of error
+      setCities([]);
+    } finally {
+      setLoadingCities(false); // Make sure to set loading to false
     }
-    setLoadingCities(false);
   };
 
   useEffect(() => {
@@ -148,14 +153,14 @@ const MyAccountCust = () => {
   //city and state
   const handleStateChange = (e) => {
     const selectedStateCode = e.target.value;
+    console.log("Selected state:", selectedStateCode); // Debug log
     setSelectedState(selectedStateCode);
 
-    // Assuming you have a way to get the country code based on state
     const stateDetails = states.find(
       (state) => state.adminCode1 === selectedStateCode
     );
     if (stateDetails) {
-      fetchCities(selectedStateCode, stateDetails.countryCode); // Fetch cities using selected state's country code
+      fetchCities(selectedStateCode, stateDetails.countryCode); // Fetch cities
     } else {
       setCities([]); // Reset cities if no state is selected
       setSelectedCity("");
@@ -163,7 +168,19 @@ const MyAccountCust = () => {
   };
 
   const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
+    const selectedCityId = e.target.value; // Get the selected value
+    console.log("Selected City", selectedCityId);
+    const [cityName, adminCode] = selectedCityId.split("-"); // Split the uniqueId to get cityName
+
+    console.log(
+      "Selected city:",
+      cityName,
+      "from state with admin code:",
+      adminCode
+    );
+
+    setSelectedCity(cityName);
+    console.log("Selected city final", cityName);
   };
 
   const handleSubmit = async (e) => {
@@ -205,8 +222,6 @@ const MyAccountCust = () => {
       aboutMe,
       profileImage: base64Image, // Include Base64 image string
     };
-
-    console.log("Submitting user data:", userData); // Debugging log
 
     try {
       const response = await fetch(
@@ -444,7 +459,7 @@ const MyAccountCust = () => {
                     id="phoneNumber"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="box-border  text-center mt-2 w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                    className="box-border  text-center mt-2 w-[331px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   />
                 </div>
               </div>
@@ -522,8 +537,7 @@ const MyAccountCust = () => {
                   </label>
                   <select
                     id="city"
-                    disabled={!selectedState || loadingCities}
-                    value={selectedState}
+                    value={SelectedCity}
                     onChange={handleCityChange}
                     className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   >
@@ -532,7 +546,9 @@ const MyAccountCust = () => {
                       <option value="">Loading Cities...</option>
                     ) : Array.isArray(cities) && cities.length > 0 ? (
                       cities.map((city) => (
-                        <option key={city.geonameId} value={city.name}>
+                        <option key={city.geonameId} value={city.uniqueId}>
+                          {" "}
+                          {/* Use uniqueId for value */}
                           {city.name}
                         </option>
                       ))
@@ -541,37 +557,6 @@ const MyAccountCust = () => {
                     )}
                   </select>
                 </div>
-
-                {/* <label className="text-white py-1" htmlFor="city">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    value={address.city}
-                    onChange={(e) =>
-                      setAddress({ ...address, city: e.target.value })
-                    }
-                    className="box-border text-center w-[209px] h-[45px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  />
-                </div>
-                <div className="flex flex-col w-full">
-                  <label
-                    className="text-white font-primary py-1 "
-                    htmlFor="state"
-                  >
-                    State
-                  </label>
-                  <input
-                    type="text"
-                    id="state"
-                    value={address.state}
-                    onChange={(e) =>
-                      setAddress({ ...address, state: e.target.value })
-                    }
-                    className="box-border text-center w-[209px] h-[45px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  />
-                </div> */}
               </div>
 
               {/* About Me Section */}
@@ -586,7 +571,7 @@ const MyAccountCust = () => {
                   id="aboutMe"
                   value={aboutMe}
                   onChange={(e) => setAboutMe(e.target.value)}
-                  className="box-border p-3 mt-2 w-[951px] h-[345px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                  className="box-border p-3 mt-2 w-[1007px] h-[345px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   rows="4"
                 />
               </div>
