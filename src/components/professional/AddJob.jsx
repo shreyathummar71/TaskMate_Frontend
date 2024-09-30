@@ -18,7 +18,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
     date: new Date(),
     startTime: new Date(),
     endTime: new Date(),
-    country: "",
+    country: "", // Full country name will be stored here
     city: "",
     description: "",
     referenceImage: null,
@@ -31,7 +31,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCountryCode, setSelectedCountryCode] = useState("");
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [loadingCities, setLoadingCities] = useState(false);
 
@@ -42,8 +42,8 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
         const data = await response.json();
         setCountries(
           data.map((country) => ({
-            name: country.name.common,
-            code: country.cca2,
+            name: country.name.common, // Full name of the country
+            code: country.cca2, // Country code
           }))
         );
         setLoadingCountries(false);
@@ -56,11 +56,11 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
   }, []);
 
   useEffect(() => {
-    if (selectedCountry) {
+    if (selectedCountryCode) {
       const fetchCities = async () => {
         setLoadingCities(true);
         try {
-          const response = await fetch(GEONAMES_CITIES_API_URL(selectedCountry));
+          const response = await fetch(GEONAMES_CITIES_API_URL(selectedCountryCode));
           const data = await response.json();
           if (data.geonames && data.geonames.length > 0) {
             setCities(data.geonames.map((city) => city.name));
@@ -77,7 +77,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
       };
       fetchCities();
     }
-  }, [selectedCountry]);
+  }, [selectedCountryCode]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -123,7 +123,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
         chargesPerHour: job.chargesPerHour || "",
       });
       setSelectedCategory(job.categoryId);
-      setSelectedCountry(job.country);
+      setSelectedCountryCode(job.country);
     } else if (clearFormOnAdd) {
       setFormData({
         categoryId: "",
@@ -138,7 +138,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
         chargesPerHour: "",
       });
       setSelectedCategory(null);
-      setSelectedCountry("");
+      setSelectedCountryCode("");
     }
   }, [job, clearFormOnAdd]);
 
@@ -151,7 +151,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
       setSelectedCategory(selected);
     }
     if (name === "country") {
-      setSelectedCountry(value);
+      const selectedCountry = countries.find((country) => country.code === value);
+      setSelectedCountryCode(value);
+      setFormData((prev) => ({ ...prev, country: selectedCountry ? selectedCountry.name : "" }));
     }
   };
 
@@ -169,7 +171,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
     data.append("date", formData.date.toISOString());
     data.append("startTime", formData.startTime.toISOString());
     data.append("endTime", formData.endTime.toISOString());
-    data.append("country", formData.country);
+    data.append("country", formData.country); // Sending full country name
     data.append("city", formData.city);
     data.append("description", formData.description);
     if (formData.referenceImage) {
@@ -256,7 +258,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
                   <label className="block text-sm font-secondary mb-2 text-white">Country</label>
                   <select
                     name="country"
-                    value={formData.country}
+                    value={selectedCountryCode}
                     onChange={handleChange}
                     className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                     required
@@ -282,7 +284,7 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
                     onChange={handleChange}
                     className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                     required
-                    disabled={loadingCities || !selectedCountry}
+                    disabled={loadingCities || !selectedCountryCode}
                   >
                     <option value="">Select City</option>
                     {loadingCities ? (
