@@ -46,7 +46,7 @@ const ProfHelpCenter = () => {
               Contact our support team for personalized assistance.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-secondary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleHelpByUSClick}
             >
               Help by Us
@@ -62,7 +62,7 @@ const ProfHelpCenter = () => {
               Get instant answers with our AI-powered chatbot.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-secondary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleHelpByAIClick}
             >
               Ask Now
@@ -76,7 +76,7 @@ const ProfHelpCenter = () => {
               Browse frequently asked questions for quick help.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-secondary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleFAQClick}
             >
               View FAQs
