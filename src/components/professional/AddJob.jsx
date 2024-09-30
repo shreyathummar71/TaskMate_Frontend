@@ -4,14 +4,21 @@ import "react-datepicker/dist/react-datepicker.css";
 
 // API URLs
 const GEONAMES_USERNAME = "dhruvi.balar";
-const EUROPEAN_COUNTRIES_API_URL = "https://restcountries.com/v3.1/region/europe";
+const EUROPEAN_COUNTRIES_API_URL =
+  "https://restcountries.com/v3.1/region/europe";
 const GEONAMES_CITIES_API_URL = (countryCode) =>
   `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
 const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
 const SERVICES_API_URL = "https://backend-taskmate.onrender.com/services";
 const ADD_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";
 
-const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved }) => {
+const AddJob = ({
+  isModalOpen,
+  handleCloseModal,
+  job,
+  clearFormOnAdd,
+  onJobSaved,
+}) => {
   const [formData, setFormData] = useState({
     categoryId: "",
     service_id: "",
@@ -60,7 +67,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
       const fetchCities = async () => {
         setLoadingCities(true);
         try {
-          const response = await fetch(GEONAMES_CITIES_API_URL(selectedCountryCode));
+          const response = await fetch(
+            GEONAMES_CITIES_API_URL(selectedCountryCode)
+          );
           const data = await response.json();
           if (data.geonames && data.geonames.length > 0) {
             setCities(data.geonames.map((city) => city.name));
@@ -98,7 +107,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
         try {
           const response = await fetch(SERVICES_API_URL);
           const data = await response.json();
-          const filtered = data.filter((service) => service.categoryId._id === selectedCategory._id);
+          const filtered = data.filter(
+            (service) => service.categoryId._id === selectedCategory._id
+          );
           setFilteredServices(filtered);
         } catch (error) {
           console.error("Error fetching services:", error);
@@ -151,9 +162,14 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
       setSelectedCategory(selected);
     }
     if (name === "country") {
-      const selectedCountry = countries.find((country) => country.code === value);
+      const selectedCountry = countries.find(
+        (country) => country.code === value
+      );
       setSelectedCountryCode(value);
-      setFormData((prev) => ({ ...prev, country: selectedCountry ? selectedCountry.name : "" }));
+      setFormData((prev) => ({
+        ...prev,
+        country: selectedCountry ? selectedCountry.name : "",
+      }));
     }
   };
 
@@ -192,7 +208,10 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
 
       if (response.ok) {
         const result = await response.json();
-        console.log(job ? "Job updated successfully" : "Job added successfully", result);
+        console.log(
+          job ? "Job updated successfully" : "Job added successfully",
+          result
+        );
         handleCloseModal();
         onJobSaved(result.job); // Call callback to update the job list in parent component
       } else {
@@ -215,7 +234,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
             <form onSubmit={handleSubmit}>
               {/* Category dropdown */}
               <div className="mb-3">
-                <label className="block text-sm font-secondary mb-2 text-white">Category</label>
+                <label className="block text-sm font-secondary mb-2 text-white">
+                  Category
+                </label>
                 <select
                   name="categoryId"
                   value={formData.categoryId}
@@ -234,7 +255,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
 
               {/* Service dropdown */}
               <div className="mb-3">
-                <label className="block text-sm font-secondary mb-2 text-white">Service</label>
+                <label className="block text-sm font-secondary mb-2 text-white">
+                  Service
+                </label>
                 <select
                   name="service_id"
                   value={formData.service_id}
@@ -255,7 +278,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
               {/* Country and City */}
               <div className="flex space-x-4 mb-3">
                 <div className="w-1/2">
-                  <label className="block text-sm font-secondary mb-2 text-white">Country</label>
+                  <label className="block text-sm font-secondary mb-2 text-white">
+                    Country
+                  </label>
                   <select
                     name="country"
                     value={selectedCountryCode}
@@ -277,7 +302,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
                 </div>
 
                 <div className="w-1/2">
-                  <label className="block text-sm font-secondary mb-2 text-white">City</label>
+                  <label className="block text-sm font-secondary mb-2 text-white">
+                    City
+                  </label>
                   <select
                     name="city"
                     value={formData.city}
@@ -302,10 +329,14 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
 
               {/* Date Picker */}
               <div className="mb-3">
-                <label className="block text-sm font-secondary mb-2 text-white">Date</label>
+                <label className="block text-sm font-secondary mb-2 text-white">
+                  Date
+                </label>
                 <DatePicker
                   selected={formData.date}
-                  onChange={(date) => setFormData((prev) => ({ ...prev, date }))}
+                  onChange={(date) =>
+                    setFormData((prev) => ({ ...prev, date }))
+                  }
                   className="block w-[220%] px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -314,10 +345,14 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
               {/* Time Pickers */}
               <div className="flex space-x-4 mb-3">
                 <div className="w-1/2">
-                  <label className="block text-sm font-secondary mb-2 text-white">Start Time</label>
+                  <label className="block text-sm font-secondary mb-2 text-white">
+                    Start Time
+                  </label>
                   <DatePicker
                     selected={formData.startTime}
-                    onChange={(time) => setFormData((prev) => ({ ...prev, startTime: time }))}
+                    onChange={(time) =>
+                      setFormData((prev) => ({ ...prev, startTime: time }))
+                    }
                     showTimeSelect
                     showTimeSelectOnly
                     timeIntervals={30}
@@ -328,10 +363,14 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
                   />
                 </div>
                 <div className="w-1/2">
-                  <label className="block text-sm font-secondary mb-2 text-white">End Time</label>
+                  <label className="block text-sm font-secondary mb-2 text-white">
+                    End Time
+                  </label>
                   <DatePicker
                     selected={formData.endTime}
-                    onChange={(time) => setFormData((prev) => ({ ...prev, endTime: time }))}
+                    onChange={(time) =>
+                      setFormData((prev) => ({ ...prev, endTime: time }))
+                    }
                     showTimeSelect
                     showTimeSelectOnly
                     timeIntervals={30}
@@ -345,7 +384,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
 
               {/* Description */}
               <div className="mb-3">
-                <label className="block text-sm font-secondary mb-2 text-white">Description</label>
+                <label className="block text-sm font-secondary mb-2 text-white">
+                  Description
+                </label>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -358,7 +399,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
 
               {/* Reference Image */}
               <div className="mb-3">
-                <label className="block text-sm font-secondary mb-2 text-white">Reference Image</label>
+                <label className="block text-sm font-secondary mb-2 text-white">
+                  Reference Image
+                </label>
                 <input
                   type="file"
                   name="referenceImage"
@@ -369,7 +412,9 @@ const AddJob = ({ isModalOpen, handleCloseModal, job, clearFormOnAdd, onJobSaved
 
               {/* Charges per Hour */}
               <div className="mb-5">
-                <label className="block text-sm font-secondary mb-2 text-white">Charges per Hour</label>
+                <label className="block text-sm font-secondary mb-2 text-white">
+                  Charges per Hour
+                </label>
                 <input
                   type="number"
                   name="chargesPerHour"
