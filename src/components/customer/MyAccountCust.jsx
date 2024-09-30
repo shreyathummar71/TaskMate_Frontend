@@ -6,7 +6,10 @@ import BackArrow from "../../assets/images/Back_Arrow.png";
 import Dropdown from "../../assets/images/Dropdown.png";
 
 // API URLs
+
 const geoNamesUsername = "dhruvi.balar";
+const EUROPEAN_COUNTRIES_API_URL =
+  "https://restcountries.com/v3.1/region/europe";
 
 const MyAccountCust = () => {
   const [customerId, setCustomerId] = useState(null);
@@ -21,82 +24,104 @@ const MyAccountCust = () => {
     street: "",
     zipCode: "",
     city: "",
-    state: "",
+    selectedCountry: "",
   });
   const [aboutMe, setAboutMe] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [fileError, setFileError] = useState(null);
   const [cities, setCities] = useState([]);
-  const [selectedState, setSelectedState] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [SelectedCity, setSelectedCity] = useState("");
-  const [states, setStates] = useState([]);
   const [loadingCities, setLoadingCities] = useState(false);
 
   const navigate = useNavigate();
 
-  //fetching cities & States:-
-
+  //fetching countries
   useEffect(() => {
-    const fetchStates = async () => {
-      try {
-        const response = await fetch(
-          `http://api.geonames.org/childrenJSON?geonameId=2921044&username=${geoNamesUsername}`
-        );
-
+    fetch(EUROPEAN_COUNTRIES_API_URL)
+      .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+        return response.json();
+      })
+      .then((data) => {
+        // Extracting country names and codes from the response
+        const europeanCountries = data.map((country) => ({
+          countryName: country.name.common, // Use common name
+          countryCode: country.cca2, // Use the two-letter country code
+          geonameId: country.ccn3, // You may use any other identifier if needed
+        }));
 
-        const data = await response.json();
-
-        // Ensure the response has expected structure
-        if (data && Array.isArray(data.geonames)) {
-          console.log("fetching states", data.geonames);
-          setStates(data.geonames);
-        } else {
-          console.error("Unexpected response format for states:", data);
-          setStates([]); // Ensure states is always an array
-        }
-      } catch (error) {
-        console.error("Error fetching states", error);
-        setStates([]); // Set to empty array in case of error
-      }
-    };
-
-    fetchStates();
+        setCountries(europeanCountries);
+        console.log("European countries", europeanCountries);
+      })
+      .catch((error) => {
+        console.error("Error fetching European countries:", error);
+      });
   }, []);
 
-  // Fetch cities when a state is selected
-  const fetchCities = async (stateCode, countryCode) => {
-    setLoadingCities(true);
-    try {
-      const response = await fetch(
-        `http://api.geonames.org/searchJSON?adminCode1=${stateCode}&country=${countryCode}&maxRows=10&username=${geoNamesUsername}`
-      );
+  // Fetch cities when a country is selected
+  const handleCountryChange = (event) => {
+    const countryCode = event.target.value;
+    setSelectedCountry(countryCode);
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+    const selectedCountryData = countries.find(
+      (country) => country.countryCode === countryCode
+    );
 
-      const data = await response.json();
-      if (Array.isArray(data.geonames)) {
-        const uniqueCities = data.geonames.map((city) => ({
-          ...city,
-          uniqueId: `${city.name}-${city.adminCode1}`,
-        }));
-        console.log("cities", uniqueCities);
-        setCities(uniqueCities);
-      } else {
-        console.error("Unexpected response format for cities:", uniqueCities);
-        setCities([]);
+    if (selectedCountryData) {
+      const countryName = selectedCountryData.countryName; // Get the country name
+      console.log("Selected country is", countryName);
+
+      setAddress((prev) => ({ ...prev, countryName }));
+      // setSelectedCountry(countryName);
+      setSelectedCity(""); // Reset city selection when country changes
+
+      if (countryCode) {
+        // Fetch cities based on the selected country code
+        fetch(
+          `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=10&username=${geoNamesUsername}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.geonames && data.geonames.length > 0) {
+              setCities(data.geonames); // Set cities from the response
+            } else {
+              console.log("No cities found for the selected country.");
+              setCities([]); // Clear cities if none are found
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching cities:", error);
+          });
       }
-    } catch (error) {
-      console.error("Error fetching cities", error);
-      setCities([]);
-    } finally {
-      setLoadingCities(false); // Make sure to set loading to false
+    } else {
+      console.error("Country not found for the selected code", countryCode);
     }
+  };
+  const handleCityChange = (e) => {
+    const selectedCityId = e.target.value; // Get the selected value
+    console.log("Selected City", selectedCityId);
+    const [cityName, adminCode] = selectedCityId.split("-"); // Split the uniqueId to get cityName
+
+    console.log(
+      "Selected city:",
+      cityName,
+      "from state with admin code:",
+      adminCode
+    );
+
+    setSelectedCity(cityName);
+    setAddress((prev) => ({ ...prev, cityName }));
+    console.log("Selected city final", cityName);
   };
 
   useEffect(() => {
@@ -136,8 +161,8 @@ const MyAccountCust = () => {
             userData.address || {
               street: "",
               zipCode: "",
-              city: "",
-              state: "",
+              SelectedCity: "",
+              selectedCountry: "",
             }
           );
           setAboutMe(userData.aboutMe || "");
@@ -150,63 +175,23 @@ const MyAccountCust = () => {
     fetchCustomerData();
   }, []);
 
-  //city and state
-  const handleStateChange = (e) => {
-    const selectedStateCode = e.target.value;
-    console.log("Selected state:", selectedStateCode); // Debug log
-    setSelectedState(selectedStateCode);
-
-    const stateDetails = states.find(
-      (state) => state.adminCode1 === selectedStateCode
-    );
-    if (stateDetails) {
-      fetchCities(selectedStateCode, stateDetails.countryCode); // Fetch cities
-    } else {
-      setCities([]); // Reset cities if no state is selected
-      setSelectedCity("");
-    }
-  };
-
-  const handleCityChange = (e) => {
-    const selectedCityId = e.target.value; // Get the selected value
-    console.log("Selected City", selectedCityId);
-    const [cityName, adminCode] = selectedCityId.split("-"); // Split the uniqueId to get cityName
-
-    console.log(
-      "Selected city:",
-      cityName,
-      "from state with admin code:",
-      adminCode
-    );
-
-    setSelectedCity(cityName);
-    console.log("Selected city final", cityName);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    // Convert profileImage to Base64 if it's not the default image
-    let base64Image = null;
     if (profileImage && profileImage !== userImage) {
       const response = await fetch(profileImage);
       const blob = await response.blob();
-      const reader = new FileReader();
-
-      // Read the blob as a Base64 data URL
-      reader.onloadend = () => {
-        base64Image = reader.result;
-        console.log("Base64 image prepared:", base64Image); // Debugging log
-
-        // Now submit the data
-        submitData(base64Image);
-      };
-      reader.readAsDataURL(blob);
+      const base64Image = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+      console.log("Base64 image prepared:", base64Image);
+      await submitData(base64Image);
     } else {
-      // If the image is the default one, just submit without image
-      submitData(null);
+      await submitData(null);
     }
   };
 
@@ -224,6 +209,7 @@ const MyAccountCust = () => {
     };
 
     try {
+      console.log("before submitting", userData);
       const response = await fetch(
         `https://backend-taskmate.onrender.com/customer/${customerId}`,
         {
@@ -255,7 +241,7 @@ const MyAccountCust = () => {
     setProfileImage("");
     setGender("");
     setPhoneNumber("");
-    setAddress({ street: "", zipCode: "", city: "", state: "" });
+    setAddress({ street: "", zipCode: "", city: "", country: "" });
     setAboutMe("");
     setSuccess(null);
   };
@@ -509,53 +495,80 @@ const MyAccountCust = () => {
                 {/* <div className="flex flex-col w-full font-primary"> */}
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white py-1" htmlFor="state">
-                    State
+                  <label className="text-white py-1" htmlFor="country">
+                    Country
                   </label>
-                  <select
-                    id="state"
-                    value={selectedState}
-                    onChange={handleStateChange}
-                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  >
-                    <option value="">Select State</option>
-                    {Array.isArray(states) && states.length > 0 ? (
-                      states.map((state) => (
-                        <option key={state.adminCode1} value={state.adminCode1}>
-                          {state.name}
+                  <div className="flex items-center gap-2 relative">
+                    <select
+                      id="country"
+                      value={selectedCountry}
+                      onChange={handleCountryChange}
+                      className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
+                      aria-label="Country selection"
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map((country) => (
+                        <option
+                          key={country.geonameId}
+                          value={country.countryCode}
+                        >
+                          {country.countryName}
                         </option>
-                      ))
-                    ) : (
-                      <option value="">No states available</option>
-                    )}
-                  </select>
+                      ))}
+                    </select>
+                    {/* Drop down icon*/}
+
+                    <img
+                      src={Dropdown}
+                      alt="Dropdown"
+                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      onClick={() => {
+                        const selectElement =
+                          document.getElementById("country");
+                        selectElement.focus();
+                        selectElement.click(); // Attempt to simulate click
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-col w-full font-primary">
                   <label className="text-white py-1" htmlFor="city">
                     City
                   </label>
-                  <select
-                    id="city"
-                    value={SelectedCity}
-                    onChange={handleCityChange}
-                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  >
-                    <option value="">Select City</option>
-                    {loadingCities ? (
-                      <option value="">Loading Cities...</option>
-                    ) : Array.isArray(cities) && cities.length > 0 ? (
-                      cities.map((city) => (
-                        <option key={city.geonameId} value={city.uniqueId}>
-                          {" "}
-                          {/* Use uniqueId for value */}
-                          {city.name}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="">No cities available</option>
-                    )}
-                  </select>
+                  <div className="flex items-center gap-2 relative">
+                    <select
+                      id="city"
+                      value={SelectedCity}
+                      onChange={handleCityChange}
+                      className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
+                      disabled={!selectedCountry}
+                      aria-label="City selection"
+                    >
+                      <option value="">Select City</option>
+                      {selectedCountry && cities.length > 0 ? (
+                        cities.map((city) => (
+                          <option key={city.geonameId} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option value="">No cities available</option>
+                      )}
+                    </select>
+                    {/* Drop down icon*/}
+
+                    <img
+                      src={Dropdown}
+                      alt="Dropdown"
+                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      onClick={() => {
+                        const selectElement = document.getElementById("city");
+                        selectElement.focus();
+                        selectElement.click(); // Attempt to simulate click
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 

@@ -7,14 +7,8 @@ import Dropdown from "../../assets/images/Dropdown.png";
 
 // API URLs
 const geoNamesUsername = "dhruvi.balar";
-
-const skills = [
-  "Cleaning",
-  "Plumbing",
-  "Cooking",
-  "Salon Services",
-  "Carpenting",
-];
+const EUROPEAN_COUNTRIES_API_URL =
+  "https://restcountries.com/v3.1/region/europe";
 
 const MyAccountProf = () => {
   const [customerId, setCustomerId] = useState(null);
@@ -38,14 +32,14 @@ const MyAccountProf = () => {
   const [fileError, setFileError] = useState(null);
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
-  const [selectedState, setSelectedState] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [SelectedCity, setSelectedCity] = useState("");
-  const [states, setStates] = useState([]);
   const [loadingCities, setLoadingCities] = useState(false);
 
   const [experience, setExperience] = useState("");
-  const [skill, setSkill] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [skillInput, setSkillInput] = useState("");
 
   const [selectedPayments, setSelectedPayments] = useState({
     bank: false,
@@ -55,18 +49,62 @@ const MyAccountProf = () => {
 
   const navigate = useNavigate();
 
-  //fetching countries
+  //fetching skills
+
   useEffect(() => {
-    fetch(
-      `http://api.geonames.org/countryInfoJSON?username=${geoNamesUsername}`
-    )
+    fetch("https://backend-taskmate.onrender.com/services")
       .then((response) => response.json())
       .then((data) => {
-        setCountries(data.geonames);
-        console.log("countries", data.geonames);
+        console.log(data);
+        // Assuming the response is an array of services
+        setSkills(data);
       })
       .catch((error) => {
-        console.error("Error fetching countries:", error);
+        console.error("Error fetching skills:", error);
+      });
+  }, []);
+
+  // Handle skill selection
+  const handleSkillChange = (event) => {
+    const value = event.target.value;
+    setSkillInput(value); // Set the current input value
+  };
+
+  // Add skill to selected skills
+  const handleAddSkill = () => {
+    if (skillInput && !selectedSkills.includes(skillInput)) {
+      setSelectedSkills((prev) => [...prev, skillInput]);
+      setSkillInput(""); // Clear the input field
+    }
+  };
+
+  // Remove skill from selected skills
+  const removeSkill = (skill) => {
+    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+  };
+
+  //fetching countries
+  useEffect(() => {
+    fetch(EUROPEAN_COUNTRIES_API_URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Extracting country names and codes from the response
+        const europeanCountries = data.map((country) => ({
+          countryName: country.name.common, // Use common name
+          countryCode: country.cca2, // Use the two-letter country code
+          geonameId: country.ccn3, // You may use any other identifier if needed
+        }));
+
+        setCountries(europeanCountries);
+        console.log("European countries", europeanCountries);
+      })
+      .catch((error) => {
+        console.error("Error fetching European countries:", error);
       });
   }, []);
 
@@ -84,87 +122,34 @@ const MyAccountProf = () => {
       console.log("Selected country is", countryName);
 
       setAddress((prev) => ({ ...prev, countryName }));
-      setSelectedCity("");
-    } // Reset city selection when country changes
-    else {
+      setSelectedCountry(countryName);
+      setSelectedCity(""); // Reset city selection when country changes
+
+      if (countryCode) {
+        // Fetch cities based on the selected country code
+        fetch(
+          `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=10&username=${geoNamesUsername}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.geonames && data.geonames.length > 0) {
+              setCities(data.geonames); // Set cities from the response
+            } else {
+              console.log("No cities found for the selected country.");
+              setCities([]); // Clear cities if none are found
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching cities:", error);
+          });
+      }
+    } else {
       console.error("Country not found for the selected code", countryCode);
-    }
-
-    if (countryCode) {
-      fetch(
-        `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=10&username=${geoNamesUsername}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setCities(data.geonames);
-        })
-        .catch((error) => {
-          console.error("Error fetching cities:", error);
-        });
-    }
-  };
-
-  //fetching cities & States:-
-
-  useEffect(() => {
-    const fetchStates = async () => {
-      try {
-        const response = await fetch(
-          `http://api.geonames.org/childrenJSON?geonameId=2921044&username=${geoNamesUsername}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
-
-        // Ensure the response has expected structure
-        if (data && Array.isArray(data.geonames)) {
-          console.log("fetching states", data.geonames);
-          setStates(data.geonames);
-        } else {
-          console.error("Unexpected response format for states:", data);
-          setStates([]); // Ensure states is always an array
-        }
-      } catch (error) {
-        console.error("Error fetching states", error);
-        setStates([]); // Set to empty array in case of error
-      }
-    };
-
-    fetchStates();
-  }, []);
-
-  // Fetch cities when a state is selected
-  const fetchCities = async (stateCode, countryCode) => {
-    setLoadingCities(true);
-    try {
-      const response = await fetch(
-        `http://api.geonames.org/searchJSON?adminCode1=${stateCode}&country=${countryCode}&maxRows=10&username=${geoNamesUsername}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      if (Array.isArray(data.geonames)) {
-        const uniqueCities = data.geonames.map((city) => ({
-          ...city,
-          uniqueId: `${city.name}-${city.adminCode1}`,
-        }));
-        console.log("cities", uniqueCities);
-        setCities(uniqueCities);
-      } else {
-        console.error("Unexpected response format for cities:", uniqueCities);
-        setCities([]);
-      }
-    } catch (error) {
-      console.error("Error fetching cities", error);
-      setCities([]);
-    } finally {
-      setLoadingCities(false); // Make sure to set loading to false
     }
   };
 
@@ -191,8 +176,9 @@ const MyAccountProf = () => {
             `https://backend-taskmate.onrender.com/professional/${id}`
           );
           if (!response.ok) throw new Error("Failed to fetch user data");
+
           const userData = await response.json();
-          console.log("____", userData);
+          console.log("Fetched user data:", userData);
 
           // Set state with fetched data
           setFirstName(userData.firstName || "");
@@ -201,46 +187,32 @@ const MyAccountProf = () => {
           setProfileImage(userData.profileImage || "");
           setGender(userData.gender || "");
           setPhoneNumber(userData.phoneNumber || "");
+
+          // Ensure the address is structured correctly
           setAddress(
             userData.address || {
-              state: userData.selectedCountry || "",
               street: "",
-              zipCode: "",
-              city: userData.SelectedCity || "",
+              city: userData.selectedCity || "", // Assuming these properties exist
               state: userData.selectedState || "",
+              zipCode: "", // Assuming you need to add this field
+              country: userData.selectedCountry || "",
             }
           );
+
           setAboutMe(userData.aboutMe || "");
-          setExperience(userData.experience || "");
-          setSkill(userData.skill || "");
-          setSelectedPayments(userData.selectedPayments || "");
+          setExperience(userData.experience || 0); // Assuming experience is a number
+          setSkills(userData.skills || []); // Assuming skills is an array
+          setSelectedPayments(userData.selectedPayments || ""); // Adjust based on expected type
           setSelectedCountry(userData.selectedCountry || "");
         } catch (error) {
           setError("Failed to fetch user data.");
+          console.error(error); // Optionally log the error for debugging
         }
       }
     };
 
     fetchCustomerData();
   }, []);
-
-  //city and state
-  const handleStateChange = (e) => {
-    const selectedStateCode = e.target.value;
-    console.log("Selected state:", selectedStateCode); // Debug log
-    setSelectedState(selectedStateCode);
-    setAddress((prev) => ({ ...prev, selectedStateCode }));
-
-    const stateDetails = states.find(
-      (state) => state.adminCode1 === selectedStateCode
-    );
-    if (stateDetails) {
-      fetchCities(selectedStateCode, stateDetails.countryCode); // Fetch cities
-    } else {
-      setCities([]); // Reset cities if no state is selected
-      setSelectedCity("");
-    }
-  };
 
   const handleCityChange = (e) => {
     const selectedCityId = e.target.value; // Get the selected value
@@ -304,12 +276,23 @@ const MyAccountProf = () => {
       email,
       // password,
       phoneNumber,
-      address,
+      address: {
+        street: address.street, // Only include the street field in the address object
+        zipCode: address.zipCode, // Include zipCode if needed
+        state: address.state, // Include state if needed
+      },
       aboutMe,
       profileImage: base64Image, // Include Base64 image string
       experience,
-      skill,
-      selectedPayments,
+      skill: selectedSkills,
+      paymentOption: selectedPayments,
+      city: SelectedCity,
+      country: selectedCountry,
+      jobProfile: {
+        perHrCharge: 50, // Static
+        completedHrs: 100, // Static
+        experience: experience, // Dynamic value
+      },
     };
 
     try {
@@ -349,7 +332,7 @@ const MyAccountProf = () => {
     setAboutMe("");
     setSuccess(null);
     setExperience("");
-    setSkill("");
+    setSkills("");
     setSelectedPayments("");
     setSelectedCountry("");
   };
@@ -389,7 +372,7 @@ const MyAccountProf = () => {
 
   return (
     <div className="relative flex justify-start items-center min-h-screen bg-primary py-6 ">
-      <div className="flex flex-col w-96 items-center mb-96 -mx-12 -mt-28">
+      <div className="flex flex-col w-96 items-center -mt-80 -mx-12 h-screen">
         <img
           src={profileImage || userImage}
           alt="Profile"
@@ -603,53 +586,80 @@ const MyAccountProf = () => {
                 {/* <div className="flex flex-col w-full font-primary"> */}
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white py-1" htmlFor="state">
-                    State
+                  <label className="text-white py-1" htmlFor="country">
+                    Country
                   </label>
-                  <select
-                    id="state"
-                    value={selectedState}
-                    onChange={handleStateChange}
-                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  >
-                    <option value="">Select State</option>
-                    {Array.isArray(states) && states.length > 0 ? (
-                      states.map((state) => (
-                        <option key={state.adminCode1} value={state.adminCode1}>
-                          {state.name}
+                  <div className="flex items-center gap-2 relative">
+                    <select
+                      id="country"
+                      value={selectedCountry}
+                      onChange={handleCountryChange}
+                      className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
+                      aria-label="Country selection"
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map((country) => (
+                        <option
+                          key={country.geonameId}
+                          value={country.countryCode}
+                        >
+                          {country.countryName}
                         </option>
-                      ))
-                    ) : (
-                      <option value="">No states available</option>
-                    )}
-                  </select>
+                      ))}
+                    </select>
+                    {/* Drop down icon*/}
+
+                    <img
+                      src={Dropdown}
+                      alt="Dropdown"
+                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      onClick={() => {
+                        const selectElement =
+                          document.getElementById("country");
+                        selectElement.focus();
+                        selectElement.click(); // Attempt to simulate click
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-col w-full font-primary">
                   <label className="text-white py-1" htmlFor="city">
                     City
                   </label>
-                  <select
-                    id="city"
-                    value={SelectedCity}
-                    onChange={handleCityChange}
-                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  >
-                    <option value="">Select City</option>
-                    {loadingCities ? (
-                      <option value="">Loading Cities...</option>
-                    ) : Array.isArray(cities) && cities.length > 0 ? (
-                      cities.map((city) => (
-                        <option key={city.geonameId} value={city.uniqueId}>
-                          {" "}
-                          {/* Use uniqueId for value */}
-                          {city.name}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="">No cities available</option>
-                    )}
-                  </select>
+                  <div className="flex items-center gap-2 relative">
+                    <select
+                      id="city"
+                      value={SelectedCity}
+                      onChange={handleCityChange}
+                      className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
+                      disabled={!selectedCountry}
+                      aria-label="City selection"
+                    >
+                      <option value="">Select City</option>
+                      {selectedCountry && cities.length > 0 ? (
+                        cities.map((city) => (
+                          <option key={city.geonameId} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option value="">No cities available</option>
+                      )}
+                    </select>
+                    {/* Drop down icon*/}
+
+                    <img
+                      src={Dropdown}
+                      alt="Dropdown"
+                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      onClick={() => {
+                        const selectElement = document.getElementById("city");
+                        selectElement.focus();
+                        selectElement.click(); // Attempt to simulate click
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -671,8 +681,16 @@ const MyAccountProf = () => {
               </div>
 
               {/* Job Profile Section */}
+              <label
+                className="text-primary font-primary -my-12 -mt-32 text-xl"
+                htmlFor="address"
+              >
+                Job Profile
+              </label>
               <div className="flex space-x-4">
-                <div className="flex flex-col w-full ">
+                <div className="flex flex-col w-2/4">
+                  {" "}
+                  {/* Set width to 1/4 for Experience */}
                   <label
                     className="text-white font-primary mt-4"
                     htmlFor="experience"
@@ -687,170 +705,160 @@ const MyAccountProf = () => {
                       setExperience(e.target.value);
                     }}
                     required
-                    className="box-border text-center mt-2 text-white w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] "
+                    className="box-border text-center mt-2 text-white w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px]"
                   />
                 </div>
-                <div className="flex flex-col w-full">
-                  <label
-                    className="text-white mt-4 font-primary"
-                    htmlFor="skill"
-                  >
+                <div className="flex flex-col w-3/4 font-primary">
+                  {" "}
+                  {/* Set width to 3/4 for Skills */}
+                  <label className="text-white mt-4 " htmlFor="skill">
                     Skills
                   </label>
                   <div className="flex items-center gap-2 relative">
                     <select
-                      id="skill"
-                      value={skill}
-                      onChange={(e) => setSkill(e.target.value)}
+                      id="skills"
+                      value={skillInput}
+                      onChange={handleSkillChange}
+                      onBlur={handleAddSkill} // Optional: Add skill when the select loses focus
                       className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
                     >
-                      <option value="" className="bg-tertiary">
-                        Select Skill
-                      </option>
-                      {skills.map((skill, index) => (
-                        <option
-                          key={index}
-                          value={skill}
-                          className="bg-tertiary"
-                        >
-                          {skill}
-                        </option>
-                      ))}
+                      <option value="">Select Skill</option>
+                      {Array.isArray(skills) &&
+                        skills.map((skill, index) => (
+                          <option key={index} value={skill.name}>
+                            {skill.name}
+                          </option>
+                        ))}
                     </select>
                     {/* Dropdown icon */}
                     <img
                       src={Dropdown}
                       alt="Dropdown"
                       className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
-                      onClick={handleDropdownClick} // Optional: Handle click if needed
+                      onClick={() => document.getElementById("skills").focus()}
                     />
                   </div>
-                </div>
-                <div className="flex flex-col w-full">
-                  <label
-                    className="text-white mt-4 font-primary"
-                    htmlFor="payment-methods"
+                  {/* Button to add skill */}
+                  <button
+                    type="button"
+                    onClick={handleAddSkill}
+                    className="mt-2 bg-[#F7D552] text-black rounded-[10px] h-[45px]"
                   >
-                    Payment Options
-                  </label>
-                  <div className="flex flex-col gap-2 mt-2">
-                    <div className="flex items-center relative">
-                      <input
-                        type="checkbox"
-                        id="bank"
-                        name="bank"
-                        checked={selectedPayments.bank}
-                        onChange={handleCheckboxChange}
-                        className="absolute appearance-none h-5 w-5 border mx-2 border-[#F7D552] rounded-sm checked:bg-primary checked:border-[#F7D552] cursor-pointer" // Hide the default checkbox
-                      />
-                      <label
-                        htmlFor="bank"
-                        className={`box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer ${
-                          selectedPayments.bank ? "bg-[#F7D552] text-black" : ""
-                        }`} // Change background color when checked
-                      >
-                        Bank
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="paypal"
-                        name="paypal"
-                        checked={selectedPayments.paypal}
-                        onChange={handleCheckboxChange}
-                        className="absolute appearance-none h-5 w-5 border mx-2 border-[#F7D552] rounded-sm checked:bg-primary checked:border-[#F7D552] cursor-pointer" // Hide the default checkbox
-                      />
-                      <label
-                        htmlFor="paypal"
-                        className={`box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer ${
-                          selectedPayments.paypal
-                            ? "bg-[#F7D552] text-black"
-                            : ""
-                        }`} // Change background color when checked
-                      >
-                        PayPal
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="cash"
-                        name="cash"
-                        checked={selectedPayments.cash}
-                        onChange={handleCheckboxChange}
-                        className="absolute appearance-none h-5 w-5 border mx-2 border-[#F7D552] rounded-sm checked:bg-primary checked:border-[#F7D552] cursor-pointer" // Hide the default checkbox
-                      />
-                      <label
-                        htmlFor="cash"
-                        className={`box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer ${
-                          selectedPayments.cash ? "bg-[#F7D552] text-black" : ""
-                        }`} // Change background color when checked
-                      >
-                        Cash
-                      </label>
-                    </div>
+                    Add Skill
+                  </button>
+                  {/* Display selected skills */}
+                  <div className="mt-2">
+                    <label
+                      className="text-white mt-4"
+                      htmlFor="selected-skills"
+                    >
+                      Selected Skills
+                    </label>
+                    <input
+                      type="text"
+                      id="selected-skills"
+                      value={selectedSkills.join(", ")} // Join selected skills for display
+                      readOnly
+                      className="box-border mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] rounded-[10px] text-white text-center"
+                    />
+                  </div>
+                  {/* Display selected skills with remove option */}
+                  <div className="mt-2">
+                    {selectedSkills.map((skill) => (
+                      <span key={skill} className="text-white mr-2">
+                        {skill}
+                        <button
+                          onClick={() => removeSkill(skill)}
+                          className="ml-1 text-red-500"
+                        >
+                          &times; {/* X mark to remove skill */}
+                        </button>
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* City Country Section */}
-
-              <div className=" relative flex space-x-4 mb-0">
-                {/* Country Dropdown */}
-                <div
-                  className=" absolute flex-col  w-72 font-primary"
-                  style={{ top: "-83px", left: "10px" }}
+              <div className="flex flex-col w-full">
+                <label
+                  className="text-white mt-4 font-primary"
+                  htmlFor="payment-methods"
                 >
-                  <label className="text-white py-1" htmlFor="country">
-                    Country
-                  </label>
-                  <select
-                    id="country"
-                    value={selectedCountry}
-                    onChange={handleCountryChange}
-                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                  >
-                    <option value="">Select Country</option>
-                    {countries.map((country) => (
-                      <option
-                        key={country.geonameId}
-                        value={country.countryCode}
-                      >
-                        {country.countryName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  Payment Options
+                </label>
+                <div className="flex gap-2 mt-2">
+                  {/* Bank */}
+                  <div className="flex items-center w-1/3 relative peer">
+                    <input
+                      type="checkbox"
+                      id="bank"
+                      name="bank"
+                      checked={selectedPayments.bank}
+                      onChange={handleCheckboxChange}
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-yellow-500 checked:border-[#F7D552] cursor-pointer absolute z-10"
+                    />
+                    <label
+                      htmlFor="bank"
+                      className={`box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer peer-checked:bg-[#F7D552] peer-checked:text-black`}
+                    >
+                      {/* Show tick mark when checked */}
+                      {selectedPayments.bank && (
+                        <span className="text-secondary text-lg font-bold mr-2">
+                          ✓
+                        </span>
+                      )}
+                      Bank
+                    </label>
+                  </div>
 
-                {/* City Dropdown */}
-                <div
-                  className="absolute flex flex-col w-80 font-primary "
-                  style={{ top: "-90px", right: "340px" }}
-                >
-                  <label className="text-white py-1" htmlFor="city">
-                    City
-                  </label>
-                  <select
-                    id="city"
-                    value={SelectedCity}
-                    onChange={handleCityChange}
-                    className="box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
-                    disabled={!selectedCountry}
-                  >
-                    <option value="">Select City</option>
-                    {selectedCountry && cities.length > 0 ? (
-                      cities.map((city) => (
-                        <option key={city.geonameId} value={city.name}>
-                          {city.name}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="">No cities available</option>
-                    )}
-                  </select>
+                  {/* PayPal */}
+                  <div className="flex items-center w-1/3 relative peer">
+                    <input
+                      type="checkbox"
+                      id="paypal"
+                      name="paypal"
+                      checked={selectedPayments.paypal}
+                      onChange={handleCheckboxChange}
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-yellow-500 checked:border-[#F7D552] cursor-pointer absolute z-10"
+                    />
+                    <label
+                      htmlFor="paypal"
+                      className={`box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer peer-checked:bg-[#F7D552] peer-checked:text-black`}
+                    >
+                      {selectedPayments.paypal && (
+                        <span className="text-secondary text-lg font-bold mr-2">
+                          ✓
+                        </span>
+                      )}
+                      PayPal
+                    </label>
+                  </div>
+
+                  {/* Add another payment method, e.g., Credit Card */}
+                  <div className="flex items-center w-1/3 relative peer">
+                    <input
+                      type="checkbox"
+                      id="cash"
+                      name="cash"
+                      checked={selectedPayments.creditCard}
+                      onChange={handleCheckboxChange}
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-yellow-500 checked:border-[#F7D552] cursor-pointer absolute z-10"
+                    />
+                    <label
+                      htmlFor="cash"
+                      className={`box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer peer-checked:bg-[#F7D552] peer-checked:text-black`}
+                    >
+                      {selectedPayments.cash && (
+                        <span className="text-secondary text-lg font-bold mr-2">
+                          ✓
+                        </span>
+                      )}
+                      Cash
+                    </label>
+                  </div>
                 </div>
               </div>
+
               {/* Buttons Section */}
               <div className="flex justify-between  mt-4 gap-6 relative">
                 <div>
