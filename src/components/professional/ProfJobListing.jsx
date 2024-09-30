@@ -270,7 +270,7 @@ const ProfJobListing = () => {
                   <img
                     src={profilePicture || userimg}
                     alt={`${firstName}'s Profile`}
-                    className="w-40 h-40 rounded-full"
+                    className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
                   />
                 </div>
                 <h3 className="text-lg font-primary">{firstName || "Unknown Professional"}</h3>
