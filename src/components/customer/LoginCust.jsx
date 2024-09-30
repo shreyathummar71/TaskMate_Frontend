@@ -46,6 +46,7 @@ const LoginCust = ({ setUser }) => {
       setError(data.error);
     }
     if (response.ok) {
+      console.log("after logged in", data);
       data.user = "customer";
       localStorage.setItem("user", JSON.stringify(data));
       setIsLoading(false);

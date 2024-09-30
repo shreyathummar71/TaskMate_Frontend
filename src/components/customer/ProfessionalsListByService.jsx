@@ -1,8 +1,11 @@
 // ProfessionalsListByService.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-const PROFESSIONALS_BY_SERVICES_API_URL =
-  "https://backend-taskmate.onrender.com/professional/services";
+import axios from "axios";
+import userImage from "../../assets/images/user.png";
+
+const PROFESSIONAL_BY_SERVICE_ID_URL =
+  "https://backend-taskmate.onrender.com/newJob/professionals-for-service-details/";
 
 const ProfessionalsListByService = ({ serviceId }) => {
   const [professionals, setProfessionals] = useState([]);
@@ -10,25 +13,23 @@ const ProfessionalsListByService = ({ serviceId }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (serviceId) {
-      const fetchProfessionals = async () => {
-        try {
-          const response = await fetch(
-            `${PROFESSIONALS_BY_SERVICES_API_URL}/${serviceId}`
-          );
-          if (!response.ok) {
-            throw new Error("No professionals available for this service");
-          }
-          const data = await response.json();
-          setProfessionals(data);
-          console.log(professionals); // debug to get professional data
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
+    const fetchProfessionals = async () => {
+      try {
+        const response = await axios.get(
+          `${PROFESSIONAL_BY_SERVICE_ID_URL}${serviceId}`
+        );
+        setProfessionals(response.data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            "No professionals available for this service"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    if (serviceId) {
       fetchProfessionals();
     }
   }, [serviceId]);
@@ -77,23 +78,46 @@ const ProfessionalsListByService = ({ serviceId }) => {
 
           <div className="items-center pb-4 text-center bg-tertiary  rounded-md">
             <img
-              src={professional.profileImage || "/assets/images/pro.png"}
+              src={professional.profileImage || userImage}
               alt={professional.firstName}
-              className="w-32 h-32 m-auto rounded-full"
+              className="w-32 h-32 m-auto rounded-full text-center"
             />
             <div>
-              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+              <p className="text-sm  text-left  ml-3 text-white font-secondary">
                 Name : {professional.firstName} {professional.lastName}
+              </p>
+            </div>
+          </div>
+          <div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+                {renderStars(professional.averageRating)}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                work Experience : {professional.jobProfile.experience} years
+                ServiceName : {professional.serviceName}
               </p>
             </div>
             <div>
-              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
-                Average Rating : {renderStars(professional.averageRating)}
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
+                Location: : {professional.city} , {professional.country}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
+                Charges : ${professional.chargesPerHour}/hour
+              </p>
+            </div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
+                Working Date: : {professional.workingDate}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
+                Working Time: : {professional.workingTime.start} -{" "}
+                {professional.workingTime.end}
               </p>
             </div>
           </div>
