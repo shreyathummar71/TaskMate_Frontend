@@ -143,7 +143,9 @@ const MyAccountCust = () => {
       if (id) {
         // Fetch existing user details from API
         try {
-          const response = await fetch(`http://localhost:8081/customer/${id}`);
+          const response = await fetch(
+            `https://backend-taskmate.onrender.com/customer/${id}`
+          );
           if (!response.ok) throw new Error("Failed to fetch user data");
           const userData = await response.json();
           console.log("____", userData);
@@ -226,7 +228,7 @@ const MyAccountCust = () => {
     try {
       console.log("before submitting", userData);
       const response = await fetch(
-        `http://localhost:8081/customer/${customerId}`,
+        `https://backend-taskmate.onrender.com/customer/${customerId}`,
         {
           method: "PUT",
           headers: {

@@ -16,7 +16,7 @@ const ProfDetailPage = () => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/professional/${professionalId}`
+          `https://backend-taskmate.onrender.com/professional/${professionalId}`
         );
 
         if (!response.ok) {

@@ -52,7 +52,7 @@ const MyAccountProf = () => {
   //fetching skills
 
   useEffect(() => {
-    fetch("http://localhost:8081/services")
+    fetch("https://backend-taskmate.onrender.com/services")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -173,7 +173,7 @@ const MyAccountProf = () => {
         // Fetch existing user details from API
         try {
           const response = await fetch(
-            `http://localhost:8081/professional/${id}`
+            `https://backend-taskmate.onrender.com/professional/${id}`
           );
           if (!response.ok) throw new Error("Failed to fetch user data");
 
@@ -304,8 +304,8 @@ const MyAccountProf = () => {
         perHrCharge: 50, // Static
         completedHrs: 100, // Static
         experience: experience, // Dynamic value
-        skill: skillInput,
-        country: countryName,
+        skill: selectedSkills,
+        country: address.country,
         city: SelectedCity,
         paymentOption: paymentOptionArray,
       },
@@ -314,7 +314,7 @@ const MyAccountProf = () => {
     try {
       console.log("before submitting", userData);
       const response = await fetch(
-        `http://localhost:8081/professional/${customerId}`,
+        `https://backend-taskmate.onrender.com/professional/${customerId}`,
         {
           method: "PUT",
           headers: {
