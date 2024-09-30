@@ -4,7 +4,7 @@ import React from "react";
 import aboutUsImage from "../assets/images/about us.webp";
 import shreyaImage from "../assets/images/team/shreya.jpg";
 import dhruviImage from "../assets/images/team/dhruvi 1.png";
-import anjaliImage from "../assets/images/team/shreya.jpg";
+import anjaliImage from "../assets/images/team/anjali.png";
 import shitalImage from "../assets/images/team/shital.jpg";
 
 const AboutUs = () => {
