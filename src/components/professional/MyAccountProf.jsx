@@ -24,7 +24,6 @@ const MyAccountProf = () => {
     street: "",
     zipCode: "",
     city: "",
-    state: "",
   });
   const [aboutMe, setAboutMe] = useState("");
   const [error, setError] = useState(null);
@@ -37,9 +36,10 @@ const MyAccountProf = () => {
   const [loadingCities, setLoadingCities] = useState(false);
 
   const [experience, setExperience] = useState("");
-  const [skills, setSkills] = useState([]);
+  const [allskills, setAllSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [skillInput, setSkillInput] = useState("");
+  const [countryName, setCountryName] = useState("");
 
   const [selectedPayments, setSelectedPayments] = useState({
     bank: false,
@@ -57,7 +57,7 @@ const MyAccountProf = () => {
       .then((data) => {
         console.log(data);
         // Assuming the response is an array of services
-        setSkills(data);
+        setAllSkills(data);
       })
       .catch((error) => {
         console.error("Error fetching skills:", error);
@@ -121,8 +121,8 @@ const MyAccountProf = () => {
       const countryName = selectedCountryData.countryName; // Get the country name
       console.log("Selected country is", countryName);
 
-      setAddress((prev) => ({ ...prev, countryName }));
-      setSelectedCountry(countryName);
+      setAddress((prev) => ({ ...prev, country: countryName }));
+      setCountryName(countryName);
       setSelectedCity(""); // Reset city selection when country changes
 
       if (countryCode) {
@@ -192,16 +192,32 @@ const MyAccountProf = () => {
           setAddress(
             userData.address || {
               street: "",
-              city: userData.selectedCity || "", // Assuming these properties exist
-              state: userData.selectedState || "",
+              city: "", // Assuming these properties exist
               zipCode: "", // Assuming you need to add this field
-              country: userData.selectedCountry || "",
+              country: "",
             }
           );
 
+          const fetchedCountryName = userData.address?.country;
+
+          if (fetchedCountryName) {
+            // Reverse lookup: find the countryCode using countryName
+            const selectedCountryData = countries.find(
+              (country) => country.countryName === fetchedCountryName
+            );
+
+            if (selectedCountryData) {
+              setSelectedCountry(selectedCountryData.countryCode); // Set the countryCode for dropdown
+            }
+          }
+
+          // Set the city
+          const fetchedCity = userData.address?.city;
+          setSelectedCity(fetchedCity || "");
+
           setAboutMe(userData.aboutMe || "");
           setExperience(userData.experience || 0); // Assuming experience is a number
-          setSkills(userData.skills || []); // Assuming skills is an array
+          setSkillInput(userData.skill || []); // Assuming skills is an array
           setSelectedPayments(userData.selectedPayments || ""); // Adjust based on expected type
           setSelectedCountry(userData.selectedCountry || "");
         } catch (error) {
@@ -227,7 +243,7 @@ const MyAccountProf = () => {
     );
 
     setSelectedCity(cityName);
-    setAddress((prev) => ({ ...prev, cityName }));
+    setAddress((prev) => ({ ...prev, city: cityName }));
     console.log("Selected city final", cityName);
   };
 
@@ -268,6 +284,11 @@ const MyAccountProf = () => {
     }
   };
 
+  // Convert selectedPayments object into an array of selected payment options
+  const paymentOptionArray = Object.keys(selectedPayments).filter(
+    (key) => selectedPayments[key] === true
+  );
+
   const submitData = async (base64Image) => {
     const userData = {
       firstName,
@@ -276,22 +297,17 @@ const MyAccountProf = () => {
       email,
       // password,
       phoneNumber,
-      address: {
-        street: address.street, // Only include the street field in the address object
-        zipCode: address.zipCode, // Include zipCode if needed
-        state: address.state, // Include state if needed
-      },
+      address: address,
       aboutMe,
       profileImage: base64Image, // Include Base64 image string
-      experience,
-      skill: selectedSkills,
-      paymentOption: selectedPayments,
-      city: SelectedCity,
-      country: selectedCountry,
       jobProfile: {
         perHrCharge: 50, // Static
         completedHrs: 100, // Static
         experience: experience, // Dynamic value
+        skill: selectedSkills,
+        country: address.country,
+        city: SelectedCity,
+        paymentOption: paymentOptionArray,
       },
     };
 
@@ -332,7 +348,7 @@ const MyAccountProf = () => {
     setAboutMe("");
     setSuccess(null);
     setExperience("");
-    setSkills("");
+    setAllSkills("");
     setSelectedPayments("");
     setSelectedCountry("");
   };
@@ -371,7 +387,7 @@ const MyAccountProf = () => {
   };
 
   return (
-    <div className="relative flex justify-start items-center min-h-screen bg-primary py-6 ">
+    <div className="relative flex justify-start items-center min-h-screen bg-primary py-16 mb-28">
       <div className="flex flex-col w-96 items-center -mt-80 -mx-12 h-screen">
         <img
           src={profileImage || userImage}
@@ -586,7 +602,7 @@ const MyAccountProf = () => {
                 {/* <div className="flex flex-col w-full font-primary"> */}
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white py-1" htmlFor="country">
+                  <label className="text-white -py-1" htmlFor="country">
                     Country
                   </label>
                   <div className="flex items-center gap-2 relative">
@@ -624,7 +640,7 @@ const MyAccountProf = () => {
                 </div>
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white py-1" htmlFor="city">
+                  <label className="text-white -py-1" htmlFor="city">
                     City
                   </label>
                   <div className="flex items-center gap-2 relative">
@@ -723,8 +739,8 @@ const MyAccountProf = () => {
                       className="box-border text-center mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white focus:ring-2 focus:ring-[#F7D552] appearance-none"
                     >
                       <option value="">Select Skill</option>
-                      {Array.isArray(skills) &&
-                        skills.map((skill, index) => (
+                      {Array.isArray(allskills) &&
+                        allskills.map((skill, index) => (
                           <option key={index} value={skill.name}>
                             {skill.name}
                           </option>

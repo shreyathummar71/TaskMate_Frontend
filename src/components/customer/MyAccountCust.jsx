@@ -76,7 +76,7 @@ const MyAccountCust = () => {
       const countryName = selectedCountryData.countryName; // Get the country name
       console.log("Selected country is", countryName);
 
-      setAddress((prev) => ({ ...prev, countryName }));
+      setAddress((prev) => ({ ...prev, country: countryName }));
       // setSelectedCountry(countryName);
       setSelectedCity(""); // Reset city selection when country changes
 
@@ -120,7 +120,7 @@ const MyAccountCust = () => {
     );
 
     setSelectedCity(cityName);
-    setAddress((prev) => ({ ...prev, cityName }));
+    setAddress((prev) => ({ ...prev, city: cityName }));
     console.log("Selected city final", cityName);
   };
 
@@ -161,11 +161,28 @@ const MyAccountCust = () => {
             userData.address || {
               street: "",
               zipCode: "",
-              SelectedCity: "",
-              selectedCountry: "",
+              city: "",
+              country: "",
             }
           );
           setAboutMe(userData.aboutMe || "");
+
+          const fetchedCountryName = userData.address?.country;
+
+          if (fetchedCountryName) {
+            // Reverse lookup: find the countryCode using countryName
+            const selectedCountryData = countries.find(
+              (country) => country.countryName === fetchedCountryName
+            );
+
+            if (selectedCountryData) {
+              setSelectedCountry(selectedCountryData.countryCode); // Set the countryCode for dropdown
+            }
+          }
+
+          // Set the city
+          const fetchedCity = userData.address?.city;
+          setSelectedCity(fetchedCity || "");
         } catch (error) {
           setError("Failed to fetch user data.");
         }
@@ -280,7 +297,7 @@ const MyAccountCust = () => {
   };
 
   return (
-    <div className="relative flex justify-start items-center min-h-screen bg-primary py-6 ">
+    <div className="relative flex justify-start items-center min-h-screen bg-primary py-16 mb-28">
       <div className="flex flex-col w-96 items-center mb-96 -mx-12 -mt-28">
         <img
           src={profileImage || userImage}
@@ -495,7 +512,7 @@ const MyAccountCust = () => {
                 {/* <div className="flex flex-col w-full font-primary"> */}
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white py-1" htmlFor="country">
+                  <label className="text-white -py-1" htmlFor="country">
                     Country
                   </label>
                   <div className="flex items-center gap-2 relative">
@@ -533,7 +550,7 @@ const MyAccountCust = () => {
                 </div>
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white py-1" htmlFor="city">
+                  <label className="text-white -py-1" htmlFor="city">
                     City
                   </label>
                   <div className="flex items-center gap-2 relative">
