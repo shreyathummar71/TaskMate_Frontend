@@ -1,8 +1,9 @@
 // ProfessionalsListByService.js
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import userImage from "../../assets/images/user.png";
+import ProfDetailPage from "./ProfDetailPage";
 
 const PROFESSIONAL_BY_SERVICE_ID_URL =
   "https://backend-taskmate.onrender.com/newJob/professionals-for-service-details/";
@@ -11,6 +12,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
   const [professionals, setProfessionals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfessionals = async () => {
@@ -36,6 +38,10 @@ const ProfessionalsListByService = ({ serviceId }) => {
 
   if (loading) return <div>Loading professionals...</div>;
   if (error) return <div> {error}</div>;
+
+  const handleViewProfessionalDetailsClick = (id) => {
+    navigate(`/professional-detail/${id}`);
+  };
 
   // Function to render stars based on average rating
   const renderStars = (rating) => {
@@ -75,22 +81,21 @@ const ProfessionalsListByService = ({ serviceId }) => {
           className="text-center flex flex-col justify-between rounded-md bg-tertiary"
         >
           {/* Professional Profile Image */}
-
-          <div className="items-center pb-4 text-center bg-tertiary  rounded-md">
+          <div className="items-center pb-4 text-center  bg-tertiary  mt-4 rounded-md">
             <img
               src={professional.profileImage || userImage}
               alt={professional.firstName}
               className="w-32 h-32 m-auto rounded-full text-center"
             />
-            <div>
-              <p className="text-sm  text-left  ml-3 text-white font-secondary">
-                Name : {professional.firstName} {professional.lastName}
-              </p>
-            </div>
+
+            <p className="  text-center font-semibold text-xl  ml-3 text-white font-secondary">
+              {professional.firstName} {professional.lastName}
+            </p>
           </div>
-          <div>
+
+          <div className="items-center pb-4 text-center  bg-primary rounded-md">
             <div>
-              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+              <p className="text-lg  text-center  mt-2 ml-3 text-white font-secondary">
                 {renderStars(professional.averageRating)}
               </p>
             </div>
@@ -120,14 +125,18 @@ const ProfessionalsListByService = ({ serviceId }) => {
                 {professional.workingTime.end}
               </p>
             </div>
-          </div>
 
-          <Link
-            to={`/professional-detail/${professional._id}`}
-            className="block mt-3 text-center bg-primary text-white px-4 py-2 rounded hover:bg-secondary"
-          >
-            View Profile
-          </Link>
+            {/* Button to view profile */}
+
+            <button
+              onClick={() =>
+                handleViewProfessionalDetailsClick(professional._id)
+              }
+              className="text-sm text-right mr-2 text-white font-secondary border-b border-secondary hover:text-secondary hover:border-white"
+            >
+              More Details of Professional
+            </button>
+          </div>
         </div>
       ))}
     </div>
