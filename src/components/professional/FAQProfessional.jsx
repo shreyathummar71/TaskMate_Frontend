@@ -57,7 +57,7 @@ const FAQProfessional = () => {
                   +
                 </span>
               </summary>
-              <p className="mt-2 font-normal font-primary text-primary group-open:block">
+              <p className="mt-2 font-normal font-secondary text-tertiary group-open:block">
                 {faq.answer}
               </p>
             </details>

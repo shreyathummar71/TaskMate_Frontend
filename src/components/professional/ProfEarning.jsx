@@ -98,8 +98,8 @@ const ProfEarning = () => {
 
   // Render the chart
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-white">
-      <h2 className="text-2xl font-bold font-primary text-primary text-center mb-4">
+    <div className=" mx-auto p-4 bg-white">
+      <h2 className="text-2xl font-primary text-primary mb-6">
         Earnings Overview
       </h2>
 
