@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import userImage from "../../assets/images/user.png";
 
 const PROFESSIONAL_BY_SERVICE_ID_URL =
   "https://backend-taskmate.onrender.com/newJob/professionals-for-service-details/";
@@ -37,34 +38,34 @@ const ProfessionalsListByService = ({ serviceId }) => {
   if (error) return <div> {error}</div>;
 
   // Function to render stars based on average rating
-  // const renderStars = (rating) => {
-  //   const stars = [];
-  //   const filledStars = Math.floor(rating); // Get the whole number part of the rating
-  //   const halfStar = rating % 1 !== 0; // Check if there's a half star
+  const renderStars = (rating) => {
+    const stars = [];
+    const filledStars = Math.floor(rating); // Get the whole number part of the rating
+    const halfStar = rating % 1 !== 0; // Check if there's a half star
 
-  //   for (let i = 0; i < 5; i++) {
-  //     if (i < filledStars) {
-  //       stars.push(
-  //         <span key={i} className="text-yellow-500 text-2xl">
-  //           ★
-  //         </span>
-  //       ); // Filled star
-  //     } else if (i === filledStars && halfStar) {
-  //       stars.push(
-  //         <span key={i} className="text-yellow-500 text-2xl">
-  //           ☆
-  //         </span>
-  //       ); // Half star (optional)
-  //     } else {
-  //       stars.push(
-  //         <span key={i} className="text-gray-400 text-2xl">
-  //           ☆
-  //         </span>
-  //       ); // Empty star
-  //     }
-  //   }
-  //   return stars;
-  // };
+    for (let i = 0; i < 5; i++) {
+      if (i < filledStars) {
+        stars.push(
+          <span key={i} className="text-yellow-500 text-2xl">
+            ★
+          </span>
+        ); // Filled star
+      } else if (i === filledStars && halfStar) {
+        stars.push(
+          <span key={i} className="text-yellow-500 text-2xl">
+            ☆
+          </span>
+        ); // Half star (optional)
+      } else {
+        stars.push(
+          <span key={i} className="text-gray-400 text-2xl">
+            ☆
+          </span>
+        ); // Empty star
+      }
+    }
+    return stars;
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -77,13 +78,20 @@ const ProfessionalsListByService = ({ serviceId }) => {
 
           <div className="items-center pb-4 text-center bg-tertiary  rounded-md">
             <img
-              src={professional.profileImage || "/assets/images/pro.png"}
+              src={professional.profileImage || userImage}
               alt={professional.firstName}
-              className="w-32 h-32 m-auto rounded-full"
+              className="w-32 h-32 m-auto rounded-full text-center"
             />
             <div>
-              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+              <p className="text-sm  text-left  ml-3 text-white font-secondary">
                 Name : {professional.firstName} {professional.lastName}
+              </p>
+            </div>
+          </div>
+          <div>
+            <div>
+              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
+                {renderStars(professional.averageRating)}
               </p>
             </div>
             <div>
@@ -112,12 +120,6 @@ const ProfessionalsListByService = ({ serviceId }) => {
                 {professional.workingTime.end}
               </p>
             </div>
-
-            {/* <div>
-              <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary">
-                Average Rating : {renderStars(professional.averageRating)}
-              </p>
-            </div> */}
           </div>
 
           <Link
