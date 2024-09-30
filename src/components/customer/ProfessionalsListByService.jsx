@@ -1,8 +1,8 @@
 // ProfessionalsListByService.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-const PROFESSIONALS_BY_SERVICES_API_URL =
-  "https://backend-taskmate.onrender.com/professional/services";
+const PROFESSIONAL_JOBS_API_URL =
+  "https://backend-taskmate.onrender.com/newJob/professional";
 
 const ProfessionalsListByService = ({ serviceId }) => {
   const [professionals, setProfessionals] = useState([]);
@@ -13,9 +13,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
     if (serviceId) {
       const fetchProfessionals = async () => {
         try {
-          const response = await fetch(
-            `${PROFESSIONALS_BY_SERVICES_API_URL}/${serviceId}`
-          );
+          const response = await fetch(PROFESSIONAL_JOBS_API_URL);
           if (!response.ok) {
             throw new Error("No professionals available for this service");
           }
