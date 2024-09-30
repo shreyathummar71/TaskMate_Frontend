@@ -1,4 +1,3 @@
-// ProfessionalsListByService.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -52,19 +51,19 @@ const ProfessionalsListByService = ({ serviceId }) => {
     for (let i = 0; i < 5; i++) {
       if (i < filledStars) {
         stars.push(
-          <span key={i} className="text-yellow-500 text-2xl">
+          <span key={i} className="text-yellow-500 text-4xl mx-1"> 
             ★
           </span>
         ); // Filled star
       } else if (i === filledStars && halfStar) {
         stars.push(
-          <span key={i} className="text-yellow-500 text-2xl">
+          <span key={i} className="text-yellow-500 text-4xl mx-1">
             ☆
           </span>
         ); // Half star (optional)
       } else {
         stars.push(
-          <span key={i} className="text-gray-400 text-2xl">
+          <span key={i} className="text-gray-400 text-4xl mx-1">
             ☆
           </span>
         ); // Empty star
@@ -74,68 +73,69 @@ const ProfessionalsListByService = ({ serviceId }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {professionals.map((professional) => (
         <div
           key={professional._id}
-          className="text-center flex flex-col justify-between rounded-md bg-tertiary"
+          className="flex flex-col justify-between bg-primary rounded-xl"
         >
           {/* Professional Profile Image */}
-          <div className="items-center pb-4 text-center  bg-tertiary  mt-4 rounded-md">
+          <div className="items-center pb-4 text-center  bg-tertiary rounded-xl">
             <img
               src={professional.profileImage || userImage}
               alt={professional.firstName}
-              className="w-32 h-32 m-auto rounded-full text-center"
+              className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
             />
 
-            <p className="  text-center font-semibold text-xl  ml-3 text-white font-secondary">
+            <p className="  text-center font-semibold text-xl  text-white font-primary">
               {professional.firstName} {professional.lastName}
             </p>
           </div>
 
-          <div className="items-center pb-4 text-center  bg-primary rounded-md">
+          <div className="items-center pb-4  bg-primary rounded-b-xl">
             <div>
-              <p className="text-lg  text-center  mt-2 ml-3 text-white font-secondary">
+              <p className="text-lg text-center mt-2  text-white font-secondary">
                 {renderStars(professional.averageRating)}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                ServiceName : {professional.serviceName}
+                <span className="text-secondary">Service : </span>{professional.serviceName}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                Location: : {professional.city} , {professional.country}
+                <span className="text-secondary"> Location : </span>{professional.city} , {professional.country}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                Charges : ${professional.chargesPerHour}/hour
+                <span className="text-secondary">Charges : </span>€{professional.chargesPerHour}/hour
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                Working Date: : {professional.workingDate}
+                <span className="text-secondary">Working Date : </span>{professional.workingDate}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                Working Time: : {professional.workingTime.start} -{" "}
+                <span className="text-secondary">Working Time : </span>{professional.workingTime.start} -{" "}
                 {professional.workingTime.end}
               </p>
             </div>
 
-            {/* Button to view profile */}
-
+            {/* Button with more detailed text */}
+            <div className="float-end mr-4 mt-3">
             <button
               onClick={() =>
                 handleViewProfessionalDetailsClick(professional._id)
               }
-              className="text-sm text-right mr-2 text-white font-secondary border-b border-secondary hover:text-secondary hover:border-white"
+              className="text-xs  text-white font-primary border-b border-secondary hover:text-secondary hover:border-white"
             >
-              More Details of Professional
+              View {professional.firstName}'s Full Profile  {/* Updated text */}
             </button>
+            </div>
           </div>
         </div>
       ))}
