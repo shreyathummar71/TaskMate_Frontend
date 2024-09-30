@@ -40,7 +40,7 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="/help" className="hover:text-secondary">
+              <Link to="/help" className="hover:text-secondary"> 
                 Help
               </Link>
             </li>
