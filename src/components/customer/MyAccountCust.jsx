@@ -56,7 +56,6 @@ const MyAccountCust = () => {
         }));
 
         setCountries(europeanCountries);
-        console.log("European countries", europeanCountries);
       })
       .catch((error) => {
         console.error("Error fetching European countries:", error);
@@ -74,7 +73,6 @@ const MyAccountCust = () => {
 
     if (selectedCountryData) {
       const countryName = selectedCountryData.countryName; // Get the country name
-      console.log("Selected country is", countryName);
 
       setAddress((prev) => ({ ...prev, country: countryName }));
       // setSelectedCountry(countryName);
@@ -135,60 +133,60 @@ const MyAccountCust = () => {
   }, []);
 
   // Fetch customer ID and data
-  useEffect(() => {
-    const fetchCustomerData = async () => {
-      const id = await getCustomerIdFromToken();
-      setCustomerId(id);
+  const fetchCustomerData = async () => {
+    const id = await getCustomerIdFromToken();
+    setCustomerId(id);
 
-      if (id) {
-        // Fetch existing user details from API
-        try {
-          const response = await fetch(
-            `https://backend-taskmate.onrender.com/customer/${id}`
-          );
-          if (!response.ok) throw new Error("Failed to fetch user data");
-          const userData = await response.json();
-          console.log("____", userData);
+    if (id) {
+      // Fetch existing user details from API
+      try {
+        const response = await fetch(
+          `https://backend-taskmate.onrender.com/customer/${id}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
+        const userData = await response.json();
+        console.log("____", userData);
 
-          // Set state with fetched data
-          setFirstName(userData.firstName || "");
-          setLastName(userData.lastName || "");
-          setEmail(userData.email || "");
-          setProfileImage(userData.profileImage || "");
-          setGender(userData.gender || "");
-          setPhoneNumber(userData.phoneNumber || "");
-          setAddress(
-            userData.address || {
-              street: "",
-              zipCode: "",
-              city: "",
-              country: "",
-            }
-          );
-          setAboutMe(userData.aboutMe || "");
-
-          const fetchedCountryName = userData.address?.country;
-
-          if (fetchedCountryName) {
-            // Reverse lookup: find the countryCode using countryName
-            const selectedCountryData = countries.find(
-              (country) => country.countryName === fetchedCountryName
-            );
-
-            if (selectedCountryData) {
-              setSelectedCountry(selectedCountryData.countryCode); // Set the countryCode for dropdown
-            }
+        // Set state with fetched data
+        setFirstName(userData.firstName || "");
+        setLastName(userData.lastName || "");
+        setEmail(userData.email || "");
+        setProfileImage(userData.profileImage || "");
+        setGender(userData.gender || "");
+        setPhoneNumber(userData.phoneNumber || "");
+        setAddress(
+          userData.address || {
+            street: "",
+            zipCode: "",
+            city: "",
+            country: "",
           }
+        );
+        setAboutMe(userData.aboutMe || "");
 
-          // Set the city
-          const fetchedCity = userData.address?.city;
-          setSelectedCity(fetchedCity || "");
-        } catch (error) {
-          setError("Failed to fetch user data.");
+        const fetchedCountryName = userData.address?.country;
+
+        if (fetchedCountryName) {
+          // Reverse lookup: find the countryCode using countryName
+          const selectedCountryData = countries.find(
+            (country) => country.countryName === fetchedCountryName
+          );
+
+          if (selectedCountryData) {
+            setSelectedCountry(selectedCountryData.countryCode); // Set the countryCode for dropdown
+          }
         }
-      }
-    };
 
+        // Set the city
+        const fetchedCity = userData.address?.city;
+        setSelectedCity(fetchedCity || "");
+      } catch (error) {
+        setError("Failed to fetch user data.");
+      }
+    }
+  };
+
+  useEffect(() => {
     fetchCustomerData();
   }, []);
 
@@ -249,18 +247,7 @@ const MyAccountCust = () => {
     }
   };
   const handleCancel = () => {
-    console.log("This is my Cancel button");
-    // Resetting all fields if you want to implement reset functionality
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    setProfileImage("");
-    setGender("");
-    setPhoneNumber("");
-    setAddress({ street: "", zipCode: "", city: "", country: "" });
-    setAboutMe("");
-    setSuccess(null);
+    fetchCustomerData();
   };
 
   const handleImageChange = (e) => {
@@ -354,9 +341,7 @@ const MyAccountCust = () => {
                     id="firstName"
                     value={firstName}
                     onChange={(e) => {
-                      console.log("First Name before update:", firstName); // Add console log
                       setFirstName(e.target.value);
-                      console.log("First Name after update:", e.target.value); // Log after update
                     }}
                     required
                     className="box-border text-center mt-2 text-white w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] "
