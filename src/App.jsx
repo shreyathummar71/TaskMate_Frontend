@@ -123,10 +123,7 @@ const App = () => {
             path="/find-professional/:serviceId"
             element={<FindProfessional />}
           />
-          <Route
-            path="/professional-detail/:professionalId"
-            element={<ProfDetailPage />}
-          />
+          <Route path="/professional-detail/:id" element={<ProfDetailPage />} />
           {/* Keep this as is */}
         </Route>
       </>

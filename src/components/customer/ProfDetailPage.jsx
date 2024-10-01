@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import useFetchFeedback from "../../utils/useFetchFeedback"; // Import the custom hook
 import userImage from "/src/assets/images/user.png";
+import { useParams } from "react-router-dom";
 
 const ProfDetailPage = () => {
+  const { id } = useParams();
   const [professional, setProfessional] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-
-  // Replace with the actual ID you want to fetch
-  const professionalId = "66f6d6f40b98e724eaa0d724";
-
   // Fetch professional details
   useEffect(() => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
-          `https://backend-taskmate.onrender.com/professional/${professionalId}`
+          `https://backend-taskmate.onrender.com/professional/${id}`
         );
 
         if (!response.ok) {
@@ -33,10 +31,10 @@ const ProfDetailPage = () => {
     };
 
     fetchProfessionalDetails();
-  }, [professionalId]);
+  }, [id]);
 
   // Fetch feedback based on professionalId
-  const feedbackUrl = `http://localhost:8081/feedback/professional/${professionalId}`;
+  const feedbackUrl = `http://localhost:8081/feedback/professional/${id}`;
   const {
     feedback,
     loading: feedbackLoading,
