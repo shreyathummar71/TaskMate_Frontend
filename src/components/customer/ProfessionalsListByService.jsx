@@ -51,7 +51,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
     for (let i = 0; i < 5; i++) {
       if (i < filledStars) {
         stars.push(
-          <span key={i} className="text-yellow-500 text-4xl mx-1"> 
+          <span key={i} className="text-yellow-500 text-4xl mx-1">
             ★
           </span>
         ); // Filled star
@@ -81,6 +81,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
         >
           {/* Professional Profile Image */}
           <div className="items-center pb-4 text-center  bg-tertiary rounded-xl">
+            <span className="text-red-600">{professional.professionalId}</span>
             <img
               src={professional.profileImage || userImage}
               alt={professional.firstName}
@@ -100,41 +101,49 @@ const ProfessionalsListByService = ({ serviceId }) => {
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                <span className="text-secondary">Service : </span>{professional.serviceName}
+                <span className="text-secondary">Service : </span>
+                {professional.serviceName}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                <span className="text-secondary"> Location : </span>{professional.city} , {professional.country}
+                <span className="text-secondary"> Location : </span>
+                {professional.city} , {professional.country}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                <span className="text-secondary">Charges : </span>€{professional.chargesPerHour}/hour
+                <span className="text-secondary">Charges : </span>€
+                {professional.chargesPerHour}/hour
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                <span className="text-secondary">Working Date : </span>{professional.workingDate}
+                <span className="text-secondary">Working Date : </span>
+                {professional.workingDate}
               </p>
             </div>
             <div>
               <p className="text-sm  text-left mt-2 ml-3 text-white font-secondary ">
-                <span className="text-secondary">Working Time : </span>{professional.workingTime.start} -{" "}
+                <span className="text-secondary">Working Time : </span>
+                {professional.workingTime.start} -{" "}
                 {professional.workingTime.end}
               </p>
             </div>
 
             {/* Button with more detailed text */}
             <div className="float-end mr-4 mt-3">
-            <button
-              onClick={() =>
-                handleViewProfessionalDetailsClick(professional._id)
-              }
-              className="text-xs  text-white font-primary border-b border-secondary hover:text-secondary hover:border-white"
-            >
-              View {professional.firstName}'s Full Profile  {/* Updated text */}
-            </button>
+              <button
+                onClick={() =>
+                  handleViewProfessionalDetailsClick(
+                    professional.professionalId
+                  )
+                }
+                className="text-xs  text-white font-primary border-b border-secondary hover:text-secondary hover:border-white"
+              >
+                View {professional.firstName}'s Full Profile{" "}
+                {/* Updated text */}
+              </button>
             </div>
           </div>
         </div>
