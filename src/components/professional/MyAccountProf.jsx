@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import getCustomerIdFromToken from "../../utils/tokenUtils";
+import getProfessionalIdFromToken from "../../utils/getProfId";
 import userImage from "../../assets/images/user.png";
 import { useNavigate } from "react-router-dom";
 import BackArrow from "../../assets/images/Back_Arrow.png";
@@ -11,7 +11,7 @@ const EUROPEAN_COUNTRIES_API_URL =
   "https://restcountries.com/v3.1/region/europe";
 
 const MyAccountProf = () => {
-  const [customerId, setCustomerId] = useState(null);
+  const [professionalId, setProfessionalId] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -163,70 +163,84 @@ const MyAccountProf = () => {
     }
   }, []);
 
-  // Fetch customer ID and data
-  useEffect(() => {
-    const fetchCustomerData = async () => {
-      const id = await getCustomerIdFromToken();
-      setCustomerId(id);
+  // Fetch professional ID and data
 
-      if (id) {
-        // Fetch existing user details from API
-        try {
-          const response = await fetch(
-            `https://backend-taskmate.onrender.com/professional/${id}`
-          );
-          if (!response.ok) throw new Error("Failed to fetch user data");
+  const fetchCustomerData = async () => {
+    const id = await getProfessionalIdFromToken();
+    setProfessionalId(id);
 
-          const userData = await response.json();
-          console.log("Fetched user data:", userData);
+    if (id) {
+      // Fetch existing user details from API
+      try {
+        const response = await fetch(
+          `https://backend-taskmate.onrender.com/professional/${id}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
 
-          // Set state with fetched data
-          setFirstName(userData.firstName || "");
-          setLastName(userData.lastName || "");
-          setEmail(userData.email || "");
-          setProfileImage(userData.profileImage || "");
-          setGender(userData.gender || "");
-          setPhoneNumber(userData.phoneNumber || "");
+        const userData = await response.json();
+        console.log("Fetched user data:", userData);
+        console.log(
+          "Fetched user data:",
+          userData.jobProfile.paymentOptionArray
+        );
 
-          // Ensure the address is structured correctly
-          setAddress(
-            userData.address || {
-              street: "",
-              city: "", // Assuming these properties exist
-              zipCode: "", // Assuming you need to add this field
-              country: "",
-            }
-          );
+        // Set state with fetched data
+        setFirstName(userData.firstName || "");
+        setLastName(userData.lastName || "");
+        setEmail(userData.email || "");
+        setProfileImage(userData.profileImage || "");
+        setGender(userData.gender || "");
+        setPhoneNumber(userData.phoneNumber || "");
 
-          const fetchedCountryName = userData.address?.country;
-
-          if (fetchedCountryName) {
-            // Reverse lookup: find the countryCode using countryName
-            const selectedCountryData = countries.find(
-              (country) => country.countryName === fetchedCountryName
-            );
-
-            if (selectedCountryData) {
-              setSelectedCountry(selectedCountryData.countryCode); // Set the countryCode for dropdown
-            }
+        // Ensure the address is structured correctly
+        setAddress(
+          userData.address || {
+            street: "",
+            city: "", // Assuming these properties exist
+            zipCode: "", // Assuming you need to add this field
+            country: "",
           }
+        );
 
-          // Set the city
-          const fetchedCity = userData.address?.city;
-          setSelectedCity(fetchedCity || "");
+        //set Country
+        const fetchedCountryName = userData.address?.country;
 
-          setAboutMe(userData.aboutMe || "");
-          setExperience(userData.experience || 0); // Assuming experience is a number
-          setSkillInput(userData.skill || []); // Assuming skills is an array
-          setSelectedPayments(userData.selectedPayments || ""); // Adjust based on expected type
-          setSelectedCountry(userData.selectedCountry || "");
-        } catch (error) {
-          setError("Failed to fetch user data.");
-          console.error(error); // Optionally log the error for debugging
+        if (fetchedCountryName) {
+          const selectedCountryData = countries.find(
+            (country) => country.countryName === fetchedCountryName
+          );
+
+          if (selectedCountryData) {
+            setSelectedCountry(selectedCountryData.countryCode); // Set the countryCode for dropdown
+          }
         }
-      }
-    };
 
+        // Set the city
+        const fetchedCity = userData.address?.city;
+        setSelectedCity(fetchedCity || "");
+
+        setAboutMe(userData.aboutMe || "");
+        setExperience(userData.jobProfile.experience || 0); //  experience is a number
+        setSelectedSkills(userData.jobProfile.skill || []); // skills is an array
+        const paymentOptions = userData.jobProfile.paymentOption || [];
+
+        //Set payments: Convert the array into an object with boolean values
+        const paymentOptionObject = {
+          bank: paymentOptions.includes("bank"),
+          paypal: paymentOptions.includes("paypal"),
+          cash: paymentOptions.includes("cash"),
+        };
+
+        // Set the `selectedPayments` state with this object
+        setSelectedPayments(paymentOptionObject);
+      } catch (error) {
+        setError("Failed to fetch user data.");
+        console.error(error); // Optionally log the error for debugging
+      }
+    }
+  };
+
+  useEffect(() => {
     fetchCustomerData();
   }, []);
 
@@ -314,7 +328,7 @@ const MyAccountProf = () => {
     try {
       console.log("before submitting", userData);
       const response = await fetch(
-        `https://backend-taskmate.onrender.com/professional/${customerId}`,
+        `https://backend-taskmate.onrender.com/professional/${professionalId}`,
         {
           method: "PUT",
           headers: {
@@ -335,22 +349,7 @@ const MyAccountProf = () => {
     }
   };
   const handleCancel = () => {
-    console.log("This is my Cancel button");
-    // Resetting all fields if you want to implement reset functionality
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    setProfileImage("");
-    setGender("");
-    setPhoneNumber("");
-    setAddress({ street: "", zipCode: "", city: "", state: "" });
-    setAboutMe("");
-    setSuccess(null);
-    setExperience("");
-    setAllSkills("");
-    setSelectedPayments("");
-    setSelectedCountry("");
+    fetchCustomerData();
   };
 
   const handleImageChange = (e) => {
