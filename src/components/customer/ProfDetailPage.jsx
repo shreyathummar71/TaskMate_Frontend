@@ -9,7 +9,7 @@ const ProfDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
   // Replace with the actual ID you want to fetch
-  const professionalId = "66f6d6f40b98e724eaa0d724";
+  // const professionalId = "66f6d6f40b98e724eaa0d724";
 
   // Fetch professional details
   useEffect(() => {
