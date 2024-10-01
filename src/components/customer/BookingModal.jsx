@@ -5,99 +5,80 @@ const BookingModal = ({
   onClose,
   onSubmit,
   professional,
-  service,
+  serviceId,
   customerId,
 }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      zipcode: "",
-    },
-    phoneNumber: "",
-    email: "",
-    appointmentDateTime: new Date().toISOString().substring(0, 16),
-    bookHr: new Date().getHours(),
-    isBookingForOthers: false,
-    startTime: "", // New field
-    endTime: "", // New field
-    description: "", // New field
-  });
+  const [name, setName] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [appointmentDateTime, setAppointmentDateTime] = useState(
+    new Date().toISOString().substring(0, 16)
+  );
+  const [bookHr, setBookHr] = useState(new Date().getHours());
+  const [isBookingForOthers, setIsBookingForOthers] = useState(false);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [description, setDescription] = useState("");
 
   if (!isOpen) return null;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith("address.")) {
-      const field = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [field]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleCheckboxChange = () => {
-    setFormData((prev) => ({
-      ...prev,
-      isBookingForOthers: !prev.isBookingForOthers,
-    }));
-  };
-
   const handleSubmit = async (e) => {
-    console.log(service_id);
     e.preventDefault();
 
-    // Validate required fields
-    if (!formData.name && formData.isBookingForOthers) {
+    // Validate required fields for booking for others
+    if (!name && isBookingForOthers) {
       console.error("Name is required for booking for others");
       return;
     }
 
     const bookingData = {
-      cust_id: customerId, // Replace with actual customer ID
+      cust_id: customerId,
       prof_id: professional._id,
-      service_id: service, // Replace with actual service ID
-      appointmentDateTime: new Date(formData.appointmentDateTime),
-      bookHr: new Date(formData.appointmentDateTime).getHours(),
+      service_id: serviceId,
+      appointmentDateTime: new Date(appointmentDateTime),
+      bookHr: new Date(appointmentDateTime).getHours(),
       status: "pending",
-      startTime: new Date(formData.startTime),
-      endTime: new Date(formData.endTime),
-      description: formData.description,
-      bookingForOthers: formData.isBookingForOthers
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
+      description: description,
+      bookingForOthers: isBookingForOthers
         ? {
-            name: formData.name,
-            address: formData.address,
-            phoneNumber: formData.phoneNumber,
-            email: formData.email,
+            name: name,
+            address: {
+              street: street,
+              city: city,
+              state: state,
+              zipcode: zipcode,
+            },
+            phoneNumber: phoneNumber,
+            email: email,
           }
         : undefined,
     };
 
     try {
-      const response = await fetch("http://localhost:8081/booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookingData),
-      });
+      const response = await fetch(
+        "https://backend-taskmate.onrender.com/booking",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         console.log("Booking confirmed:", data);
         onSubmit(data);
       } else {
+        const errorData = await response.text();
+        console.error("Failed to create booking", errorData);
         throw new Error("Failed to create booking");
       }
     } catch (error) {
@@ -107,7 +88,6 @@ const BookingModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      {/* Display customerId */}
       <div className="bg-primary rounded-lg p-6 w-1/3">
         <h2 className="text-xl font-primary text-secondary text-center mb-4">
           Book Appointment
@@ -117,8 +97,8 @@ const BookingModal = ({
             <input
               type="datetime-local"
               name="appointmentDateTime"
-              value={formData.appointmentDateTime}
-              onChange={handleChange}
+              value={appointmentDateTime}
+              onChange={(e) => setAppointmentDateTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               required
             />
@@ -128,8 +108,8 @@ const BookingModal = ({
               type="text"
               name="bookHr"
               placeholder="Book Hour"
-              value={formData.bookHr}
-              onChange={handleChange}
+              value={bookHr}
+              onChange={(e) => setBookHr(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               required
             />
@@ -140,10 +120,9 @@ const BookingModal = ({
             <input
               type="datetime-local"
               name="startTime"
-              value={formData.startTime}
-              onChange={handleChange}
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              placeholder="Start Time"
               required
             />
           </div>
@@ -153,10 +132,9 @@ const BookingModal = ({
             <input
               type="datetime-local"
               name="endTime"
-              value={formData.endTime}
-              onChange={handleChange}
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              placeholder="End Time"
               required
             />
           </div>
@@ -165,8 +143,8 @@ const BookingModal = ({
           <div className="mb-4">
             <textarea
               name="description"
-              value={formData.description}
-              onChange={handleChange}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               placeholder="Description"
               rows="3"
@@ -179,22 +157,22 @@ const BookingModal = ({
             <label>
               <input
                 type="checkbox"
-                checked={formData.isBookingForOthers}
-                onChange={handleCheckboxChange}
+                checked={isBookingForOthers}
+                onChange={() => setIsBookingForOthers(!isBookingForOthers)}
               />
               Book for someone else
             </label>
           </div>
 
-          {formData.isBookingForOthers && (
+          {isBookingForOthers && (
             <>
               <div className="mb-4">
                 <input
                   type="text"
                   name="name"
                   placeholder="Name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -202,10 +180,10 @@ const BookingModal = ({
               <div className="mb-4">
                 <input
                   type="text"
-                  name="address.street"
+                  name="street"
                   placeholder="Street"
-                  value={formData.address.street}
-                  onChange={handleChange}
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -213,10 +191,10 @@ const BookingModal = ({
               <div className="mb-4">
                 <input
                   type="text"
-                  name="address.city"
+                  name="city"
                   placeholder="City"
-                  value={formData.address.city}
-                  onChange={handleChange}
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -224,10 +202,10 @@ const BookingModal = ({
               <div className="mb-4">
                 <input
                   type="text"
-                  name="address.state"
+                  name="state"
                   placeholder="State"
-                  value={formData.address.state}
-                  onChange={handleChange}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -235,10 +213,10 @@ const BookingModal = ({
               <div className="mb-4">
                 <input
                   type="text"
-                  name="address.zipcode"
+                  name="zipcode"
                   placeholder="Zipcode"
-                  value={formData.address.zipcode}
-                  onChange={handleChange}
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -248,8 +226,8 @@ const BookingModal = ({
                   type="text"
                   name="phoneNumber"
                   placeholder="Phone Number"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
@@ -259,8 +237,8 @@ const BookingModal = ({
                   type="email"
                   name="email"
                   placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />

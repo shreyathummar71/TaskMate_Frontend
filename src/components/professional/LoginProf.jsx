@@ -42,6 +42,7 @@ const LoginProf = ({ setUser }) => {
 
     if (!response.ok) {
       console.log(data);
+      console.log(data);
       setIsLoading(false);
       setError(data.error);
     }

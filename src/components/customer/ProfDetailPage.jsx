@@ -26,7 +26,7 @@ const ProfDetailPage = () => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/professional/${id}`
+          `https://backend-taskmate.onrender.com/professional/${id}`
         );
 
         if (!response.ok) {
@@ -46,7 +46,7 @@ const ProfDetailPage = () => {
   }, [id]);
 
   // Fetch feedback based on professionalId
-  const feedbackUrl = `http://localhost:8081/feedback/professional/${id}`;
+  const feedbackUrl = `https://backend-taskmate.onrender.com/feedback/professional/${id}`;
   const {
     feedback,
     loading: feedbackLoading,
@@ -111,13 +111,6 @@ const ProfDetailPage = () => {
 
   return (
     <>
-      <div>
-        <h1>Professional Detail Page</h1>
-        <p>Service ID: {service_id || "Not provided"}</p>
-        <p>Customer ID: {customerId || "Not fetched"}</p>{" "}
-        {/* Display Customer ID */}
-        {/* Other professional details can be displayed here */}
-      </div>
       <div className="bg-primary py-14 flex justify-between items-center text-white px-40">
         {/* Part 1: Image */}
         <div className="text-left mb-5">
@@ -275,7 +268,7 @@ const ProfDetailPage = () => {
         onClose={handleModalClose}
         onSubmit={handleBookingSubmit}
         professional={professional}
-        service={service_id}
+        serviceId={service_id}
         customerId={customerId} // Pass customer ID here
       />
     </>
