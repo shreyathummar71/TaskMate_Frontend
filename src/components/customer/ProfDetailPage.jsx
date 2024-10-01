@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import useFetchFeedback from "../../utils/useFetchFeedback"; // Import the custom hook
 import userImage from "/src/assets/images/user.png";
 import { useParams } from "react-router-dom";
+import BookingModal from "./BookingModal";
+import getCustomerIdFromToken from "../../utils/tokenUtils";
 
 const ProfDetailPage = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const { service_id } = location.state || {};
   const [professional, setProfessional] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [customerId, setCustomerId] = useState(null); // State for customer ID
+
+  // Fetch customer ID from the token
+  useEffect(() => {
+    const id = getCustomerIdFromToken();
+    setCustomerId(id); // Store customer ID in state
+  }, []);
   // Fetch professional details
   useEffect(() => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
-          `https://backend-taskmate.onrender.com/professional/${id}`
+          `http://localhost:8081/professional/${id}`
         );
 
         if (!response.ok) {
@@ -40,6 +52,21 @@ const ProfDetailPage = () => {
     loading: feedbackLoading,
     error: feedbackError,
   } = useFetchFeedback(feedbackUrl);
+  // Handle modal open/close
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle booking submission
+  const handleBookingSubmit = (bookingData) => {
+    console.log("Booking Data Submitted:", bookingData);
+    // You can send bookingData to your API here
+    setIsModalOpen(false); // Close the modal after submission
+  };
 
   if (loading || feedbackLoading) {
     return <div>Loading...</div>;
@@ -82,265 +109,15 @@ const ProfDetailPage = () => {
     return stars;
   };
 
-  // Modal Component for Booking
-  const Modal = ({ isOpen, onClose, onSubmit }) => {
-    const [formData, setFormData] = useState({
-      name: "",
-      address: {
-        street: "",
-        city: "",
-        state: "",
-        zipcode: "",
-      },
-      phoneNumber: "",
-      email: "",
-
-      appointmentDateTime: new Date().toISOString().substring(0, 16), // Current date-time
-      bookHr: new Date().getHours(), // Current hour
-      isBookingForOthers: false, // New state for checkbox
-    });
-
-    if (!isOpen) return null;
-
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      if (name.startsWith("address.")) {
-        const field = name.split(".")[1];
-        setFormData((prev) => ({
-          ...prev,
-          address: {
-            ...prev.address,
-            [field]: value,
-          },
-        }));
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
-      }
-    };
-
-    const handleCheckboxChange = () => {
-      setFormData((prev) => ({
-        ...prev,
-        isBookingForOthers: !prev.isBookingForOthers,
-      }));
-    };
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      // Only add bookingForOthers if the checkbox is checked
-      const bookingData = {
-        cust_id: "Your_Customer_ID", // Replace with the actual customer ID
-        prof_id: professional._id, // Professional ID from fetched data
-        service_id: "Your_Service_ID", // Replace with the actual service ID
-        appointmentDateTime: formData.appointmentDateTime,
-        bookHr: new Date(formData.appointmentDateTime).getHours(), // Set to the hour of the appointment
-        addJobModel_id: "Your_AddJobModel_ID", // Replace with the actual AddJobModel ID
-        status: "pending", // Default status
-        // Include bookingForOthers only if the checkbox is checked
-        bookingForOthers: formData.isBookingForOthers
-          ? {
-              name: formData.name,
-              address: formData.address,
-              phoneNumber: formData.phoneNumber,
-              email: formData.email,
-            }
-          : undefined,
-      };
-
-      onSubmit(bookingData);
-    };
-
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div className="bg-primary rounded-lg p-6 w-1/3">
-          <h2 className="text-xl font-primary text-secondary text-center mb-4">
-            Book Appointment
-          </h2>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <input
-                type="datetime-local"
-                name="appointmentDateTime"
-                value={formData.appointmentDateTime}
-                onChange={handleChange}
-                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="bookHr"
-                placeholder="Book Hour"
-                value={formData.bookHr}
-                onChange={handleChange}
-                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                required
-              />
-            </div>
-
-            {/* Checkbox for Booking for Others */}
-            <div className="mb-4">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={formData.isBookingForOthers}
-                  onChange={handleCheckboxChange}
-                />
-                Book for someone else
-              </label>
-            </div>
-
-            {formData.isBookingForOthers && (
-              <>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    name="address.street"
-                    placeholder="Street"
-                    value={formData.address.street}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    name="address.city"
-                    placeholder="City"
-                    value={formData.address.city}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    name="address.state"
-                    placeholder="State"
-                    value={formData.address.state}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    name="address.zipcode"
-                    placeholder="Zipcode"
-                    value={formData.address.zipcode}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    placeholder="Phone Number"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                    required
-                  />
-                </div>
-              </>
-            )}
-
-            <div className="flex justify-end mt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 mr-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
-              >
-                Confirm Booking
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
-
-  const handleModalOpen = () => setIsModalOpen(true);
-  const handleModalClose = () => setIsModalOpen(false);
-
-  const handleBookingSubmit = async (formData) => {
-    try {
-      const bookingData = {
-        cust_id: "Your_Customer_ID", // This needs to be valid
-        prof_id: professional._id, // Ensure this is set correctly
-        service_id: "Your_Service_ID", // This needs to be valid
-        appointmentDateTime: formData.appointmentDateTime,
-        bookHr: new Date(formData.appointmentDateTime).getHours(),
-        addJobModel_id: "Your_AddJobModel_ID", // This needs to be valid
-        bookingForOthers: formData.isBookingForOthers
-          ? {
-              name: formData.name,
-              address: formData.address,
-              phoneNumber: formData.phoneNumber,
-              email: formData.email,
-            }
-          : undefined,
-      };
-
-      const response = await fetch("http://localhost:8081/booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookingData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      alert("Booking confirmed!");
-      handleModalClose();
-    } catch (error) {
-      console.error("Failed to book appointment:", error);
-      alert("Failed to book appointment. Please try again.");
-    }
-  };
-
   return (
     <>
+      <div>
+        <h1>Professional Detail Page</h1>
+        <p>Service ID: {service_id || "Not provided"}</p>
+        <p>Customer ID: {customerId || "Not fetched"}</p>{" "}
+        {/* Display Customer ID */}
+        {/* Other professional details can be displayed here */}
+      </div>
       <div className="bg-primary py-14 flex justify-between items-center text-white px-40">
         {/* Part 1: Image */}
         <div className="text-left mb-5">
@@ -400,22 +177,35 @@ const ProfDetailPage = () => {
         </h2>
         <div className="flex flex-wrap justify-start mb-5">
           {professional.jobProfile.skill &&
-          professional.jobProfile.skill.length > 0
-            ? professional.jobProfile.skill.map((skill) => (
+          professional.jobProfile.skill.length > 0 ? (
+            professional.jobProfile.skill.map((skill) => {
+              console.log("Rendering Skill:", skill); // Debugging
+              return (
                 <div key={skill.name} className="mr-7 text-center float-start">
-                  {skill.image && (
+                  {skill.image ? (
                     <img
                       src={skill.image}
                       alt={`${skill.name} image`}
                       className="h-32 w-32 object-cover rounded-md"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = userImage; // Fallback image
+                      }}
                     />
+                  ) : (
+                    <div className="h-32 w-32 flex items-center justify-center bg-gray-200 rounded-md">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
                   )}
                   <span className="float-start w-full text-sm mt-2 text-primary">
                     {skill.name}
                   </span>
                 </div>
-              ))
-            : "N/A"}
+              );
+            })
+          ) : (
+            <p>N/A</p>
+          )}
         </div>
       </div>
 
@@ -479,12 +269,14 @@ const ProfDetailPage = () => {
           <p>No feedback available.</p>
         )}
       </div>
-
-      {/* Modal Component */}
-      <Modal
+      {/* Booking Modal */}
+      <BookingModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleModalClose}
         onSubmit={handleBookingSubmit}
+        professional={professional}
+        service={service_id}
+        customerId={customerId} // Pass customer ID here
       />
     </>
   );
