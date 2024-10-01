@@ -383,7 +383,7 @@ const MyAccountProf = () => {
   };
 
   const handleBackButton = () => {
-    navigate("/customerDashboard");
+    navigate("/professionalDashboard");
   };
 
   return (
