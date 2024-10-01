@@ -70,17 +70,27 @@ const MyAccountProf = () => {
     setSkillInput(value); // Set the current input value
   };
 
-  // Add skill to selected skills
+  // Function to add skill to the selectedSkills state
   const handleAddSkill = () => {
-    if (skillInput && !selectedSkills.includes(skillInput)) {
-      setSelectedSkills((prev) => [...prev, skillInput]);
-      setSkillInput(""); // Clear the input field
+    const selectedSkill = allskills.find((skill) => skill._id === skillInput);
+    if (
+      selectedSkill &&
+      !selectedSkills.some((skill) => skill._id === selectedSkill._id)
+    ) {
+      setSelectedSkills([
+        ...selectedSkills,
+        { _id: selectedSkill._id, name: selectedSkill.name },
+      ]);
     }
+    // Clear input after adding skill
+    setSkillInput("");
   };
 
-  // Remove skill from selected skills
-  const removeSkill = (skill) => {
-    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+  // Function to remove skill
+  const removeSkill = (skillToRemove) => {
+    setSelectedSkills(
+      selectedSkills.filter((skill) => skill._id !== skillToRemove._id)
+    );
   };
 
   //fetching countries
@@ -740,7 +750,7 @@ const MyAccountProf = () => {
                       <option value="">Select Skill</option>
                       {Array.isArray(allskills) &&
                         allskills.map((skill, index) => (
-                          <option key={index} value={skill.name}>
+                          <option key={index} value={skill._id}>
                             {skill.name}
                           </option>
                         ))}
@@ -772,7 +782,9 @@ const MyAccountProf = () => {
                     <input
                       type="text"
                       id="selected-skills"
-                      value={selectedSkills.join(", ")} // Join selected skills for display
+                      value={selectedSkills
+                        .map((skill) => skill.name)
+                        .join(", ")}
                       readOnly
                       className="box-border mt-2 w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] rounded-[10px] text-white text-center"
                     />
@@ -780,8 +792,8 @@ const MyAccountProf = () => {
                   {/* Display selected skills with remove option */}
                   <div className="mt-2">
                     {selectedSkills.map((skill) => (
-                      <span key={skill} className="text-white mr-2">
-                        {skill}
+                      <span key={skill._id} className="text-white mr-2">
+                        {skill.name}
                         <button
                           onClick={() => removeSkill(skill)}
                           className="ml-1 text-red-500"

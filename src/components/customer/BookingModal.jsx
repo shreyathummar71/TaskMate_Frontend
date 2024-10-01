@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
-const BookingModal = ({ isOpen, onClose, onSubmit, professional }) => {
+const BookingModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  professional,
+  service,
+  customerId,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     address: {
@@ -14,6 +21,9 @@ const BookingModal = ({ isOpen, onClose, onSubmit, professional }) => {
     appointmentDateTime: new Date().toISOString().substring(0, 16),
     bookHr: new Date().getHours(),
     isBookingForOthers: false,
+    startTime: "", // New field
+    endTime: "", // New field
+    description: "", // New field
   });
 
   if (!isOpen) return null;
@@ -44,16 +54,26 @@ const BookingModal = ({ isOpen, onClose, onSubmit, professional }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    console.log(service_id);
     e.preventDefault();
+
+    // Validate required fields
+    if (!formData.name && formData.isBookingForOthers) {
+      console.error("Name is required for booking for others");
+      return;
+    }
+
     const bookingData = {
-      cust_id: "Your_Customer_ID", 
+      cust_id: customerId, // Replace with actual customer ID
       prof_id: professional._id,
-      service_id: "Your_Service_ID", 
-      appointmentDateTime: formData.appointmentDateTime,
+      service_id: service, // Replace with actual service ID
+      appointmentDateTime: new Date(formData.appointmentDateTime),
       bookHr: new Date(formData.appointmentDateTime).getHours(),
-      addJobModel_id: "Your_AddJobModel_ID", 
       status: "pending",
+      startTime: new Date(formData.startTime),
+      endTime: new Date(formData.endTime),
+      description: formData.description,
       bookingForOthers: formData.isBookingForOthers
         ? {
             name: formData.name,
@@ -64,11 +84,30 @@ const BookingModal = ({ isOpen, onClose, onSubmit, professional }) => {
         : undefined,
     };
 
-    onSubmit(bookingData);
+    try {
+      const response = await fetch("http://localhost:8081/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Booking confirmed:", data);
+        onSubmit(data);
+      } else {
+        throw new Error("Failed to create booking");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      {/* Display customerId */}
       <div className="bg-primary rounded-lg p-6 w-1/3">
         <h2 className="text-xl font-primary text-secondary text-center mb-4">
           Book Appointment
@@ -96,6 +135,46 @@ const BookingModal = ({ isOpen, onClose, onSubmit, professional }) => {
             />
           </div>
 
+          {/* Start Time Field */}
+          <div className="mb-4">
+            <input
+              type="datetime-local"
+              name="startTime"
+              value={formData.startTime}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              placeholder="Start Time"
+              required
+            />
+          </div>
+
+          {/* End Time Field */}
+          <div className="mb-4">
+            <input
+              type="datetime-local"
+              name="endTime"
+              value={formData.endTime}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              placeholder="End Time"
+              required
+            />
+          </div>
+
+          {/* Description Field */}
+          <div className="mb-4">
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              placeholder="Description"
+              rows="3"
+              required
+            />
+          </div>
+
+          {/* Checkbox for Booking for Others */}
           <div className="mb-4">
             <label>
               <input
