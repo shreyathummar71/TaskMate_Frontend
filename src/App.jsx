@@ -127,6 +127,7 @@ const App = () => {
             path="/professional-detail/:professionalId"
             element={<ProfDetailPage />}
           />
+
           {/* Keep this as is */}
         </Route>
       </>
