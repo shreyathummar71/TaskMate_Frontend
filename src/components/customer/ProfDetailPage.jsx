@@ -16,6 +16,8 @@ const ProfDetailPage = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [customerId, setCustomerId] = useState(null); // State for customer ID
+  const [isFavorite, setIsFavorite] = useState(false); // State to track favorite status
+  const [favoriteId, setFavoriteId] = useState(null); // Store favorite ID for removing
 
   // Fetch customer ID from the token
   useEffect(() => {
@@ -47,6 +49,31 @@ const ProfDetailPage = () => {
     fetchProfessionalDetails();
   }, [id]);
 
+  // Check if the professional is already a favorite
+  useEffect(() => {
+    const checkIfFavorite = async () => {
+      try {
+        const response = await axios.get(
+          `https://backend-taskmate.onrender.com/favourite/customer/${customerId}`
+        );
+
+        // Check if the professional is in the favorites list
+        const favorite = response.data.find(fav => fav.prof_id._id === id);
+
+        if (favorite) {
+          setIsFavorite(true);
+          setFavoriteId(favorite._id);  // Set the favorite ID properly
+        }
+      } catch (error) {
+        console.error("Error checking favorite status:", error);
+      }
+    };
+
+    if (customerId) {
+      checkIfFavorite();
+    }
+  }, [customerId, id]);
+
   // Fetch feedback based on professionalId
   const feedbackUrl = `http://localhost:8081/feedback/professional/${id}`;
   const {
@@ -70,23 +97,37 @@ const ProfDetailPage = () => {
     setIsModalOpen(false); // Close the modal after submission
   };
 
-  // Handle Add to Favorite
-  const handleAddToFavorites = async () => {
+  // Handle Add/Remove to/from Favorite
+  const handleToggleFavorite = async () => {
     try {
-      const response = await axios.post("http://localhost:8081/favourite", {
-        cust_id: customerId,
-        prof_id: id,
-        jobId: job_id, // Send jobId along with customer and professional IDs
-      });
-
-      if (response.status === 201) {
-        alert("Professional added to favorites successfully!");
+      if (isFavorite) {
+        // Remove from favorites
+        const deleteResponse = await axios.delete(
+          `https://backend-taskmate.onrender.com/favourite/${favoriteId}`
+        );
+        if (deleteResponse.status === 200) {
+          setIsFavorite(false); // Update favorite status to false
+          setFavoriteId(null); // Clear favorite ID
+        } else {
+          alert("Failed to remove from favorites");
+        }
       } else {
-        alert(response.data.message || "Failed to add to favorites");
+        // Add to favorite if not already a favorite
+        const response = await axios.post("https://backend-taskmate.onrender.com/favourite", {
+          cust_id: customerId,
+          prof_id: id,
+          jobId: job_id,
+        });
+        if (response.status === 201) {
+          setIsFavorite(true); // Update favorite status to true
+          setFavoriteId(response.data._id); // Store the favorite ID
+        } else {
+          alert(response.data.message || "Failed to add to favorites");
+        }
       }
     } catch (error) {
-      console.error("Error adding to favorites:", error);
-      alert("Error adding to favorites");
+      console.error("Error toggling favorite status:", error);
+      alert("Error toggling favorite status");
     }
   };
 
@@ -176,14 +217,18 @@ const ProfDetailPage = () => {
             </span>
           </div>
           <button
-            onClick={handleAddToFavorites}
-            className="bg-tertiary text-black px-4 py-2 rounded mr-5 hover:bg-secondary"
+            onClick={handleToggleFavorite}
+            className={`${
+              isFavorite
+                ? "bg-red-600 text-white"
+                : "bg-tertiary text-black hover:bg-secondary"
+            } px-4 py-2 rounded mr-5`}
           >
-            Add to Favorite
+            {isFavorite ? "Remove from Favorite" : "Add to Favorite"}
           </button>
           <button
             onClick={handleModalOpen}
-            className="bg-tertiary text-black  px-4 py-2 rounded hover:bg-secondary"
+            className="bg-tertiary text-black px-4 py-2 rounded hover:bg-secondary"
           >
             Book Now
           </button>
