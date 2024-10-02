@@ -83,11 +83,8 @@ const ProfessionalsListByService = ({ serviceId }) => {
           key={professional._id}
           className="flex flex-col justify-between bg-primary rounded-xl"
         >
-          <p className="text-red-500">{professional.jobId}</p>
-
           {/* Professional Profile Image */}
           <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
-            <span className="text-red-600">{professional.professionalId}</span>
             <img
               src={professional.profileImage || userImage}
               alt={professional.firstName}
