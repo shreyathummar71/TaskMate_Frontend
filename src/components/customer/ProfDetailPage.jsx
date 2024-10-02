@@ -5,7 +5,6 @@ import userImage from "/src/assets/images/user.png";
 import { useParams } from "react-router-dom";
 import BookingModal from "./BookingModal";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
-import axios from "axios";
 
 const ProfDetailPage = () => {
   const { id } = useParams();
@@ -16,8 +15,11 @@ const ProfDetailPage = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [customerId, setCustomerId] = useState(null); // State for customer ID
-  const [isFavorite, setIsFavorite] = useState(false); // State to track favorite status
-  const [favoriteId, setFavoriteId] = useState(null); // Store favorite ID for removing
+  const [jobDescription, setJobDescription] = useState(null); // State for job description
+  const [chargesPerHour, setChargesPerHour] = useState(null); // State for charges per hour
+  const [referenceImage, setReferenceImage] = useState(null); // State for reference image
+  const [jobLoading, setJobLoading] = useState(true); // State for job loading
+  const [jobError, setJobError] = useState(null); // State for job error
 
   // Fetch customer ID from the token
   useEffect(() => {
@@ -30,7 +32,7 @@ const ProfDetailPage = () => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/professional/${id}`
+          `https://backend-taskmate.onrender.com/professional/${id}`
         );
 
         if (!response.ok) {
@@ -49,33 +51,36 @@ const ProfDetailPage = () => {
     fetchProfessionalDetails();
   }, [id]);
 
-  // Check if the professional is already a favorite
+  // Fetch job details based on job_id
   useEffect(() => {
-    const checkIfFavorite = async () => {
+    const fetchJobDetails = async () => {
+      if (!job_id) return; // Exit if job_id is not available
+
       try {
-        const response = await axios.get(
-          `https://backend-taskmate.onrender.com/favourite/customer/${customerId}`
+        const response = await fetch(
+          `https://backend-taskmate.onrender.com/newjob/${job_id}`
         );
 
-        // Check if the professional is in the favorites list
-        const favorite = response.data.find(fav => fav.prof_id._id === id);
-
-        if (favorite) {
-          setIsFavorite(true);
-          setFavoriteId(favorite._id);  // Set the favorite ID properly
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-      } catch (error) {
-        console.error("Error checking favorite status:", error);
+
+        const data = await response.json(); // Parse JSON data
+        setJobDescription(data.description); // Set job description
+        setChargesPerHour(data.chargesPerHour); // Set charges per hour
+        setReferenceImage(data.referenceImage); // Set reference image
+      } catch (err) {
+        setJobError(err.message);
+      } finally {
+        setJobLoading(false);
       }
     };
 
-    if (customerId) {
-      checkIfFavorite();
-    }
-  }, [customerId, id]);
+    fetchJobDetails();
+  }, [job_id]);
 
   // Fetch feedback based on professionalId
-  const feedbackUrl = `http://localhost:8081/feedback/professional/${id}`;
+  const feedbackUrl = `https://backend-taskmate.onrender.com/feedback/professional/${id}`;
   const {
     feedback,
     loading: feedbackLoading,
@@ -94,44 +99,11 @@ const ProfDetailPage = () => {
   // Handle booking submission
   const handleBookingSubmit = (bookingData) => {
     console.log("Booking Data Submitted:", bookingData);
+    // You can send bookingData to your API here
     setIsModalOpen(false); // Close the modal after submission
   };
 
-  // Handle Add/Remove to/from Favorite
-  const handleToggleFavorite = async () => {
-    try {
-      if (isFavorite) {
-        // Remove from favorites
-        const deleteResponse = await axios.delete(
-          `https://backend-taskmate.onrender.com/favourite/${favoriteId}`
-        );
-        if (deleteResponse.status === 200) {
-          setIsFavorite(false); // Update favorite status to false
-          setFavoriteId(null); // Clear favorite ID
-        } else {
-          alert("Failed to remove from favorites");
-        }
-      } else {
-        // Add to favorite if not already a favorite
-        const response = await axios.post("https://backend-taskmate.onrender.com/favourite", {
-          cust_id: customerId,
-          prof_id: id,
-          jobId: job_id,
-        });
-        if (response.status === 201) {
-          setIsFavorite(true); // Update favorite status to true
-          setFavoriteId(response.data._id); // Store the favorite ID
-        } else {
-          alert(response.data.message || "Failed to add to favorites");
-        }
-      }
-    } catch (error) {
-      console.error("Error toggling favorite status:", error);
-      alert("Error toggling favorite status");
-    }
-  };
-
-  if (loading || feedbackLoading) {
+  if (loading || feedbackLoading || jobLoading) {
     return <div>Loading...</div>;
   }
 
@@ -142,6 +114,13 @@ const ProfDetailPage = () => {
   if (!professional) {
     return <div>No professional found</div>;
   }
+
+  if (jobError) {
+    return <div>Error fetching job details: {jobError}</div>;
+  }
+
+  // Log the professional object
+  console.log("Professional Object:", professional);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -174,17 +153,16 @@ const ProfDetailPage = () => {
 
   return (
     <>
-      <div className="bg-primary py-14 flex justify-between items-center text-white px-40">
+      <div className="bg-primary py-14 flex justify-around items-center text-white">
         {/* Part 1: Image */}
         <div className="text-left mb-5">
           {professional.profileImage && (
             <img
               src={professional.profileImage}
               alt={`${professional.firstName}'s profile`}
-              className="rounded-full w-[150px] h-[150px] border-2 border-secondary overflow-hidden"
+              className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden"
             />
           )}
-          <p className="text-red-500">{job_id}</p>
 
           <p className="mt-4 text-center">
             {professional.averageRating
@@ -201,6 +179,11 @@ const ProfDetailPage = () => {
           <p className="mb-4">
             {professional.jobProfile.experience} years of experience
           </p>
+          {/* New fields for reference image and charges per hour */}
+
+          {chargesPerHour && (
+            <p className="mb-4">Charges per Hour: {chargesPerHour} €</p>
+          )}
         </div>
 
         {/* Part 3: Location and Buttons */}
@@ -216,19 +199,12 @@ const ProfDetailPage = () => {
               Country: {professional.jobProfile.country || "Unknown"}
             </span>
           </div>
-          <button
-            onClick={handleToggleFavorite}
-            className={`${
-              isFavorite
-                ? "bg-red-600 text-white"
-                : "bg-tertiary text-black hover:bg-secondary"
-            } px-4 py-2 rounded mr-5`}
-          >
-            {isFavorite ? "Remove from Favorite" : "Add to Favorite"}
+          <button className="bg-tertiary mr-4 font-secondary bg-opacity-50 border border-secondary text-white px-6 py-2 rounded-md hover:bg-yellow-400 hover:text-white">
+            Add to Favorite
           </button>
           <button
             onClick={handleModalOpen}
-            className="bg-tertiary text-black px-4 py-2 rounded hover:bg-secondary"
+            className="bg-tertiary font-secondary bg-opacity-50 border border-secondary text-white px-6 py-2 rounded-md hover:bg-yellow-400 hover:text-white"
           >
             Book Now
           </button>
@@ -244,12 +220,13 @@ const ProfDetailPage = () => {
           {professional.jobProfile.skill &&
           professional.jobProfile.skill.length > 0 ? (
             professional.jobProfile.skill.map((skill) => {
+              console.log("Rendering Skill:", skill); // Debugging
               return (
                 <div key={skill._id} className="mr-7 text-center float-start">
                   {skill.image ? (
                     <img
                       src={skill.image}
-                      alt={`${skill.name} image`}
+                      alt="service image"
                       className="h-32 w-32 object-cover rounded-md"
                       onError={(e) => {
                         e.target.onerror = null;
@@ -274,13 +251,37 @@ const ProfDetailPage = () => {
       </div>
 
       {/* About Me Section */}
-      <div className="bg-tertiary p-8">
+      <div className="bg-tertiary p-8 ">
         <h2 className="text-2xl font-semibold font-primary text-primary mb-5 ">
           About Me:
         </h2>
         <p className="text-md text-black font-secondary">
           {professional.aboutMe}
         </p>
+      </div>
+      <div className="p-8 bg-primary flex">
+        <div className="w-1/2">
+          {referenceImage && (
+            <div>
+              <img
+                src={referenceImage}
+                alt="Reference"
+                className="object-cover rounded-md w-full"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = userImage; // Fallback image
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Description Section with Centered Text */}
+        <div className="w-1/2 flex justify-center items-center">
+          <p className="text-md text-white font-secondary text-left px-10">
+            {jobDescription || "No description available."}
+          </p>
+        </div>
       </div>
 
       {/* Feedback Section */}
@@ -333,6 +334,7 @@ const ProfDetailPage = () => {
           <p>No feedback available.</p>
         )}
       </div>
+
       {/* Booking Modal */}
       <BookingModal
         isOpen={isModalOpen}
@@ -341,7 +343,6 @@ const ProfDetailPage = () => {
         professional={professional}
         serviceId={service_id}
         jobId={job_id}
-        customerId={customerId} // Pass customer ID here
       />
     </>
   );
