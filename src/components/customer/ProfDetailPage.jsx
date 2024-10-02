@@ -184,8 +184,6 @@ const ProfDetailPage = () => {
               className="rounded-full w-[150px] h-[150px] border-2 border-secondary overflow-hidden"
             />
           )}
-          <p className="text-red-500">{job_id}</p>
-
           <p className="mt-4 text-center">
             {professional.averageRating
               ? renderStars(professional.averageRating)
