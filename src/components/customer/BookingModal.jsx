@@ -7,7 +7,9 @@ const BookingModal = ({
   professional,
   serviceId,
   customerId,
+  jobId,
   chargesPerHour,
+  formattedDate,
 }) => {
   const [name, setName] = useState("");
   const [street, setStreet] = useState("");
@@ -24,7 +26,7 @@ const BookingModal = ({
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
-
+  const [confirmedJobId, setConfirmedJobId] = useState(null);
   const [serviceName, setServiceName] = useState(""); // New state for service name
 
   useEffect(() => {
@@ -62,6 +64,7 @@ const BookingModal = ({
 
     const bookingData = {
       cust_id: customerId,
+      addJobModel_id: jobId, // Use addJobModel_id instead of job_id
       prof_id: professional._id,
       service_id: serviceId,
       appointmentDateTime: new Date(appointmentDateTime),
@@ -100,7 +103,7 @@ const BookingModal = ({
       if (response.ok) {
         const data = await response.json();
         console.log("Booking confirmed:", data);
-        onSubmit(data);
+        onSubmit(data); // Call onSubmit with the booking data received from backend
       } else {
         const errorData = await response.text();
         console.error("Failed to create booking", errorData);
@@ -118,7 +121,7 @@ const BookingModal = ({
           Book Appointment
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-white text-sm mb-2">
               Appointment Date
             </label>
@@ -130,6 +133,13 @@ const BookingModal = ({
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               required
             />
+          </div> */}
+          {/* New Formatted Date Field */}
+          <div className="mb-4">
+            <label className="block text-white text-sm mb-2">Date</label>
+            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
+              {formattedDate || "Loading..."}
+            </div>
           </div>
           {/* New Charges per Hour Field */}
           <div className="mb-4 flex gap-4">
