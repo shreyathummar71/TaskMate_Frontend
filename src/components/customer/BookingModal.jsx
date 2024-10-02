@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const BookingModal = ({
   isOpen,
@@ -16,22 +16,46 @@ const BookingModal = ({
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [appointmentDateTime, setAppointmentDateTime] = useState(
-    new Date().toISOString().substring(0, 16)
+    new Date().toISOString().substring(0, 10) // Format for 'date'
   );
-  const [bookHr, setBookHr] = useState(new Date().getHours());
+  const [bookHr, setBookHr] = useState("");
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
+
+  const [serviceName, setServiceName] = useState(""); // New state for service name
+
+  useEffect(() => {
+    const fetchServiceName = async () => {
+      try {
+        const response = await fetch(
+          `https://backend-taskmate.onrender.com/services/${serviceId}`
+        );
+        if (response.ok) {
+          const serviceData = await response.json();
+          setServiceName(serviceData.name); // Assuming the service name is in the 'name' field
+        } else {
+          console.error("Failed to fetch service name");
+        }
+      } catch (error) {
+        console.error("Error fetching service name:", error);
+      }
+    };
+
+    if (serviceId) {
+      fetchServiceName(); // Fetch service name when the serviceId is available
+    }
+  }, [serviceId]); // Trigger the effect when serviceId changes
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate required fields for booking for others
-    if (!name && isBookingForOthers) {
-      console.error("Name is required for booking for others");
+    // Validation: Check if startTime and endTime are set
+    if (!startTime || !endTime) {
+      console.error("Start time and end time are required.");
       return;
     }
 
@@ -42,8 +66,8 @@ const BookingModal = ({
       appointmentDateTime: new Date(appointmentDateTime),
       bookHr: new Date(appointmentDateTime).getHours(),
       status: "pending",
-      startTime: new Date(startTime),
-      endTime: new Date(endTime),
+      startTime: new Date(`${appointmentDateTime}T${startTime}`), // Ensure correct format
+      endTime: new Date(`${appointmentDateTime}T${endTime}`), // Ensure correct format
       description: description,
       bookingForOthers: isBookingForOthers
         ? {
@@ -88,14 +112,17 @@ const BookingModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-primary rounded-lg p-6 w-1/3">
+      <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto">
         <h2 className="text-xl font-primary text-secondary text-center mb-4">
           Book Appointment
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
+            <label className="block text-white text-sm mb-2">
+              Appointment Date
+            </label>
             <input
-              type="datetime-local"
+              type="date"
               name="appointmentDateTime"
               value={appointmentDateTime}
               onChange={(e) => setAppointmentDateTime(e.target.value)}
@@ -104,6 +131,7 @@ const BookingModal = ({
             />
           </div>
           <div className="mb-4">
+            <label className="block text-white text-sm mb-2">Book Hour</label>
             <input
               type="text"
               name="bookHr"
@@ -115,32 +143,46 @@ const BookingModal = ({
             />
           </div>
 
-          {/* Start Time Field */}
+          {/* New Service Field */}
           <div className="mb-4">
-            <input
-              type="datetime-local"
-              name="startTime"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              required
-            />
+            <label className="block text-white text-sm mb-2">Service</label>
+            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
+              {/* Display the service name */}
+              {serviceName || "Loading..."}
+            </div>
           </div>
 
-          {/* End Time Field */}
-          <div className="mb-4">
-            <input
-              type="datetime-local"
-              name="endTime"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              required
-            />
+          {/* Start Time and End Time Side by Side */}
+          <div className="mb-4 flex gap-4">
+            <div className="w-1/2">
+              <label className="block text-white text-sm mb-2">
+                Start Time
+              </label>
+              <input
+                type="time"
+                name="startTime"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                required
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="block text-white text-sm mb-2">End Time</label>
+              <input
+                type="time"
+                name="endTime"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                required
+              />
+            </div>
           </div>
 
           {/* Description Field */}
           <div className="mb-4">
+            <label className="block text-white text-sm mb-2">Description</label>
             <textarea
               name="description"
               value={description}
@@ -160,13 +202,14 @@ const BookingModal = ({
                 checked={isBookingForOthers}
                 onChange={() => setIsBookingForOthers(!isBookingForOthers)}
               />
-              Book for someone else
+              <span className="ml-2">Book for someone else</span>
             </label>
           </div>
 
           {isBookingForOthers && (
             <>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Name</label>
                 <input
                   type="text"
                   name="name"
@@ -178,6 +221,7 @@ const BookingModal = ({
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Street</label>
                 <input
                   type="text"
                   name="street"
@@ -189,6 +233,7 @@ const BookingModal = ({
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">City</label>
                 <input
                   type="text"
                   name="city"
@@ -200,6 +245,7 @@ const BookingModal = ({
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">State</label>
                 <input
                   type="text"
                   name="state"
@@ -211,6 +257,7 @@ const BookingModal = ({
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Zipcode</label>
                 <input
                   type="text"
                   name="zipcode"
@@ -222,6 +269,9 @@ const BookingModal = ({
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">
+                  Phone Number
+                </label>
                 <input
                   type="text"
                   name="phoneNumber"
@@ -233,6 +283,7 @@ const BookingModal = ({
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Email</label>
                 <input
                   type="email"
                   name="email"

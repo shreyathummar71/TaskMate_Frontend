@@ -9,7 +9,7 @@ import getCustomerIdFromToken from "../../utils/tokenUtils";
 const ProfDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { service_id } = location.state || {};
+  const { service_id, job_id } = location.state || {};
   const [professional, setProfessional] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +26,7 @@ const ProfDetailPage = () => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
-          `https://backend-taskmate.onrender.com/professional/${id}`
+          `http://localhost:8081/professional/${id}`
         );
 
         if (!response.ok) {
@@ -46,7 +46,7 @@ const ProfDetailPage = () => {
   }, [id]);
 
   // Fetch feedback based on professionalId
-  const feedbackUrl = `https://backend-taskmate.onrender.com/feedback/professional/${id}`;
+  const feedbackUrl = `http://localhost:8081/feedback/professional/${id}`;
   const {
     feedback,
     loading: feedbackLoading,
@@ -79,6 +79,9 @@ const ProfDetailPage = () => {
   if (!professional) {
     return <div>No professional found</div>;
   }
+
+  // Log the professional object
+  console.log("Professional Object:", professional);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -121,6 +124,8 @@ const ProfDetailPage = () => {
               className="rounded-full w-[150px] h-[150px] border-2 border-secondary overflow-hidden"
             />
           )}
+          <p className="text-red-500">{job_id}</p>
+
           <p className="mt-4 text-center">
             {professional.averageRating
               ? renderStars(professional.averageRating)
@@ -174,7 +179,7 @@ const ProfDetailPage = () => {
             professional.jobProfile.skill.map((skill) => {
               console.log("Rendering Skill:", skill); // Debugging
               return (
-                <div key={skill.name} className="mr-7 text-center float-start">
+                <div key={skill._id} className="mr-7 text-center float-start">
                   {skill.image ? (
                     <img
                       src={skill.image}
@@ -269,6 +274,7 @@ const ProfDetailPage = () => {
         onSubmit={handleBookingSubmit}
         professional={professional}
         serviceId={service_id}
+        jobId={job_id}
         customerId={customerId} // Pass customer ID here
       />
     </>
