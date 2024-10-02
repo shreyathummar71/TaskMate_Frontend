@@ -12,7 +12,7 @@ const CustMyBooking = () => {
       const id = await getCustomerIdFromToken();
       setCustomerId(id);
       try {
-        const response = await axios.get(
+        const response = await fetch(
           `https://backend-taskmate.onrender.com/booking/customer/${customerId}`
         );
         setBooking(response.data[0]); // Assuming the API returns an array of bookings
