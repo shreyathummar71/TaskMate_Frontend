@@ -73,8 +73,6 @@ const ProfPinJobListing = () => {
 
               // Log each job's service_id for debugging
               data.forEach((job) => {
-                console.log("Job ID:", job.job_id._id);
-                console.log("Service ID:", job.job_id?.service_id); // Log service_id for each job
                 if (job.job_id?.service_id) {
                   console.log("Service Name:", job.job_id.service_id.name); // Log the service name
                 } else {
