@@ -14,6 +14,7 @@ const CustomerDashboard = () => {
   const [activeMenu, setActiveMenu] = useState("bookService");
   const [profilePicture, setProfilePicture] = useState("");
   const [serviceId, setServiceId] = useState(null); // State to hold selected service ID
+  const [cust_Id, setCust_Id] = useState(null); // Define state for custId
   const mainContentRef = useRef(null);
   const bookServiceRef = useRef(null);
   const navigate = useNavigate(); // Initialize navigate
@@ -155,7 +156,8 @@ const CustomerDashboard = () => {
         {/* Main Content */}
         <div className="flex-grow pl-10 w-2/4" ref={mainContentRef}>
           {activeMenu === "bookService" && <CustAllCategory />}
-          {activeMenu === "my-bookings" && <CustMyBooking />}
+          {/* pass custId here */}
+          {activeMenu === "my-bookings" && <CustMyBooking custId={cust_Id} />}
           {activeMenu === "favorites" && <CustFavorites />}
           {activeMenu === "faq" && <FAQCustomer />}
           {activeMenu === "help-center" && <CustHelpCenter />}
