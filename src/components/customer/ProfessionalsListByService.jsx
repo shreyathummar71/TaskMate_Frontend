@@ -4,7 +4,7 @@ import axios from "axios";
 import userImage from "../../assets/images/user.png";
 
 const PROFESSIONAL_BY_SERVICE_ID_URL =
-  "https://backend-taskmate.onrender.com/newJob/professionals-for-service-details/";
+  "http://localhost:8081/newJob/professionals-for-service-details/";
 
 const ProfessionalsListByService = ({ serviceId }) => {
   const [professionals, setProfessionals] = useState([]);
@@ -37,11 +37,12 @@ const ProfessionalsListByService = ({ serviceId }) => {
   if (loading) return <div>Loading professionals...</div>;
   if (error) return <div> {error}</div>;
 
-  const handleViewProfessionalDetailsClick = (id) => {
+  const handleViewProfessionalDetailsClick = (id, jobId) => {
     // Pass additional data as state
     navigate(`/professional-detail/${id}`, {
       state: {
         service_id: serviceId,
+        job_id: jobId,
       },
     });
   };
@@ -82,6 +83,8 @@ const ProfessionalsListByService = ({ serviceId }) => {
           key={professional._id}
           className="flex flex-col justify-between bg-primary rounded-xl"
         >
+          <p className="text-red-500">{professional.jobId}</p>
+
           {/* Professional Profile Image */}
           <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
             <span className="text-red-600">{professional.professionalId}</span>
@@ -139,7 +142,8 @@ const ProfessionalsListByService = ({ serviceId }) => {
               <button
                 onClick={() =>
                   handleViewProfessionalDetailsClick(
-                    professional.professionalId
+                    professional.professionalId,
+                    professional.jobId
                   )
                 }
                 className="text-xs text-white font-primary border-b border-secondary hover:text-secondary hover:border-white"
