@@ -5,6 +5,7 @@ import userImage from "/src/assets/images/user.png";
 import { useParams } from "react-router-dom";
 import BookingModal from "./BookingModal";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
+import axios from "axios";
 
 const ProfDetailPage = () => {
   const { id } = useParams();
@@ -21,6 +22,7 @@ const ProfDetailPage = () => {
     const id = getCustomerIdFromToken();
     setCustomerId(id); // Store customer ID in state
   }, []);
+
   // Fetch professional details
   useEffect(() => {
     const fetchProfessionalDetails = async () => {
@@ -52,6 +54,7 @@ const ProfDetailPage = () => {
     loading: feedbackLoading,
     error: feedbackError,
   } = useFetchFeedback(feedbackUrl);
+
   // Handle modal open/close
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -64,8 +67,27 @@ const ProfDetailPage = () => {
   // Handle booking submission
   const handleBookingSubmit = (bookingData) => {
     console.log("Booking Data Submitted:", bookingData);
-    // You can send bookingData to your API here
     setIsModalOpen(false); // Close the modal after submission
+  };
+
+  // Handle Add to Favorite
+  const handleAddToFavorites = async () => {
+    try {
+      const response = await axios.post("http://localhost:8081/favourite", {
+        cust_id: customerId,
+        prof_id: id,
+        jobId: job_id, // Send jobId along with customer and professional IDs
+      });
+
+      if (response.status === 201) {
+        alert("Professional added to favorites successfully!");
+      } else {
+        alert(response.data.message || "Failed to add to favorites");
+      }
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+      alert("Error adding to favorites");
+    }
   };
 
   if (loading || feedbackLoading) {
@@ -79,9 +101,6 @@ const ProfDetailPage = () => {
   if (!professional) {
     return <div>No professional found</div>;
   }
-
-  // Log the professional object
-  console.log("Professional Object:", professional);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -156,7 +175,10 @@ const ProfDetailPage = () => {
               Country: {professional.jobProfile.country || "Unknown"}
             </span>
           </div>
-          <button className="bg-tertiary text-black px-4 py-2 rounded mr-5 hover:bg-secondary">
+          <button
+            onClick={handleAddToFavorites}
+            className="bg-tertiary text-black px-4 py-2 rounded mr-5 hover:bg-secondary"
+          >
             Add to Favorite
           </button>
           <button
@@ -177,7 +199,6 @@ const ProfDetailPage = () => {
           {professional.jobProfile.skill &&
           professional.jobProfile.skill.length > 0 ? (
             professional.jobProfile.skill.map((skill) => {
-              console.log("Rendering Skill:", skill); // Debugging
               return (
                 <div key={skill._id} className="mr-7 text-center float-start">
                   {skill.image ? (
