@@ -101,7 +101,7 @@ const CustAllCategory = () => {
         <div>
           {!selectedCategory ? (
             <div>
-              <h2 className="text-xl mb-8 font-primary">All Categories</h2>
+              <h2 className="text-2xl mb-8 font-primary">All Categories</h2>
               <div className="grid grid-cols-3 gap-8">
                 {categories.map((category) => (
                   <div
