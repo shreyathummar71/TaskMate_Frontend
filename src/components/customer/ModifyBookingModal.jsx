@@ -25,63 +25,97 @@ const ModifyBookingModal = ({ isOpen, onClose, booking, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto">
-        <h2 className="text-xl font-primary text-secondary text-center mb-4">
-          Modify Booking
-        </h2>
-        <dialog ref={modalRef} className="modal">
-          <form onSubmit={handleSubmit}>
-            <label>Professional Name:</label>
-            <input
-              type="text"
-              name="professionalName"
-              value={formData.professionalName}
-              onChange={handleChange}
-            />
-            <div className="mb-4">
-              <label className="block text-white text-sm mb-2">
+    <dialog ref={modalRef} className="w-full">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto">
+          <h2 className="text-xl font-primary text-secondary text-center mb-4">
+            Modify Booking
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm text-white mb-1">
+                Professional Name:
+              </label>
+              <input
+                type="text"
+                name="professionalName"
+                value={formData.professionalName}
+                onChange={handleChange}
+                className="w-full p-2 bg-gray-700 border text-secondary rounded"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-white mb-1">
                 Service Name:
               </label>
-              <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"></div>
               <input
                 type="text"
                 name="serviceName"
                 value={formData.serviceName}
                 onChange={handleChange}
+                className="w-full p-2 bg-gray-700 border text-secondary rounded"
               />
             </div>
 
-            <label>Appointment Date:</label>
-            <input
-              type="date"
-              name="appointmentDate"
-              value={formData.appointmentDate}
-              onChange={handleChange}
-            />
+            <div>
+              <label className="block text-sm text-white mb-1">
+                Appointment Date:
+              </label>
+              <input
+                type="date"
+                name="appointmentDate"
+                value={formData.appointmentDate}
+                onChange={handleChange}
+                className="w-full p-2 bg-gray-700 border text-secondaryrounded"
+              />
+            </div>
 
-            <label>Schedule:</label>
-            <input
-              type="text"
-              name="schedule"
-              value={formData.schedule}
-              onChange={handleChange}
-            />
+            <div>
+              <label className="block text-sm text-white  mb-1">
+                Schedule:
+              </label>
+              <input
+                type="text"
+                name="schedule"
+                value={formData.schedule}
+                onChange={handleChange}
+                className="w-full p-2 bg-gray-700 border text-secondary rounded"
+              />
+            </div>
 
-            <label>Booking Hours:</label>
-            <input
-              type="number"
-              name="bookingHours"
-              value={formData.bookingHours}
-              onChange={handleChange}
-            />
-
-            <button type="submit">Save Changes</button>
+            <div>
+              <label className="block text-sm text-white  mb-1">
+                Booking Hours:
+              </label>
+              <input
+                type="number"
+                name="bookingHours"
+                value={formData.bookingHours}
+                onChange={handleChange}
+                className="w-full p-2 bg-gray-700 border text-secondary rounded"
+              />
+            </div>
+            <div className="float-end mr-4 mt-3">
+              <button
+                type="submit"
+                className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              >
+                Save Changes
+              </button>
+            </div>
           </form>
-          <button onClick={onClose}>Close</button>
-        </dialog>
+          <div className="float-end mr-4 mt-4">
+            <button
+              onClick={onClose}
+              className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </dialog>
   );
 };
 
