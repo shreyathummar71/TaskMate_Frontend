@@ -45,6 +45,21 @@ const CustMyBooking = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  const openModal = (booking) => {
+    setCurrentBooking(booking);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentBooking(null);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Logic to update booking details
+    closeModal();
+  };
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
     switch (status.toLowerCase()) {
@@ -108,7 +123,10 @@ const CustMyBooking = () => {
               </p>
             </div>
             <div className="float-end mr-4 mt-3">
-              <button className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white">
+              <button
+                onClick={() => openModal(bookingDetail)}
+                className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              >
                 Modify Booking
               </button>
             </div>
@@ -124,6 +142,18 @@ const CustMyBooking = () => {
           </div>
         </div>
       ))}
+
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <form onSubmit={handleSubmit}>
+            {/* Add form fields for editing */}
+            <label>Professional Name:</label>
+            <input type="text" defaultValue={currentBooking.professionalName} />
+            {/* Add more fields as needed */}
+            <button type="submit">Save Changes</button>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 };
