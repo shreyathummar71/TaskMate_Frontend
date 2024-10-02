@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import useFetchFeedback from "../../utils/useFetchFeedback"; // Import the custom hook
 import userImage from "/src/assets/images/user.png";
-import { useParams } from "react-router-dom";
+import noImage from "/src/assets/images/placeholder-image.jpg";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import BookingModal from "./BookingModal";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
+import BackArrow from "../../assets/images/Back_Arrow.png";
 import axios from "axios";
 
 const ProfDetailPage = () => {
@@ -23,14 +24,15 @@ const ProfDetailPage = () => {
   const [jobError, setJobError] = useState(null); // State for job error
   const [isFavorite, setIsFavorite] = useState(false); // State to track favorite status
   const [favoriteId, setFavoriteId] = useState(null); // Store favorite ID for removing
-
+  const navigate = useNavigate();
   // Fetch customer ID from the token
   useEffect(() => {
     const id = getCustomerIdFromToken();
     setCustomerId(id); // Store customer ID in state
   }, []);
-
-
+  const handleBackButton = () => {
+    navigate("/customerDashboard");
+  };
   // Fetch professional details
   useEffect(() => {
     const fetchProfessionalDetails = async () => {
@@ -92,11 +94,11 @@ const ProfDetailPage = () => {
         );
 
         // Check if the professional is in the favorites list
-        const favorite = response.data.find(fav => fav.prof_id._id === id);
+        const favorite = response.data.find((fav) => fav.prof_id._id === id);
 
         if (favorite) {
           setIsFavorite(true);
-          setFavoriteId(favorite._id);  // Set the favorite ID properly
+          setFavoriteId(favorite._id); // Set the favorite ID properly
         }
       } catch (error) {
         console.error("Error checking favorite status:", error);
@@ -116,7 +118,6 @@ const ProfDetailPage = () => {
     error: feedbackError,
   } = useFetchFeedback(feedbackUrl);
 
-
   // Handle modal open/close
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -131,7 +132,6 @@ const ProfDetailPage = () => {
     console.log("Booking Data Submitted:", bookingData);
     setIsModalOpen(false); // Close the modal after submission
   };
-
 
   // Handle Add/Remove to/from Favorite
   const handleToggleFavorite = async () => {
@@ -149,11 +149,14 @@ const ProfDetailPage = () => {
         }
       } else {
         // Add to favorite if not already a favorite
-        const response = await axios.post("https://backend-taskmate.onrender.com/favourite", {
-          cust_id: customerId,
-          prof_id: id,
-          jobId: job_id,
-        });
+        const response = await axios.post(
+          "https://backend-taskmate.onrender.com/favourite",
+          {
+            cust_id: customerId,
+            prof_id: id,
+            jobId: job_id,
+          }
+        );
         if (response.status === 201) {
           setIsFavorite(true); // Update favorite status to true
           setFavoriteId(response.data._id); // Store the favorite ID
@@ -217,71 +220,78 @@ const ProfDetailPage = () => {
 
   return (
     <>
-      <div className="bg-primary py-14 flex justify-around items-center text-white">
-        {/* Part 1: Image */}
-        <div className="text-left mb-5">
-          {professional.profileImage && (
-            <img
-              src={professional.profileImage}
-              alt={`${professional.firstName}'s profile`}
-              className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden"
-            />
-          )}
+      <div className="bg-primary text-white pt-14 mb-14 float-start w-full">
+        <div className="justify-around items-center flex ">
+          {/* Part 1: Image */}
+          <div className="text-left mb-5">
+            {professional.profileImage && (
+              <img
+                src={professional.profileImage || userImage}
+                alt={`${professional.firstName}'s profile`}
+                className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden"
+              />
+            )}
 
-          <p className="mt-4 text-center">
-            {professional.averageRating
-              ? renderStars(professional.averageRating)
-              : "N/A"}
-          </p>
-        </div>
-
-        {/* Part 2: Personal Information */}
-        <div className="text-left mb-5 ">
-          <h1 className="text-2xl font-semibold text-secondary font-primary mb-4">{`${professional.firstName} ${professional.lastName}`}</h1>
-          <p className="mb-4">Email: {professional.email}</p>
-          <p className="mb-4">Phone: {professional.phoneNumber}</p>
-          <p className="mb-4">
-            {professional.jobProfile.experience} years of experience
-          </p>
-          {/* New fields for reference image and charges per hour */}
-
-          {chargesPerHour && (
-            <p className="mb-4">Charges per Hour: {chargesPerHour} €</p>
-          )}
-        </div>
-
-        {/* Part 3: Location and Buttons */}
-        <div className="text-left mb-5">
-          <div>
-            <p className="text-2xl font-semibold text-secondary font-primary mb-4">
-              Location:
+            <p className="mt-4 text-center">
+              {professional.averageRating
+                ? renderStars(professional.averageRating)
+                : "N/A"}
             </p>
-            <span className="float-start w-full mb-2">
-              City: {professional.jobProfile.city || "Unknown"}
-            </span>
-            <span className="float-start w-full mb-7">
-              Country: {professional.jobProfile.country || "Unknown"}
-            </span>
           </div>
-          <button
-            onClick={handleToggleFavorite}
-            className={`${
-              isFavorite
-                ? "bg-red-600 text-white"
-                : "bg-tertiary text-black hover:bg-secondary"
-            } px-4 py-2 rounded mr-5`}
-          >
-            {isFavorite ? "Remove from Favorite" : "Add to Favorite"}
-          </button>
-          <button
-            onClick={handleModalOpen}
-            className="bg-tertiary text-black px-4 py-2 rounded hover:bg-secondary"
-          >
-            Book Now
-          </button>
-        </div>
-      </div>
 
+          {/* Part 2: Personal Information */}
+          <div className="text-left mb-5 ">
+            <h1 className="text-2xl font-semibold text-secondary font-primary mb-4">{`${professional.firstName} ${professional.lastName}`}</h1>
+            <p className="mb-4">Email: {professional.email}</p>
+            <p className="mb-4">Phone: {professional.phoneNumber}</p>
+            <p className="mb-4">
+              {professional.jobProfile.experience} years of experience
+            </p>
+            {chargesPerHour && (
+              <p className="mb-4">Charges per Hour: {chargesPerHour} €</p>
+            )}
+          </div>
+
+          {/* Part 3: Location and Buttons */}
+          <div className="text-left mb-5">
+            <div>
+              <p className="text-2xl font-semibold text-secondary font-primary mb-4">
+                Location:
+              </p>
+              <span className="float-start w-full mb-2">
+                City: {professional.jobProfile.city || "Unknown"}
+              </span>
+              <span className="float-start w-full mb-7">
+                Country: {professional.jobProfile.country || "Unknown"}
+              </span>
+            </div>
+            <button
+              onClick={handleToggleFavorite}
+              className={`${
+                isFavorite
+                  ? "bg-red-600 text-white"
+                  : "bg-tertiary text-black hover:bg-secondary"
+              } px-4 py-2 rounded mr-5`}
+            >
+              {isFavorite ? "Remove from Favorite" : "Add to Favorite"}
+            </button>
+            <button
+              onClick={handleModalOpen}
+              className="bg-tertiary text-black px-4 py-2 rounded hover:bg-secondary"
+            >
+              Book Now
+            </button>
+          </div>
+        </div>
+        <button
+          type="submit"
+          onClick={handleBackButton}
+          className=" flex text-center text-white font-primary rounded-md py-2 px-2 text-sm mx-4 mb-5 transition duration-200"
+        >
+          <img src={BackArrow} alt="Back Arrow" className="mr-2  w-4 h-4" />
+          Back to Dashboard
+        </button>
+      </div>
       {/* Skills Section */}
       <div className="mt-8 px-8">
         <h2 className="text-2xl font-semibold font-primary text-primary mb-5">
@@ -334,12 +344,12 @@ const ProfDetailPage = () => {
           {referenceImage && (
             <div>
               <img
-                src={referenceImage}
+                src={referenceImage || noImage}
                 alt="Reference"
                 className="object-cover rounded-md w-full"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = userImage; // Fallback image
+                  e.target.src = noImage; // Fallback image
                 }}
               />
             </div>
@@ -412,7 +422,9 @@ const ProfDetailPage = () => {
         onSubmit={handleBookingSubmit}
         professional={professional}
         serviceId={service_id}
+        customerId={customerId}
         jobId={job_id}
+        chargesPerHour={chargesPerHour}
       />
     </>
   );

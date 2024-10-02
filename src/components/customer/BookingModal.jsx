@@ -7,6 +7,7 @@ const BookingModal = ({
   professional,
   serviceId,
   customerId,
+  chargesPerHour,
 }) => {
   const [name, setName] = useState("");
   const [street, setStreet] = useState("");
@@ -130,19 +131,29 @@ const BookingModal = ({
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-white text-sm mb-2">Book Hour</label>
-            <input
-              type="text"
-              name="bookHr"
-              placeholder="Book Hour"
-              value={bookHr}
-              onChange={(e) => setBookHr(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              required
-            />
+          {/* New Charges per Hour Field */}
+          <div className="mb-4 flex gap-4">
+            <div className="w-1/2">
+              <label className="block text-white text-sm mb-2">Book Hour</label>
+              <input
+                type="text"
+                name="bookHr"
+                placeholder="Book Hour"
+                value={bookHr}
+                onChange={(e) => setBookHr(e.target.value)}
+                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                required
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="block text-white text-sm mb-2">
+                Charges per Hour
+              </label>
+              <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
+                {chargesPerHour ? `${chargesPerHour} €` : "Loading..."}
+              </div>
+            </div>
           </div>
-
           {/* New Service Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Service</label>
@@ -202,7 +213,7 @@ const BookingModal = ({
                 checked={isBookingForOthers}
                 onChange={() => setIsBookingForOthers(!isBookingForOthers)}
               />
-              <span className="ml-2">Book for someone else</span>
+              <span className="ml-2 text-grey-500">Book for someone else</span>
             </label>
           </div>
 
