@@ -19,6 +19,7 @@ const ProfDetailPage = () => {
   const [customerId, setCustomerId] = useState(null); // State for customer ID
   const [jobDescription, setJobDescription] = useState(null); // State for job description
   const [chargesPerHour, setChargesPerHour] = useState(null); // State for charges per hour
+  const [date, setdate] = useState(null); // State for addjob model date
   const [referenceImage, setReferenceImage] = useState(null); // State for reference image
   const [jobLoading, setJobLoading] = useState(true); // State for job loading
   const [jobError, setJobError] = useState(null); // State for job error
@@ -33,6 +34,13 @@ const ProfDetailPage = () => {
   const handleBackButton = () => {
     navigate("/customerDashboard");
   };
+
+  const jobDate = new Date(date); // Create a Date object
+  const formattedDate = jobDate.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long", // Change to "numeric" for a numeric month (1-12)
+    day: "numeric",
+  });
   // Fetch professional details
   useEffect(() => {
     const fetchProfessionalDetails = async () => {
@@ -74,6 +82,7 @@ const ProfDetailPage = () => {
         const data = await response.json(); // Parse JSON data
         setJobDescription(data.description); // Set job description
         setChargesPerHour(data.chargesPerHour); // Set charges per hour
+        setdate(data.date); // Set job date
         setReferenceImage(data.referenceImage); // Set reference image
       } catch (err) {
         setJobError(err.message);
@@ -250,6 +259,7 @@ const ProfDetailPage = () => {
             {chargesPerHour && (
               <p className="mb-4">Charges per Hour: {chargesPerHour} €</p>
             )}
+            {date && <p className="mb-4">Date: {formattedDate}</p>}
           </div>
 
           {/* Part 3: Location and Buttons */}
@@ -425,6 +435,7 @@ const ProfDetailPage = () => {
         customerId={customerId}
         jobId={job_id}
         chargesPerHour={chargesPerHour}
+        formattedDate={formattedDate}
       />
     </>
   );
