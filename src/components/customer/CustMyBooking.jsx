@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "/src/assets/images/user.png";
+import ModifyBookingModal from "./ModifyBookingModal";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Initialize state
+  const [currentBooking, setCurrentBooking] = useState(null);
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
@@ -45,8 +48,8 @@ const CustMyBooking = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  const openModal = (booking) => {
-    setCurrentBooking(booking);
+  const openModal = (bookingDetails) => {
+    setCurrentBooking(bookingDetails);
     setIsModalOpen(true);
   };
 
@@ -71,6 +74,30 @@ const CustMyBooking = () => {
         return "bg-yellow-500";
       default:
         return "bg-tertiary bg-opacity-50";
+    }
+  };
+  const handleSaveChanges = async (updatedBooking) => {
+    try {
+      // Update booking details in the backend
+      const response = await fetch(
+        `https://backend-taskmate.onrender.com/booking/update/${updatedBooking.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedBooking),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update booking");
+
+      // Update local state with new booking details
+      setBookingDetails((prevDetails) =>
+        prevDetails.map((booking) =>
+          booking._id === updatedBooking.id ? updatedBooking : booking
+        )
+      );
+    } catch (error) {
+      console.error("Error updating booking:", error);
     }
   };
 
@@ -143,16 +170,13 @@ const CustMyBooking = () => {
         </div>
       ))}
 
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <form onSubmit={handleSubmit}>
-            {/* Add form fields for editing */}
-            <label>Professional Name:</label>
-            <input type="text" defaultValue={currentBooking.professionalName} />
-            {/* Add more fields as needed */}
-            <button type="submit">Save Changes</button>
-          </form>
-        </Modal>
+      {isModalOpen && currentBooking && (
+        <ModifyBookingModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          booking={currentBooking}
+          onSave={handleSaveChanges}
+        />
       )}
     </div>
   );
