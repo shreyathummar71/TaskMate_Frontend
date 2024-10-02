@@ -252,7 +252,6 @@ const ProfDetailPage = () => {
           <div className="text-left mb-5 ">
             <h1 className="text-2xl font-semibold text-secondary font-primary mb-4">{`${professional.firstName} ${professional.lastName}`}</h1>
             <p className="mb-4">Email: {professional.email}</p>
-            <p className="mb-4">Phone: {professional.phoneNumber}</p>
             <p className="mb-4">
               {professional.jobProfile.experience} years of experience
             </p>
@@ -268,12 +267,14 @@ const ProfDetailPage = () => {
               <p className="text-2xl font-semibold text-secondary font-primary mb-4">
                 Location:
               </p>
+
               <span className="float-start w-full mb-2">
                 City: {professional.jobProfile.city || "Unknown"}
               </span>
               <span className="float-start w-full mb-7">
                 Country: {professional.jobProfile.country || "Unknown"}
               </span>
+              <p className="mb-4">Phone: {professional.phoneNumber}</p>
             </div>
             <button
               onClick={handleToggleFavorite}
