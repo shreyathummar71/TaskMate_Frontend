@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
-import userimg from "/src/assets/images/user.png";
+import userImage from "/src/assets/images/user.png";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
@@ -46,73 +46,78 @@ const CustMyBooking = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-xl font-bold mb-5 font-primary">My Bookings</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {bookingDetails.map((bookingDetail) => (
+        <div
+          key={bookingDetail._id}
+          className="flex flex-col justify-between bg-primary rounded-xl"
+        >
+          <p className="text-red-500">{bookingDetail.cust_id}</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-        {bookingDetails.length > 0 &&
-          bookingDetails.map((booking) => {
-            const startTimeFormatted = formatTime(booking.startTime);
-            const endTimeFormatted = formatTime(booking.endTime);
+          {/* Professional Profile Image */}
+          <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
+            {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
+            <img
+              src={bookingDetail.profileImage || userImage}
+              alt={bookingDetail.firstName}
+              className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
+            />
+          </div>
 
-            return (
-              <div
-                key={booking._id}
-                className="bg-primary text-white rounded-lg pb-3 shadow-lg max-w-xs relative"
-                style={{ height: "400px" }}
-              >
-                {/* Upper half - Professional Profile Image */}
-                <div className="bg-tertiary text-white rounded-lg p-4 text-center shadow-lg">
-                  <div className="flex justify-center">
-                    {booking.prof_id?.profileImage ? (
-                      <img
-                        src={booking.prof_id.profileImage}
-                        alt={`${booking.prof_id.name}'s profile`}
-                        className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
-                      />
-                    ) : (
-                      <img
-                        src={userimg}
-                        alt="Default profile"
-                        className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
-                      />
-                    )}
-                  </div>
-                </div>
+          <div className="items-center pb-4 bg-primary rounded-b-xl">
+            <p className="text-center font-semibold text-xl text-white font-primary">
+              {bookingDetail.professionalName}
+            </p>
+            <div>
+              <p className="text-lg text-center mt-2 text-white font-secondary">
+                {bookingDetail.serviceName}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                <span className="text-secondary">Service Name: </span>
+                {bookingDetail.serviceName}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                <span className="text-secondary">AppointmentDate: </span>
+                {bookingDetail.appointmentDate}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                <span className="text-secondary">schedule: </span>€
+                {bookingDetail.schedule}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                <span className="text-secondary">Booking Hours: </span>
+                {bookingDetail.bookingHours}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                <span className="text-secondary">Working Time: </span>
+                {professional.workingTime.start} -{" "}
+                {professional.workingTime.end}
+              </p>
+            </div>
 
-                {/* Lower half - Booking Details */}
-                <div className="p-4">
-                  <p className="text-sm mb-1">
-                    <span className="text-secondary">Professional: </span>
-                    {booking.prof_id?.name || "N/A"}
-                  </p>
-                  <p className="text-sm mb-1">
-                    <span className="text-secondary">Service: </span>
-                    {booking.service_id?.name || "N/A"}
-                  </p>
-                  <p className="text-sm mb-1">
-                    <span className="text-secondary">Appointment Date: </span>
-                    {new Date(booking.appointmentDate).toDateString()}
-                  </p>
-                  <p className="text-sm mb-1">
-                    <span className="text-secondary">Time: </span>
-                    {`${startTimeFormatted} - ${endTimeFormatted}`}
-                  </p>
-                  <p className="text-sm mb-1">
-                    <span className="text-secondary">Booked Hours: </span>
-                    {booking.bookHr || "N/A"}
-                  </p>
-                  <p className="text-sm mb-1">
-                    <span className="text-secondary">Status: </span>
-                    {booking.status || "N/A"}
-                  </p>
-                </div>
-
-                {/* Additional buttons or actions can be added here if needed */}
-              </div>
-            );
-          })}
-      </div>
+            <div className="float-end mr-4 mt-3">
+              <button className="text-xs text-white font-primary border-b border-secondary hover:text-secondary hover:border-white">
+                Modify Booking
+              </button>
+            </div>
+            <div className="float-end mr-4 mt-3">
+              <button className="text-xs text-white font-primary border-b border-secondary hover:text-secondary hover:border-white">
+                {bookingDetail.status}
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
