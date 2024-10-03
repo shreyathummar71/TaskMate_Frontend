@@ -8,6 +8,7 @@ const ProfManageBooking = () => {
   const [customerData, setCustomerData] = useState([]);
   const [bookingStatus, setBookingStatus] = useState({});
   const [view, setView] = useState("BookingRequests");
+  const [visibleBookings, setVisibleBookings] = useState({});
 
   // Fetch Booking Details
   const fetchBookingDetails = async (prof_id) => {
@@ -22,7 +23,9 @@ const ProfManageBooking = () => {
 
       if (bookingData && Array.isArray(bookingData)) {
         setBookingDetails(bookingData); // Set booking details
-        const custIds = bookingData.map((booking) => booking.cust_id?._id); // Extract cust_ids
+        const custIds = bookingData
+          .map((booking) => booking.cust_id?._id)
+          .filter((id) => id); // Extract cust_ids
         console.log("cust ids", custIds);
         fetchCustomerDetails(custIds); // Fetch customer details using cust_ids
       }
@@ -65,7 +68,7 @@ const ProfManageBooking = () => {
     getProfId();
   }, []);
 
-  //  format time function
+  // Format time function
   const formatTime = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -98,6 +101,13 @@ const ProfManageBooking = () => {
       // Set booking status
       setBookingStatus((prev) => ({ ...prev, [booking._id]: "confirmed" }));
 
+      // Set temporary visibility for 3 seconds
+      setVisibleBookings((prev) => ({ ...prev, [booking._id]: true }));
+
+      setTimeout(() => {
+        setVisibleBookings((prev) => ({ ...prev, [booking._id]: false }));
+      }, 3000);
+
       console.log("Booking accepted:", updatedBooking);
     } catch (error) {
       console.error("Error accepting booking:", error);
@@ -127,8 +137,17 @@ const ProfManageBooking = () => {
           b._id === booking._id ? { ...updatedBooking } : b
         )
       );
-      //set booking status
-      setBookingStatus((prev) => ({ ...prev, [booking._id]: "rejected" }));
+
+      // Set booking status
+      setBookingStatus((prev) => ({ ...prev, [booking._id]: "cancelled" }));
+
+      // Set temporary visibility for 3 seconds
+      setVisibleBookings((prev) => ({ ...prev, [booking._id]: true }));
+
+      setTimeout(() => {
+        setVisibleBookings((prev) => ({ ...prev, [booking._id]: false }));
+      }, 2000);
+
       console.log("Booking rejected:", updatedBooking);
     } catch (error) {
       console.error("Error rejecting booking:", error);
@@ -138,24 +157,23 @@ const ProfManageBooking = () => {
   // Filter pending bookings where bookingForOthers is falsy (Booking Requests)
   const BookingRequests = bookingDetails.filter(
     (booking) =>
-      booking.status === "pending" && // Status is pending
+      (booking.status === "pending" || visibleBookings[booking._id]) && // Status is pending or visible temporarily
       !booking.bookingForOthers // bookingForOthers is falsy
   );
 
   // Filter pending bookings where bookingForOthers is truthy (Bookings for Others)
   const bookingsForOthers = bookingDetails.filter(
     (booking) =>
-      booking.status === "pending" && // Status is pending
+      (booking.status === "pending" || visibleBookings[booking._id]) && // Status is pending or visible temporarily
       booking.bookingForOthers // bookingForOthers exists (truthy)
   );
 
   return (
     <div className="container mx-auto p-4">
-      {/* <h2 className="text-xl font-bold mb-5 font-primary">Booking Request</h2> */}
-      <div className="flex justify-between mb-5">
+      <div className="flex justify-start gap-5 mb-5">
         <button
           className={`text-xl font-bold font-primary ${
-            view === "BookingRequests" ? "text-blue-500" : "text-gray-500"
+            view === "BookingRequests" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingRequests")}
         >
@@ -163,26 +181,146 @@ const ProfManageBooking = () => {
         </button>
         <button
           className={`text-xl font-bold font-primary ${
-            view === "bookingsForOthers" ? "text-blue-500" : "text-gray-500"
+            view === "BookingsForOthers" ? "text-secondary" : "text-primary"
           }`}
-          onClick={() => setView("bookingsForOthers")}
+          onClick={() => setView("BookingsForOthers")}
         >
-          Bookings for Others
+          | Others Bookings Requests
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-        {/* Map through the booking details */}
         {view === "BookingRequests" &&
           BookingRequests.length > 0 &&
           BookingRequests.sort(
             (a, b) =>
               new Date(b.appointmentDateTime) - new Date(a.appointmentDateTime)
-          ) // Sort the bookings by appointmentDateTime
+          ).map((booking) => {
+            const customer = customerData.find(
+              (cust) => cust._id === booking.cust_id?._id
+            );
+            const startTimeFormatted = formatTime(booking.startTime);
+            const endTimeFormatted = formatTime(booking.endTime);
+
+            return (
+              <div
+                key={booking._id}
+                className="bg-primary text-white rounded-lg pb-3 shadow-lg max-w-xs relative"
+                style={{ height: "450px" }}
+              >
+                {/* Upper half - Customer Profile Image */}
+                <div className="bg-tertiary text-white rounded-lg p-4 text-center shadow-lg">
+                  <div className="flex justify-center">
+                    {customer?.profileImage ? (
+                      <img
+                        src={customer.profileImage}
+                        alt={`${customer.name}'s profile`}
+                        className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
+                      />
+                    ) : (
+                      <img
+                        src={userimg} // dummy image
+                        alt="Default profile"
+                        className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Lower half - Booking and customer Details */}
+                <div className="p-4 flex-grow">
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">Name: </span>
+                    {customer
+                      ? `${customer.firstName} ${customer.lastName}`
+                      : "N/A"}
+                  </p>
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">Service: </span>
+                    {booking?.service_id?.name || "N/A"}
+                  </p>
+
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">Address: </span>
+                    {customer?.address?.street
+                      ? `${customer.address.street}`
+                      : "N/A"}
+                  </p>
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">City: </span>
+                    {customer?.address?.city
+                      ? `${customer.address.city}`
+                      : "N/A"}
+                  </p>
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">Appointment Date: </span>
+                    {new Date(booking.appointmentDateTime).toLocaleDateString(
+                      "de-DE"
+                    )}
+                  </p>
+
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">Schedule: </span>
+                    {`${startTimeFormatted} - ${endTimeFormatted}`}
+                  </p>
+
+                  <p className="text-sm mb-1">
+                    <span className="text-secondary">
+                      Total Working hours:{" "}
+                    </span>
+                    {booking?.bookHr}
+                  </p>
+                </div>
+
+                {/* Accept/Reject Buttons */}
+                <div className="pr-4 ">
+                  <div className="mt-3 flex justify-end space-x-3">
+                    {bookingStatus[booking._id] === "confirmed" && (
+                      <p className="text-green-500 font-bold  font-primary">
+                        Booking accepted
+                      </p>
+                    )}
+                    {bookingStatus[booking._id] === "cancelled" && (
+                      <p className="text-red-500 font-bold font-primary">
+                        Booking rejected
+                      </p>
+                    )}
+                    {!bookingStatus[booking._id] && (
+                      <>
+                        <button
+                          className="bg-green-900 text-white font-primary hover:bg-green-500 py-2 px-4 rounded-lg text-sm "
+                          onClick={() => handleAcceptBooking(booking)}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="bg-red-800 text-white border font-primary hover:bg-red-500 py-2 px-4 rounded-lg text-sm  "
+                          onClick={() => handleRejectBooking(booking)}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+        {/* Booking Requests for others */}
+
+        {view === "BookingsForOthers" &&
+          bookingsForOthers.length > 0 &&
+          bookingsForOthers
+            .sort(
+              (a, b) =>
+                new Date(b.appointmentDateTime) -
+                new Date(a.appointmentDateTime)
+            )
             .map((booking) => {
               const customer = customerData.find(
                 (cust) => cust._id === booking.cust_id?._id
-              ); // Find the corresponding customer data
+              );
               const startTimeFormatted = formatTime(booking.startTime);
               const endTimeFormatted = formatTime(booking.endTime);
 
@@ -190,7 +328,7 @@ const ProfManageBooking = () => {
                 <div
                   key={booking._id}
                   className="bg-primary text-white rounded-lg pb-3 shadow-lg max-w-xs relative"
-                  style={{ height: "450px" }} // Adding height similar to Component 1
+                  style={{ height: "450px" }}
                 >
                   {/* Upper half - Customer Profile Image */}
                   <div className="bg-tertiary text-white rounded-lg p-4 text-center shadow-lg">
@@ -215,26 +353,27 @@ const ProfManageBooking = () => {
                   <div className="p-4 flex-grow">
                     <p className="text-sm mb-1">
                       <span className="text-secondary">Name: </span>
-                      {customer
-                        ? `${customer.firstName} ${customer.lastName}`
+                      {booking?.bookingForOthers?.name
+                        ? `${booking.bookingForOthers.name}`
                         : "N/A"}
                     </p>
                     <p className="text-sm mb-1">
                       <span className="text-secondary">Service: </span>
                       {booking?.service_id?.name || "N/A"}
                     </p>
+
                     <p className="text-sm mb-1">
                       <span className="text-secondary">Address: </span>
-                      {customer?.address?.street
-                        ? `${customer.address.street} ,${
-                            customer.address.zipCode || "N/A"
+                      {booking?.bookingForOthers?.address?.street
+                        ? `${booking.bookingForOthers.address.street}, ${
+                            booking.bookingForOthers.address.zipcode || "N/A"
                           }`
                         : "N/A"}
                     </p>
                     <p className="text-sm mb-1">
                       <span className="text-secondary">City: </span>
-                      {customer?.address?.city
-                        ? `${customer.address.city}`
+                      {booking?.bookingForOthers?.address?.city
+                        ? `${booking?.bookingForOthers?.address?.city}`
                         : "N/A"}
                     </p>
                     <p className="text-sm mb-1">
@@ -257,7 +396,7 @@ const ProfManageBooking = () => {
                     </p>
                   </div>
 
-                  {/* Edit and Remove Buttons */}
+                  {/* Accept/Reject Buttons */}
                   <div className="pr-4 ">
                     <div className="mt-3 flex justify-end space-x-3">
                       {bookingStatus[booking._id] === "confirmed" && (
@@ -286,61 +425,6 @@ const ProfManageBooking = () => {
                           </button>
                         </>
                       )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-        {view === "bookingsForOthers" &&
-          bookingsForOthers.length > 0 &&
-          bookingsForOthers
-            .sort(
-              (a, b) =>
-                new Date(b.appointmentDateTime) -
-                new Date(a.appointmentDateTime)
-            )
-            .map((booking) => {
-              const customer = customerData.find(
-                (cust) => cust._id === booking.cust_id?._id
-              );
-
-              return (
-                <div
-                  key={booking._id}
-                  className="bg-primary text-white rounded-lg pb-3 shadow-lg max-w-xs"
-                >
-                  <div className="p-4 flex-grow">
-                    {/* Render customer and booking details here */}
-
-                    <div className="pr-4">
-                      <div className="mt-3 flex justify-end space-x-3">
-                        {bookingStatus[booking._id] === "confirmed" && (
-                          <p className="text-green-500 font-bold">
-                            Booking accepted
-                          </p>
-                        )}
-                        {bookingStatus[booking._id] === "cancelled" && (
-                          <p className="text-red-500 font-bold">
-                            Booking rejected
-                          </p>
-                        )}
-                        {!bookingStatus[booking._id] && (
-                          <>
-                            <button
-                              className="bg-green-900 text-white font-primary hover:bg-green-500 py-2 px-4 rounded-lg text-sm"
-                              onClick={() => handleAcceptBooking(booking)}
-                            >
-                              Accept
-                            </button>
-                            <button
-                              className="bg-red-800 text-white border font-primary hover:bg-red-500 py-2 px-4 rounded-lg text-sm"
-                              onClick={() => handleRejectBooking(booking)}
-                            >
-                              Reject
-                            </button>
-                          </>
-                        )}
-                      </div>
                     </div>
                   </div>
                 </div>
