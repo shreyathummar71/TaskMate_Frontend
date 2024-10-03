@@ -52,7 +52,13 @@ const Feedback = () => {
   // Calculate the visible feedback cards
   const visibleFeedback = [];
   for (let i = 0; i < cardsPerView; i++) {
-    visibleFeedback.push(feedback[(currentIndex + i) % feedback.length]);
+    const feedbackIndex = (currentIndex + i) % feedback.length;
+    const feedbackItem = feedback[feedbackIndex];
+
+    // Check if the feedbackItem is valid
+    if (feedbackItem) {
+      visibleFeedback.push(feedbackItem);
+    }
   }
 
   return (
@@ -61,15 +67,20 @@ const Feedback = () => {
       <div className="relative w-full h-auto max-w-full overflow-hidden ">
         <div className="flex transition-transform duration-700 ease-in-out float-start w-full gap-1">
           {visibleFeedback.map((item) => {
+            // Ensure item is defined before destructuring
+            if (!item) {
+              return null; // Skip if item is undefined
+            }
+
             const { rating, reviewText, cust_id, prof_id } = item;
 
             const professionalName =
-              prof_id.firstName && prof_id.lastName
+              prof_id && prof_id.firstName && prof_id.lastName
                 ? `${prof_id.firstName} ${prof_id.lastName}`
                 : "Unknown Professional";
 
             const customerName =
-              cust_id.firstName && cust_id.lastName
+              cust_id && cust_id.firstName && cust_id.lastName
                 ? `${cust_id.firstName} ${cust_id.lastName}`
                 : "Anonymous";
 
@@ -87,7 +98,7 @@ const Feedback = () => {
                     <div className="flex flex-col items-center">
                       <img
                         className="w-32 h-32 mb-4 object-cover"
-                        src={prof_id.image || userImage}
+                        src={prof_id?.image || userImage} // Optional chaining here
                         alt={professionalName}
                       />
                       <h2 className="text-xl font-semibold font-primary text-white text-center">

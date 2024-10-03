@@ -384,19 +384,31 @@ const ProfDetailPage = () => {
             {feedback.map((fb) => (
               <div
                 key={fb._id}
-                className=" text-center flex flex-col justify-between rounded-md bg-primary"
+                className="text-center flex flex-col justify-between rounded-md bg-primary"
               >
                 {/* Customer Profile Image */}
-                <div className="items-center pb-4 text-center bg-tertiary  rounded-md">
-                  <img
-                    src={fb.cust_id.profileImage || userImage}
-                    alt={`${fb.cust_id.firstName}'s profile`}
-                    className="w-32 h-32 m-auto rounded-full"
-                  />
+                <div className="items-center pb-4 text-center bg-tertiary rounded-md">
+                  {fb.cust_id ? ( // Check if cust_id is not null
+                    <img
+                      src={fb.cust_id.profileImage || userImage}
+                      alt={`${fb.cust_id.firstName}'s profile`}
+                      className="w-32 h-32 m-auto rounded-full"
+                    />
+                  ) : (
+                    <img
+                      src={userImage} // Fallback image when cust_id is null
+                      alt="Default Profile"
+                      className="w-32 h-32 m-auto rounded-full"
+                    />
+                  )}
                   <div>
-                    <p className="text-sm mt-2 text-gray-700">
-                      {fb.cust_id.firstName} {fb.cust_id.lastName}
-                    </p>
+                    {fb.cust_id ? (
+                      <p className="text-sm mt-2 text-gray-700">
+                        {fb.cust_id.firstName} {fb.cust_id.lastName}
+                      </p>
+                    ) : (
+                      <p className="text-sm mt-2 text-gray-700">Anonymous</p> // Fallback text when cust_id is null
+                    )}
                   </div>
                 </div>
 
@@ -408,12 +420,12 @@ const ProfDetailPage = () => {
 
                   {/* Review Text */}
                   <div className="mb-2">
-                    <p className="text-sm mt-2  text-white">{fb.reviewText}</p>
+                    <p className="text-sm mt-2 text-white">{fb.reviewText}</p>
                   </div>
 
                   {/* Review Date */}
-                  <div className=" text-right">
-                    <p className="text-sm  text-white">
+                  <div className="text-right">
+                    <p className="text-sm text-white">
                       {new Date(fb.createdAt).toLocaleDateString()}
                     </p>
                   </div>
