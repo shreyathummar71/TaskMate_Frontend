@@ -34,7 +34,7 @@ const ModifyBookingModal = ({ isOpen, onClose, booking, onSave }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm text-white mb-1">
-                Professional Name:
+                Professional Name :
               </label>
               <input
                 type="text"
@@ -47,7 +47,7 @@ const ModifyBookingModal = ({ isOpen, onClose, booking, onSave }) => {
 
             <div>
               <label className="block text-sm text-white mb-1">
-                Service Name:
+                Service Name :
               </label>
               <input
                 type="text"
@@ -60,7 +60,7 @@ const ModifyBookingModal = ({ isOpen, onClose, booking, onSave }) => {
 
             <div>
               <label className="block text-sm text-white mb-1">
-                Appointment Date:
+                Appointment Date :
               </label>
               <input
                 type="date"
@@ -73,7 +73,7 @@ const ModifyBookingModal = ({ isOpen, onClose, booking, onSave }) => {
 
             <div>
               <label className="block text-sm text-white  mb-1">
-                Schedule:
+                Schedule :
               </label>
               <input
                 type="text"
@@ -86,7 +86,7 @@ const ModifyBookingModal = ({ isOpen, onClose, booking, onSave }) => {
 
             <div>
               <label className="block text-sm text-white  mb-1">
-                Booking Hours:
+                Booking Hours :
               </label>
               <input
                 type="number"
