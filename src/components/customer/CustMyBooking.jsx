@@ -107,7 +107,7 @@ const CustMyBooking = () => {
       if (!response.ok) throw new Error("Failed to update booking");
 
       // Refresh booking details after successful update
-      fetchBookingDetails(customerId);
+      await fetchBookingDetails(customerId);
       closeModal();
     } catch (error) {
       console.error("Error updating booking:", error);
