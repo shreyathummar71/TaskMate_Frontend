@@ -12,9 +12,6 @@ const CustMyBooking = () => {
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
     try {
-      // const response = await fetch(
-      //   `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
-      // );
       const response = await fetch(
         `https://backend-taskmate.onrender.com/booking/customer/${cust_id}`
       );
@@ -58,6 +55,15 @@ const CustMyBooking = () => {
     });
   }
 
+  //To convert the ISO date string  for example "2024-10-24T12:19:53.000Z" to the dd/mm/YYYY format
+  function convertIsoToddmmYYYY(isoDate) {
+    const date = new Date(isoDate);
+    const day = date.getUTCDate().toString().padStart(2, "0");
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+    const year = date.getUTCFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
     switch (status.toLowerCase()) {
@@ -140,7 +146,7 @@ const CustMyBooking = () => {
             <div>
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Appointment Date : </span>
-                {bookingDetail.addJobModel_id.date}
+                {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
               </p>
             </div>
             <div>
