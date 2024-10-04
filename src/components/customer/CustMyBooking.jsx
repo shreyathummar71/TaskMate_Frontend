@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "/src/assets/images/user.png";
-import ModifyBookingModal from "./ModifyBookingModal";
+//import ModifyBookingModal from "./ModifyBookingModal";
+import BookingModal from "./BookingModal";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
