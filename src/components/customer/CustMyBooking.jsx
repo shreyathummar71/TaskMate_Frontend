@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "/src/assets/images/user.png";
+import BookingModal from "./BookingModal";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Add state variables to manage the modal
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
     try {
-      // const response = await fetch(
-      //   `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
-      // );
       const response = await fetch(
-        `https://backend-taskmate.onrender.com/booking/customer/${cust_id}`
+        `http://localhost:8081/booking/customerbooking/${cust_id}`
       );
+      // const response = await fetch(
+      //   `http://localhost:8081/booking/customer/${cust_id}`
+      // );
       if (!response.ok) throw new Error("Failed to fetch booking data");
 
       const bookingData = await response.json();
@@ -51,36 +54,47 @@ const CustMyBooking = () => {
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
     switch (status.toLowerCase()) {
-      case "confirmed":
-        return "bg-green-500";
+      // case "confirmed":
+      //   return "bg-green-500";
       case "cancelled":
         return "bg-red-500";
       case "pending":
         return "bg-yellow-500";
       default:
-        return "bg-tertiary bg-opacity-50";
+        return "";
     }
   };
-  const handleSaveChanges = async (updatedBooking) => {
+
+  // Create functions to open and close the modal
+  const openModal = (booking) => {
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBooking(null);
+  };
+
+  // Add a function to handle the submission of updated booking details
+  const handleBookingUpdate = async (updatedBookingData) => {
     try {
-      // Update booking details in the backend
       const response = await fetch(
-        `https://backend-taskmate.onrender.com/booking/update/${updatedBooking.id}`,
+        `http://localhost:8081/booking/${selectedBooking._id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedBooking),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedBookingData),
         }
       );
 
       if (!response.ok) throw new Error("Failed to update booking");
 
-      // Update local state with new booking details
-      setBookingDetails((prevDetails) =>
-        prevDetails.map((booking) =>
-          booking._id === updatedBooking.id ? updatedBooking : booking
-        )
-      );
+      // Refresh booking details after successful update
+      fetchBookingDetails(customerId);
+      closeModal();
     } catch (error) {
       console.error("Error updating booking:", error);
     }
@@ -143,19 +157,36 @@ const CustMyBooking = () => {
               </button>
             </div>
             <div className="float-end mr-4 mt-3">
-              <button
-                className={`${getStatusButtonColor(
-                  bookingDetail.status
-                )}  text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-opacity-80`}
-              >
-                {bookingDetail.status}
-              </button>
+              {bookingDetail.status.toLowerCase() !== "confirmed" && (
+                <button
+                  className={`${getStatusButtonColor(
+                    bookingDetail.status
+                  )}  text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-opacity-80`}
+                >
+                  {bookingDetail.status}
+                </button>
+              )}
             </div>
           </div>
         </div>
       ))}
     </div>
   );
+  {
+    isModalOpen && selectedBooking && (
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleBookingUpdate}
+        professional={{ _id: selectedBooking.professionalId }}
+        serviceId={selectedBooking.serviceId}
+        customerId={customerId}
+        jobId={selectedBooking._id}
+        chargesPerHour={selectedBooking.chargesPerHour}
+        formattedDate={selectedBooking.appointmentDate}
+      />
+    );
+  }
 };
 
 export default CustMyBooking;
