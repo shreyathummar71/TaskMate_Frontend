@@ -162,7 +162,7 @@ const ProfSchedule = () => {
           }`}
           onClick={() => setView("Today")}
         >
-          Today
+          Today |
         </button>
         <button
           className={`text-xl font-bold font-primary ${
@@ -170,7 +170,7 @@ const ProfSchedule = () => {
           }`}
           onClick={() => setView("Upcoming")}
         >
-          Upcoming
+          Upcoming |
         </button>
         <button
           className={`text-xl font-bold font-primary ${
@@ -315,7 +315,9 @@ const ProfSchedule = () => {
                         {`${startTimeFormatted} to ${endTimeFormatted}`}
                       </p>
                       <p className="text-sm mb-1 text-tertiary">
-                        <span className="text-white">Total Working hours </span>
+                        <span className="text-white">
+                          Total Working hours:{" "}
+                        </span>
                         {booking?.bookHr}
                       </p>
                       <p className="text-sm mb-1 font-primary text-tertiary">
