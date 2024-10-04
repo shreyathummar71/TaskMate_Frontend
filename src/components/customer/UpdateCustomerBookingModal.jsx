@@ -66,28 +66,6 @@ const UpdateCustomerBookingModal = ({
           console.log(customerBooking);
           console.log("Done printing response");
           setCustomerBookingData(customerBooking); //The customer booking data in fields
-
-          setName(customerBookingData.bookingForOthers?.name || "");
-          setStreet(
-            customerBookingData.bookingForOthers?.address?.street || ""
-          );
-          setCity(customerBookingData.bookingForOthers?.address?.city || "");
-          setState(customerBookingData.bookingForOthers?.address?.state || "");
-          setZipcode(
-            customerBookingData.bookingForOthers?.address?.zipcode || ""
-          );
-          setPhoneNumber(
-            customerBookingData.bookingForOthers?.phoneNumber || ""
-          );
-          setEmail(customerBookingData.bookingForOthers?.email || "");
-          setAppointmentDateTime(
-            customerBookingData.addJobModel_id?.date || ""
-          );
-          setBookHr(customerBookingData.bookHr || "");
-          setIsBookingForOthers(!!customerBookingData.bookingForOthers);
-          setStartTime(customerBookingData.addJobModel_id?.startTime || "");
-          setEndTime(customerBookingData.addJobModel_id?.endTime || "");
-          setDescription(customerBookingData.description || "");
         } else {
           console.error("Failed to fetch customer booking data");
         }
@@ -103,6 +81,24 @@ const UpdateCustomerBookingModal = ({
     }
   }, [bookingId]);
 
+  useEffect(() => {
+    if (customerBookingData) {
+      setName(customerBookingData.bookingForOthers?.name || "");
+      setStreet(customerBookingData.bookingForOthers?.address?.street || "");
+      setCity(customerBookingData.bookingForOthers?.address?.city || "");
+      setState(customerBookingData.bookingForOthers?.address?.state || "");
+      setZipcode(customerBookingData.bookingForOthers?.address?.zipcode || "");
+      setPhoneNumber(customerBookingData.bookingForOthers?.phoneNumber || "");
+      setEmail(customerBookingData.bookingForOthers?.email || "");
+      setAppointmentDateTime(customerBookingData.addJobModel_id?.date || "");
+      setBookHr(customerBookingData.bookHr || "");
+      setIsBookingForOthers(!!customerBookingData.bookingForOthers);
+      setStartTime(customerBookingData.addJobModel_id?.startTime || "");
+      setEndTime(customerBookingData.addJobModel_id?.endTime || "");
+      setDescription(customerBookingData.description || "");
+    }
+  }, [customerBookingData]);
+
   if (!isOpen) return null;
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,7 +110,7 @@ const UpdateCustomerBookingModal = ({
       zipcode,
       phoneNumber,
       email,
-      appointmentDateTime,
+      date,
       bookHr,
       isBookingForOthers,
       startTime,
@@ -124,9 +120,9 @@ const UpdateCustomerBookingModal = ({
     onSubmit(updatedBookingData);
   };
 
-  const handleBookingUpdate = async (e) => {
-    console.log("in handle update booking");
-  };
+  //   const handleBookingUpdate = async (e) => {
+  //     console.log("in handle update booking");
+  //   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -152,11 +148,8 @@ const UpdateCustomerBookingModal = ({
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Date</label>
             <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-              {isLoading
-                ? "Loading..."
-                : customerBookingData?.addJobModel_id
-                ? convertIsoToddmmYYYY(customerBookingData.addJobModel_id.date)
-                : "N/A"}
+              date
+                
             </div>
           </div>
           {/* New Charges per Hour Field */}
@@ -168,7 +161,7 @@ const UpdateCustomerBookingModal = ({
                 name="bookHr"
                 placeholder="Book Hour"
                 value={
-                  isLoading ? "Loading..." : customerBookingData?.bookHr || ""
+                 bookHr 
                 }
                 onChange={(e) => setBookHr(e.target.value)}
                 className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
