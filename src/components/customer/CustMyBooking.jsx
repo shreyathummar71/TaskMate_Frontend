@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "/src/assets/images/user.png";
-//import ModifyBookingModal from "./ModifyBookingModal";
-import BookingModal from "./BookingModal";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Initialize state
-  const [currentBooking, setCurrentBooking] = useState(null);
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
     try {
+      // const response = await fetch(
+      //   `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
+      // );
       const response = await fetch(
-        `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
+        `https://backend-taskmate.onrender.com/booking/customer/${cust_id}`
       );
       if (!response.ok) throw new Error("Failed to fetch booking data");
 
@@ -49,21 +48,6 @@ const CustMyBooking = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  const openModal = (bookingDetails) => {
-    setCurrentBooking(bookingDetails);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setCurrentBooking(null);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Logic to update booking details
-    closeModal();
-  };
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
     switch (status.toLowerCase()) {
@@ -170,15 +154,6 @@ const CustMyBooking = () => {
           </div>
         </div>
       ))}
-
-      {isModalOpen && currentBooking && (
-        <ModifyBookingModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          booking={currentBooking}
-          onSave={handleSaveChanges}
-        />
-      )}
     </div>
   );
 };
