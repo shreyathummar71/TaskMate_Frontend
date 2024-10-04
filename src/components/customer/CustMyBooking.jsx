@@ -12,14 +12,18 @@ const CustMyBooking = () => {
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
     try {
-      const response = await fetch(
-        `http://localhost:8081/booking/customerbooking/${cust_id}`
-      );
       // const response = await fetch(
-      //   `http://localhost:8081/booking/customer/${cust_id}`
+      //   `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
       // );
-      if (!response.ok) throw new Error("Failed to fetch booking data");
-
+      const response = await fetch(
+        `https://backend-taskmate.onrender.com/booking/customer/${cust_id}`
+      );
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to fetch booking data: ${response.status} ${errorText}`
+        );
+      }
       const bookingData = await response.json();
       console.log("Fetched booking data:", bookingData);
       console.log("CustomerID", cust_id);
@@ -45,11 +49,14 @@ const CustMyBooking = () => {
     getCustId();
   }, []);
 
-  // Format time function
-  const formatTime = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
+  function formatTime(timeString) {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
 
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
@@ -80,7 +87,7 @@ const CustMyBooking = () => {
   const handleBookingUpdate = async (updatedBookingData) => {
     try {
       const response = await fetch(
-        `http://localhost:8081/booking/${selectedBooking._id}`,
+        `https://backend-taskmate.onrender.com/booking/${selectedBooking._id}`,
         {
           method: "PUT",
           headers: {
@@ -113,8 +120,8 @@ const CustMyBooking = () => {
           <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
             {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
             <img
-              src={bookingDetail.profileImage || userImage}
-              alt={bookingDetail.firstName}
+              src={bookingDetail.prof_id.profileImage || userImage}
+              alt={bookingDetail.prof_id.firstName}
               className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
             />
           </div>
@@ -122,30 +129,31 @@ const CustMyBooking = () => {
           <div className="items-center pb-4 bg-primary rounded-b-xl">
             <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
               <span className="text-secondary">Professional Name : </span>
-              {bookingDetail.professionalName}
+              {bookingDetail.prof_id.firstName} {bookingDetail.prof_id.lastName}
             </p>
             <div>
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Service Name : </span>
-                {bookingDetail.serviceName}
+                {bookingDetail.service_id.name}
               </p>
             </div>
             <div>
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Appointment Date : </span>
-                {bookingDetail.appointmentDate}
+                {bookingDetail.addJobModel_id.date}
               </p>
             </div>
             <div>
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Schedule : </span>
-                {bookingDetail.schedule}
+                {formatTime(bookingDetail.startTime)} to{" "}
+                {formatTime(bookingDetail.endTime)}
               </p>
             </div>
             <div>
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Booking Hours : </span>
-                {bookingDetail.bookingHours} hours
+                {bookingDetail.bookHr} hours
               </p>
             </div>
             <div className="float-end mr-4 mt-3">
