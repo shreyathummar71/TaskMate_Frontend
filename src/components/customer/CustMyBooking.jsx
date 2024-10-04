@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "/src/assets/images/user.png";
-import BookingModal from "./BookingModal";
+import UpdateCustomerBookingModal from "./UpdateCustomerBookingModal";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
@@ -79,9 +79,10 @@ const CustMyBooking = () => {
   };
 
   // Create functions to open and close the modal
-  const openModal = (booking) => {
-    setSelectedBooking(booking);
+  const openModal = (bookingDetails) => {
+    setSelectedBooking(bookingDetails);
     setIsModalOpen(true);
+    console.log("In open modal function 3");
   };
 
   const closeModal = () => {
@@ -114,91 +115,97 @@ const CustMyBooking = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {bookingDetails.map((bookingDetail) => (
-        <div
-          key={bookingDetail._id}
-          className="flex flex-col justify-between bg-primary rounded-xl"
-        >
-          {/* Professional Profile Image */}
-          <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
-            {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
-            <img
-              src={bookingDetail.prof_id.profileImage || userImage}
-              alt={bookingDetail.prof_id.firstName}
-              className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
-            />
-          </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {bookingDetails.map((bookingDetail) => (
+          <div
+            key={bookingDetail._id}
+            className="flex flex-col justify-between bg-primary rounded-xl"
+          >
+            {/* Professional Profile Image */}
 
-          <div className="items-center pb-4 bg-primary rounded-b-xl">
-            <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-              <span className="text-secondary">Professional Name : </span>
-              {bookingDetail.prof_id.firstName} {bookingDetail.prof_id.lastName}
-            </p>
-            <div>
+            <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
+              {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
+              <img
+                src={bookingDetail.prof_id.profileImage || userImage}
+                alt={bookingDetail.prof_id.firstName}
+                className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
+              />
+            </div>
+
+            <div className="items-center pb-4 bg-primary rounded-b-xl">
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Service Name : </span>
-                {bookingDetail.service_id.name}
+                <span className="text-secondary">Professional Name : </span>
+                {bookingDetail.prof_id.firstName}{" "}
+                {bookingDetail.prof_id.lastName}
               </p>
-            </div>
-            <div>
-              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Appointment Date : </span>
-                {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Schedule : </span>
-                {formatTime(bookingDetail.startTime)} to{" "}
-                {formatTime(bookingDetail.endTime)}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Booking Hours : </span>
-                {bookingDetail.bookHr} hours
-              </p>
-            </div>
-            <div className="float-end mr-4 mt-3">
-              <button
-                onClick={() => openModal(bookingDetail)}
-                className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
-              >
-                Modify Booking
-              </button>
-            </div>
-            <div className="float-end mr-4 mt-3">
-              {bookingDetail.status.toLowerCase() !== "confirmed" && (
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Service Name : </span>
+                  {bookingDetail.service_id.name}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Appointment Date : </span>
+                  {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Schedule : </span>
+                  {formatTime(bookingDetail.startTime)} to{" "}
+                  {formatTime(bookingDetail.endTime)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Booking Hours : </span>
+                  {bookingDetail.bookHr} hours
+                </p>
+              </div>
+              <div className="float-end mr-4 mt-3">
                 <button
-                  className={`${getStatusButtonColor(
-                    bookingDetail.status
-                  )}  text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-opacity-80`}
+                  onClick={() => {
+                    console.log("Button clicked");
+                    openModal(bookingDetail);
+                  }}
+                  className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
                 >
-                  {bookingDetail.status}
+                  Modify Booking
                 </button>
-              )}
+              </div>
+              <div className="float-end mr-4 mt-3">
+                {bookingDetail.status.toLowerCase() !== "confirmed" && (
+                  <button
+                    className={`${getStatusButtonColor(
+                      bookingDetail.status
+                    )}  text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-opacity-80`}
+                  >
+                    {bookingDetail.status}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+      {isModalOpen && selectedBooking && (
+        <UpdateCustomerBookingModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onSubmit={handleBookingUpdate}
+          professional={selectedBooking.prof_id._id}
+          serviceId={selectedBooking.service_id._id}
+          customerId={customerId}
+          bookingId={selectedBooking._id}
+          jobId={selectedBooking.addJobModel_id._id}
+          chargesPerHour={selectedBooking.addJobModel_id.chargesPerHour}
+          formattedDate={selectedBooking.addJobModel_id.date}
+        />
+      )}
+    </>
   );
-  {
-    isModalOpen && selectedBooking && (
-      <BookingModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleBookingUpdate}
-        professional={{ _id: selectedBooking.professionalId }}
-        serviceId={selectedBooking.serviceId}
-        customerId={customerId}
-        jobId={selectedBooking._id}
-        chargesPerHour={selectedBooking.chargesPerHour}
-        formattedDate={selectedBooking.appointmentDate}
-      />
-    );
-  }
 };
 
 export default CustMyBooking;
