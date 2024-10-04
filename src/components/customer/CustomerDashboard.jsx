@@ -5,10 +5,10 @@ import CustMyBooking from "./CustMyBooking";
 import CustFavorites from "./CustFavorites";
 import FAQCustomer from "./FAQCustomer";
 import CustHelpCenter from "./CustHelpCenter";
-import FindProfessional from "./FindProfessional";
 import custdashboard from "/src/assets/images/custdashboard.png";
 import userimg from "/src/assets/images/user.png";
 import buttonArrow from "/src/assets/images/buttonArrow.png";
+import CustSchedule from "./CustSchedule";
 
 const CustomerDashboard = () => {
   const [activeMenu, setActiveMenu] = useState("bookService");
@@ -110,7 +110,17 @@ const CustomerDashboard = () => {
               }`}
               onClick={() => setActiveMenu("my-bookings")}
             >
-              My Bookings
+              Manage Bookings
+            </li>
+            <li
+              className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${
+                activeMenu === "Schedule"
+                  ? "text-secondary"
+                  : "hover:text-secondary"
+              }`}
+              onClick={() => setActiveMenu("Schedule")}
+            >
+              Schedule
             </li>
             <li
               className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${
@@ -140,16 +150,6 @@ const CustomerDashboard = () => {
             >
               Help Center
             </li>
-            <li
-              className={`cursor-pointer p-2 mb-9 rounded-xl text-16px bg-primary ${
-                activeMenu === "find-professional"
-                  ? "text-secondary"
-                  : "hover:text-secondary"
-              }`}
-              onClick={() => handleFindProfessionalClick("someServiceId")}
-            >
-              Find Professional
-            </li>
           </ul>
         </div>
 
@@ -158,12 +158,10 @@ const CustomerDashboard = () => {
           {activeMenu === "bookService" && <CustAllCategory />}
           {/* pass custId here */}
           {activeMenu === "my-bookings" && <CustMyBooking custId={cust_Id} />}
+          {activeMenu === "Schedule" && <CustSchedule />}
           {activeMenu === "favorites" && <CustFavorites />}
           {activeMenu === "faq" && <FAQCustomer />}
           {activeMenu === "help-center" && <CustHelpCenter />}
-          {activeMenu === "find-professional" && (
-            <FindProfessional serviceId={serviceId} />
-          )}
         </div>
       </div>
     </>
