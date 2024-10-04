@@ -66,6 +66,28 @@ const UpdateCustomerBookingModal = ({
           console.log(customerBooking);
           console.log("Done printing response");
           setCustomerBookingData(customerBooking); //The customer booking data in fields
+
+          setName(customerBookingData.bookingForOthers?.name || "");
+          setStreet(
+            customerBookingData.bookingForOthers?.address?.street || ""
+          );
+          setCity(customerBookingData.bookingForOthers?.address?.city || "");
+          setState(customerBookingData.bookingForOthers?.address?.state || "");
+          setZipcode(
+            customerBookingData.bookingForOthers?.address?.zipcode || ""
+          );
+          setPhoneNumber(
+            customerBookingData.bookingForOthers?.phoneNumber || ""
+          );
+          setEmail(customerBookingData.bookingForOthers?.email || "");
+          setAppointmentDateTime(
+            customerBookingData.addJobModel_id?.date || ""
+          );
+          setBookHr(customerBookingData.bookHr || "");
+          setIsBookingForOthers(!!customerBookingData.bookingForOthers);
+          setStartTime(customerBookingData.addJobModel_id?.startTime || "");
+          setEndTime(customerBookingData.addJobModel_id?.endTime || "");
+          setDescription(customerBookingData.description || "");
         } else {
           console.error("Failed to fetch customer booking data");
         }
@@ -75,16 +97,31 @@ const UpdateCustomerBookingModal = ({
         setIsLoading(false);
       }
     };
-    if (customerId) {
-      console.log("CustomerID is  not null", customerId);
+    if (bookingId) {
+      //console.log("CustomerID is  not null", customerId);
       fetchCustomerBooking(); //Fetch Customerbooking deatils if the customerId is available
     }
-  }, []);
+  }, [bookingId]);
 
   if (!isOpen) return null;
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("handle event here...");
+    const updatedBookingData = {
+      name,
+      street,
+      city,
+      state,
+      zipcode,
+      phoneNumber,
+      email,
+      appointmentDateTime,
+      bookHr,
+      isBookingForOthers,
+      startTime,
+      endTime,
+      description,
+    };
+    onSubmit(updatedBookingData);
   };
 
   const handleBookingUpdate = async (e) => {
