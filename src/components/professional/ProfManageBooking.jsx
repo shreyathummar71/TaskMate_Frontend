@@ -243,7 +243,11 @@ const ProfManageBooking = () => {
                   <p className="text-sm mb-1">
                     <span className="text-secondary">Address: </span>
                     {customer?.address?.street
-                      ? `${customer.address.street}`
+                      ? `${customer.address.street}${
+                          customer.address.zipCode
+                            ? `, ${customer.address.zipCode}`
+                            : ""
+                        }`
                       : "N/A"}
                   </p>
                   <p className="text-sm mb-1">
@@ -255,13 +259,13 @@ const ProfManageBooking = () => {
                   <p className="text-sm mb-1">
                     <span className="text-secondary">Appointment Date: </span>
                     {new Date(booking.appointmentDateTime).toLocaleDateString(
-                      "de-DE"
+                      "en-GB"
                     )}
                   </p>
 
                   <p className="text-sm mb-1">
                     <span className="text-secondary">Schedule: </span>
-                    {`${startTimeFormatted} - ${endTimeFormatted}`}
+                    {`${startTimeFormatted} to ${endTimeFormatted}`}
                   </p>
 
                   <p className="text-sm mb-1">
