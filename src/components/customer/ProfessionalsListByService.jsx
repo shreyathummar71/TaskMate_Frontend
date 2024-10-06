@@ -177,7 +177,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
               name="country"
               value={filters.country}
               onChange={handleInputChange}
-              className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 text-white"
+              className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 "
             >
               <option value="">Select Country</option>
               {countries.map((country) => (
@@ -194,7 +194,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
               name="city"
               value={filters.city}
               onChange={handleInputChange}
-              className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 text-white"
+              className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 "
               disabled={!filters.country}
             >
               <option value="">Select City</option>
@@ -213,14 +213,14 @@ const ProfessionalsListByService = ({ serviceId }) => {
               name="date"
               value={filters.date}
               onChange={handleInputChange}
-              className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 text-white"
+              className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 "
             />
           </div>
         </div>
         <div className="flex justify-end mt-6">
         <button
           onClick={applyFilters}
-          className=" bg-tertiary bg-opacity-50 border border-secondary text-primary font-secondary px-4 py-2 rounded-xl hover:bg-secondary hover:text-white"
+          className=" bg-tertiary bg-opacity-50 border border-secondary  font-secondary px-4 py-2 rounded-xl text-white hover:bg-secondary hover:text-white"
         >
           Apply Filters
         </button>
