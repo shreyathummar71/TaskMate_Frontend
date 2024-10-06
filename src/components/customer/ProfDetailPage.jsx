@@ -37,9 +37,9 @@ const ProfDetailPage = () => {
 
   const jobDate = new Date(date); // Create a Date object
   const formattedDate = jobDate.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
     year: "numeric",
-    month: "long", // Change to "numeric" for a numeric month (1-12)
-    day: "numeric",
   });
   // Fetch professional details
   useEffect(() => {
@@ -237,7 +237,7 @@ const ProfDetailPage = () => {
               <img
                 src={professional.profileImage || userImage}
                 alt={`${professional.firstName}'s profile`}
-                className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden"
+                className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden object-cover"
               />
             )}
 
