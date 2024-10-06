@@ -27,8 +27,8 @@ const UpdateCustomerBookingModal = ({
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
-  const [confirmedJobId, setConfirmedJobId] = useState(null);
-  const [serviceName, setServiceName] = useState(""); // New state for service name
+  //const [confirmedJobId, setConfirmedJobId] = useState(null);
+  //const [serviceName, setServiceName] = useState(""); // New state for service name
 
   const [customerBookingData, setCustomerBookingData] = useState(""); //New state for Customer booking
   const [isLoading, setIsLoading] = useState(true);
@@ -57,7 +57,6 @@ const UpdateCustomerBookingModal = ({
       setIsLoading(true);
       try {
         const response = await fetch(
-          // `https://backend-taskmate.onrender.com/booking/customer/${customerId}`
           `https://backend-taskmate.onrender.com/booking/${bookingId}`
         );
         if (response.ok) {
@@ -100,29 +99,58 @@ const UpdateCustomerBookingModal = ({
   }, [customerBookingData]);
 
   if (!isOpen) return null;
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedBookingData = {
-      name,
-      street,
-      city,
-      state,
-      zipcode,
-      phoneNumber,
-      email,
-      date,
-      bookHr,
-      isBookingForOthers,
-      startTime,
-      endTime,
-      description,
+      cust_id: customerId,
+      addJobModel_id: jobId, // Use addJobModel_id instead of job_id
+      prof_id: professional._id,
+      service_id: serviceId,
+      appointmentDateTime: new Date(appointmentDateTime),
+      bookHr: new Date(appointmentDateTime).getHours(),
+      status: "pending",
+      startTime: new Date(`${appointmentDateTime}T${startTime}`), // Ensure correct format
+      endTime: new Date(`${appointmentDateTime}T${endTime}`), // Ensure correct format
+      description: description,
+      bookingForOthers: isBookingForOthers
+        ? {
+            name: name,
+            address: {
+              street: street,
+              city: city,
+              state: state,
+              zipcode: zipcode,
+            },
+            phoneNumber: phoneNumber,
+            email: email,
+          }
+        : undefined,
     };
-    onSubmit(updatedBookingData);
-  };
 
-  //   const handleBookingUpdate = async (e) => {
-  //     console.log("in handle update booking");
-  //   };
+    try {
+      const response = await fetch(
+        `https://backend-taskmate.onrender.com/booking/${bookingId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedBookingData),
+        }
+      );
+
+      if (response.ok) {
+        const updatedBooking = await response.json();
+        console.log("Booking updated successfully:", updatedBooking);
+        onSubmit(updatedBooking);
+      } else {
+        console.error("Failed to update booking");
+      }
+    } catch (error) {
+      console.error("Error updating booking:", error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -131,27 +159,26 @@ const UpdateCustomerBookingModal = ({
           Book Appointment
         </h2>
         <form onSubmit={handleSubmit}>
-          {/* <div className="mb-4">
+          <div className="mb-4">
             <label className="block text-white text-sm mb-2">
               Appointment Date
             </label>
             <input
-              type="date"
+              type="datetimne-local"
               name="appointmentDateTime"
               value={appointmentDateTime}
               onChange={(e) => setAppointmentDateTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               required
             />
-          </div> */}
+          </div>{" "}
           {/* New Formatted Date Field */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-white text-sm mb-2">Date</label>
             <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-              date
-                
+              {formattedDate}
             </div>
-          </div>
+          </div> */}
           {/* New Charges per Hour Field */}
           <div className="mb-4 flex gap-4">
             <div className="w-1/2">
@@ -160,9 +187,7 @@ const UpdateCustomerBookingModal = ({
                 type="text"
                 name="bookHr"
                 placeholder="Book Hour"
-                value={
-                 bookHr 
-                }
+                value={bookHr}
                 onChange={(e) => setBookHr(e.target.value)}
                 className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                 required
@@ -190,7 +215,6 @@ const UpdateCustomerBookingModal = ({
                 : customerBookingData?.service_id?.name || "N/A"}
             </div>
           </div>
-
           {/* Start Time and End Time Side by Side */}
           <div className="mb-4 flex gap-4">
             <div className="w-1/2">
@@ -228,17 +252,12 @@ const UpdateCustomerBookingModal = ({
               />
             </div>
           </div>
-
           {/* Description Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Description</label>
             <textarea
               name="description"
-              value={
-                customerBookingData && customerBookingData
-                  ? customerBookingData.description
-                  : "Loading..."
-              }
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               placeholder="Description"
@@ -246,7 +265,6 @@ const UpdateCustomerBookingModal = ({
               required
             />
           </div>
-
           {/* Checkbox for Booking for Others */}
           <div className="mb-4">
             <label>
@@ -258,7 +276,6 @@ const UpdateCustomerBookingModal = ({
               <span className="ml-2 text-grey-500">Book for someone else</span>
             </label>
           </div>
-
           {isBookingForOthers && (
             <>
               <div className="mb-4">
@@ -267,11 +284,7 @@ const UpdateCustomerBookingModal = ({
                   type="text"
                   name="name"
                   placeholder="Name"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.name || ""
-                  }
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -283,12 +296,7 @@ const UpdateCustomerBookingModal = ({
                   type="text"
                   name="street"
                   placeholder="Street"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.address
-                          ?.street || ""
-                  }
+                  value={street}
                   onChange={(e) => setStreet(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -300,12 +308,7 @@ const UpdateCustomerBookingModal = ({
                   type="text"
                   name="city"
                   placeholder="City"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.address?.city ||
-                        ""
-                  }
+                  value={city}
                   onChange={(e) => setCity(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -317,12 +320,7 @@ const UpdateCustomerBookingModal = ({
                   type="text"
                   name="state"
                   placeholder="State"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.address?.state ||
-                        ""
-                  }
+                  value={state}
                   onChange={(e) => setState(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -334,12 +332,7 @@ const UpdateCustomerBookingModal = ({
                   type="text"
                   name="zipcode"
                   placeholder="Zipcode"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.address
-                          ?.zipcode || ""
-                  }
+                  value={zipcode}
                   onChange={(e) => setZipcode(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -353,11 +346,7 @@ const UpdateCustomerBookingModal = ({
                   type="text"
                   name="phoneNumber"
                   placeholder="Phone Number"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.phoneNumber || ""
-                  }
+                  value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -369,11 +358,7 @@ const UpdateCustomerBookingModal = ({
                   type="email"
                   name="email"
                   placeholder="Email"
-                  value={
-                    isLoading
-                      ? "Loading..."
-                      : customerBookingData?.bookingForOthers?.email || ""
-                  }
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
@@ -381,7 +366,6 @@ const UpdateCustomerBookingModal = ({
               </div>
             </>
           )}
-
           <div className="flex justify-end mt-4">
             <button
               type="button"
