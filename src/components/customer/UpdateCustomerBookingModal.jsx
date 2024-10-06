@@ -108,7 +108,7 @@ const UpdateCustomerBookingModal = ({
       prof_id: professional._id,
       service_id: serviceId,
       appointmentDateTime: new Date(appointmentDateTime),
-      bookHr: new Date(appointmentDateTime).getHours(),
+      bookHr: bookHr,
       status: "pending",
       startTime: new Date(`${appointmentDateTime}T${startTime}`), // Ensure correct format
       endTime: new Date(`${appointmentDateTime}T${endTime}`), // Ensure correct format
@@ -166,7 +166,7 @@ const UpdateCustomerBookingModal = ({
             <input
               type="datetimne-local"
               name="appointmentDateTime"
-              value={appointmentDateTime}
+              value={convertIsoToddmmYYYY(appointmentDateTime)}
               onChange={(e) => setAppointmentDateTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
               required
