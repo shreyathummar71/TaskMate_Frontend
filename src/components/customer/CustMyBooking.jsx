@@ -165,16 +165,14 @@ const CustMyBooking = () => {
               <div className="float-end mr-4 mt-3">
                 <button
                   onClick={() => {
-                    console.log("Button clicked");
                     openModal(bookingDetail);
                   }}
                   disabled={bookingDetail.status.toLowerCase() === "confirmed"}
-                  className={`bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white ${
+                  className={`bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm :text-white ${
                     bookingDetail.status.toLowerCase() === "confirmed"
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
-                  //className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
                 >
                   Modify Booking
                 </button>
