@@ -42,7 +42,6 @@ const CustMyBooking = () => {
         fetchBookingDetails(cust_id);
       }
     };
-
     getCustId();
   }, []);
 
@@ -82,7 +81,6 @@ const CustMyBooking = () => {
   const openModal = (bookingDetails) => {
     setSelectedBooking(bookingDetails);
     setIsModalOpen(true);
-    console.log("In open modal function 3");
   };
 
   const closeModal = () => {
