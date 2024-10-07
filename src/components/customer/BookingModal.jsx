@@ -215,9 +215,94 @@ const BookingModal = ({
             </label>
           </div>
 
-          {/* Conditional Fields for Booking for Others */}
           {isBookingForOthers && (
             <>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Street</label>
+                <input
+                  type="text"
+                  name="street"
+                  placeholder="Street"
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">State</label>
+                <input
+                  type="text"
+                  name="state"
+                  placeholder="State"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Zipcode</label>
+                <input
+                  type="text"
+                  name="zipcode"
+                  placeholder="Zipcode"
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  placeholder="Phone Number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-white text-sm mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  required
+                />
+              </div>
               {/* Name, Address, Phone, etc. */}
               {/* ... */}
             </>
