@@ -170,9 +170,10 @@ const ProfManageBooking = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-start gap-5 mb-5">
+      <h1 className="text-2xl text-primary font-primary">Manage Bookings</h1>
+      <div className="flex justify-center gap-5 mb-5">
         <button
-          className={`text-xl font-bold font-primary ${
+          className={`text-xl mt-6 font-bold font-primary ${
             view === "BookingRequests" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingRequests")}
@@ -180,7 +181,7 @@ const ProfManageBooking = () => {
           Booking Requests
         </button>
         <button
-          className={`text-xl font-bold font-primary ${
+          className={`text-xl mt-6 font-bold font-primary ${
             view === "BookingsForOthers" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingsForOthers")}
@@ -189,7 +190,7 @@ const ProfManageBooking = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
         {view === "BookingRequests" &&
           BookingRequests.length > 0 &&
           BookingRequests.sort(

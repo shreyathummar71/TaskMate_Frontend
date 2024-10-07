@@ -154,10 +154,11 @@ const ProfSchedule = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <h1 className="text-2xl text-primary font-primary">Schedule</h1>
       {/* Buttons to switch between today, upcoming, and past bookings */}
       <div className="flex justify-center gap-5 mb-5">
         <button
-          className={`text-xl font-bold font-primary ${
+          className={`text-xl font-bold mt-6 font-primary ${
             view === "Today" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("Today")}
@@ -165,7 +166,7 @@ const ProfSchedule = () => {
           Today |
         </button>
         <button
-          className={`text-xl font-bold font-primary ${
+          className={`text-xl font-bold mt-6 font-primary ${
             view === "Upcoming" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("Upcoming")}
@@ -173,7 +174,7 @@ const ProfSchedule = () => {
           Upcoming |
         </button>
         <button
-          className={`text-xl font-bold font-primary ${
+          className={`text-xl font-bold mt-6 font-primary ${
             view === "Past" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("Past")}
@@ -181,7 +182,7 @@ const ProfSchedule = () => {
           Completed
         </button>
       </div>
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-4 mt-6">
         {filteredBookings.length > 0 ? (
           filteredBookings.map((booking) => {
             const customer = customerData.find(
@@ -346,7 +347,7 @@ const ProfSchedule = () => {
             );
           })
         ) : (
-          <p>No bookings found for this time period.</p>
+          <p className="mt-5">No bookings found for this time period.</p>
         )}
       </div>
     </div>
