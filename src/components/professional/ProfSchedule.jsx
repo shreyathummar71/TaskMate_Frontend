@@ -245,7 +245,7 @@ const ProfSchedule = () => {
                       </h1>
                       {bookingForOthers ? (
                         <>
-                          <p className="text-sm mb-1 font-primary text-tertiary">
+                          <p className="text-sm mb-1 text-tertiary">
                             <span className="text-white font-secondary">
                               Name :{" "}
                             </span>
