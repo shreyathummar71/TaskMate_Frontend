@@ -34,20 +34,20 @@ const FAQCustomer = () => {
   }
 
   return (
-    <div className="faq-container bg-white max-w-2xl ml-0 mx-auto mt-8 text-start ">
+    <div className="faq-container bg-white  mx-auto text-start ">
       {/* Title */}
-      <div className="flex items-center justify-center mt-8">
-        <h1 className=" font-primary text-2xl font-bold text-primary">
+      <div className="">
+        <h1 className=" font-primary text-2xl text-primary">
           Frequently Asked Questions
         </h1>
       </div>
 
       {/* FAQ List */}
-      <div className="max-w-2xl mx-auto space-y-4 mt-8 text-start">
+      <div className="space-y-4 mt-8 text-start">
         {faqs.map((faq) => (
-          <div key={faq._id} className="border-b border-gray-200">
+          <div key={faq._id} className="border-b border-secondary">
             <details className="group py-4">
-              <summary className="font-semibold font-primary text-primary text-left text-lg cursor-pointer flex justify-between items-center">
+              <summary className=" font-secondary text-primary text-left text-lg cursor-pointer flex justify-between items-center">
                 {faq.question}
                 <span className="text-xl transform transition-transform group-open:rotate-45">
                   +

@@ -154,13 +154,7 @@ const ServiceDetail = () => {
 
       {/* Conditionally Render Buttons for Logged-in Customer */}
       {isCustomer && (
-        <div className="flex justify-center gap-4 pb-8">
-          <Link
-            to={`/find-professional/${service._id}`}
-            className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg inline-flex items-center hover:bg-secondary"
-          >
-            Find Professional
-          </Link>
+        <div className="flex justify-center pb-8">
           <button
             onClick={() => navigate(-1)} // Go back to the previous page (services)
             className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg inline-flex items-center hover:bg-secondary"
