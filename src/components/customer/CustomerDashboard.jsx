@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate and useLocation hooks
 import CustAllCategory from "./CustAllCategory";
 import CustMyBooking from "./CustMyBooking";
 import CustFavorites from "./CustFavorites";
@@ -18,6 +18,7 @@ const CustomerDashboard = () => {
   const mainContentRef = useRef(null);
   const bookServiceRef = useRef(null);
   const navigate = useNavigate(); // Initialize navigate
+  const location = useLocation(); // Initialize useLocation to get the query param
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -26,17 +27,19 @@ const CustomerDashboard = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Check if there is a section query parameter in the URL and set the active menu
+    const queryParams = new URLSearchParams(location.search);
+    const section = queryParams.get("section");
+    if (section) {
+      setActiveMenu(section);
+    }
+  }, [location.search]);
+
   const scrollToBookService = () => {
     if (bookServiceRef.current) {
       bookServiceRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  };
-
-  // Function to handle "Find Professional" navigation
-  const handleFindProfessionalClick = (serviceId) => {
-    setActiveMenu("find-professional"); // Set the active menu to "Find Professional"
-    setServiceId(serviceId); // Pass the service ID
-    navigate("/find-professional/findProfessional"); // Programmatically navigate to the route
   };
 
   return (
@@ -156,7 +159,6 @@ const CustomerDashboard = () => {
         {/* Main Content */}
         <div className="flex-grow pl-10 w-2/4" ref={mainContentRef}>
           {activeMenu === "bookService" && <CustAllCategory />}
-          {/* pass custId here */}
           {activeMenu === "my-bookings" && <CustMyBooking custId={cust_Id} />}
           {activeMenu === "Schedule" && <CustSchedule />}
           {activeMenu === "favorites" && <CustFavorites />}

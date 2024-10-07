@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-const BookingModal = ({
+const UpdateCustomerBookingModal = ({
   isOpen,
   onClose,
   onSubmit,
   professional,
   serviceId,
+  bookingId,
   customerId,
   jobId,
   chargesPerHour,
@@ -21,69 +22,98 @@ const BookingModal = ({
   const [appointmentDateTime, setAppointmentDateTime] = useState(
     new Date().toISOString().substring(0, 10) // Format for 'date'
   );
+  const [bookHr, setBookHr] = useState("");
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
-  const [confirmedJobId, setConfirmedJobId] = useState(null);
   const [serviceName, setServiceName] = useState(""); // New state for service name
-  const [timeError, setTimeError] = useState(""); // State to hold time error
+
+  const [customerBookingData, setCustomerBookingData] = useState(""); //New state for Customer booking
+  const [isLoading, setIsLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  function formatTime(timeString) {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  //To convert the ISO date string  for example "2024-10-24T12:19:53.000Z" to the dd/mm/YYYY format
+  function convertIsoToddmmYYYY(isoDate) {
+    const date = new Date(isoDate);
+    const day = date.getUTCDate().toString().padStart(2, "0");
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+    const year = date.getUTCFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
 
   useEffect(() => {
-    const fetchServiceName = async () => {
+    const fetchCustomerBooking = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(
-          `https://backend-taskmate.onrender.com/services/${serviceId}`
+          `https://backend-taskmate.onrender.com/booking/${bookingId}`
         );
         if (response.ok) {
-          const serviceData = await response.json();
-          setServiceName(serviceData.name); // Assuming the service name is in the 'name' field
+          const customerBooking = await response.json();
+          console.log("Printing response");
+          console.log(customerBooking);
+          console.log("Done printing response");
+          setCustomerBookingData(customerBooking); //The customer booking data in fields
         } else {
-          console.error("Failed to fetch service name");
+          console.error("Failed to fetch customer booking data");
         }
       } catch (error) {
-        console.error("Error fetching service name:", error);
+        console.error("Error fetching customerBooking :", error);
+      } finally {
+        setIsLoading(false);
       }
     };
-
-    if (serviceId) {
-      fetchServiceName(); // Fetch service name when the serviceId is available
+    if (bookingId) {
+      //console.log("CustomerID is  not null", customerId);
+      fetchCustomerBooking(); //Fetch Customerbooking deatils if the customerId is available
     }
-  }, [serviceId]); // Trigger the effect when serviceId changes
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (customerBookingData) {
+      setName(customerBookingData.bookingForOthers?.name || "");
+      setStreet(customerBookingData.bookingForOthers?.address?.street || "");
+      setCity(customerBookingData.bookingForOthers?.address?.city || "");
+      setState(customerBookingData.bookingForOthers?.address?.state || "");
+      setZipcode(customerBookingData.bookingForOthers?.address?.zipcode || "");
+      setPhoneNumber(customerBookingData.bookingForOthers?.phoneNumber || "");
+      setEmail(customerBookingData.bookingForOthers?.email || "");
+      setAppointmentDateTime(customerBookingData.addJobModel_id?.date || "");
+      setBookHr(customerBookingData.bookHr || "");
+      setIsBookingForOthers(!!customerBookingData.bookingForOthers);
+      setStartTime(customerBookingData.addJobModel_id?.startTime || "");
+      setEndTime(customerBookingData.addJobModel_id?.endTime || "");
+      setDescription(customerBookingData.description || "");
+      setServiceName(customerBookingData.service_id?.name || "");
+      setAppointmentDateTime(customerBookingData.addJobModel_id?.date || "");
+    }
+  }, [customerBookingData]);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Clear previous error
-    setTimeError("");
-
-    // Validation: Check if startTime and endTime are set
-    if (!startTime || !endTime) {
-      setTimeError("Start time and end time are required.");
-      return;
-    }
-
-    // Convert times to Date objects
-    const startDateTime = new Date(`${appointmentDateTime}T${startTime}`);
-    const endDateTime = new Date(`${appointmentDateTime}T${endTime}`);
-
-    // Check if startTime is less than endTime
-    if (startDateTime >= endDateTime) {
-      setTimeError("Start time should be earlier than end time.");
-      return;
-    }
-
-    const bookingData = {
+    const updatedBookingData = {
       cust_id: customerId,
-      addJobModel_id: jobId,
+      addJobModel_id: jobId, // Use addJobModel_id instead of job_id
       prof_id: professional._id,
       service_id: serviceId,
       appointmentDateTime: new Date(appointmentDateTime),
+      bookHr: bookHr,
       status: "pending",
-      startTime: startDateTime, // Ensure correct format
-      endTime: endDateTime, // Ensure correct format
+      startTime: new Date(`${appointmentDateTime}T${startTime}`), // Ensure correct format
+      endTime: new Date(`${appointmentDateTime}T${endTime}`), // Ensure correct format
       description: description,
       bookingForOthers: isBookingForOthers
         ? {
@@ -102,27 +132,32 @@ const BookingModal = ({
 
     try {
       const response = await fetch(
-        "https://backend-taskmate.onrender.com/booking",
+        `https://backend-taskmate.onrender.com/booking/${bookingId}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(bookingData),
+          body: JSON.stringify(updatedBookingData),
         }
       );
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("Booking confirmed:", data);
-        onSubmit(data); // Call onSubmit with the booking data received from backend
+        const updatedBooking = await response.json();
+        console.log("Booking updated successfully:", updatedBooking);
+        setSuccessMessage("Booking updated successfully!");
+
+        // Close the modal after 2 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          onClose();
+        }, 2000);
+        onSubmit(updatedBooking);
       } else {
-        const errorData = await response.text();
-        console.error("Failed to create booking", errorData);
-        throw new Error("Failed to create booking");
+        console.error("Failed to update booking");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error updating booking:", error);
     }
   };
 
@@ -133,33 +168,62 @@ const BookingModal = ({
           Book Appointment
         </h2>
         <form onSubmit={handleSubmit}>
-          {/* Date Field */}
-          <div className="mb-4">
-            <label className="block text-white text-sm mb-2">Date</label>
-            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-              {formattedDate || "Loading..."}
-            </div>
-          </div>
-
-          {/* Charges per Hour Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">
-              Charges per Hour
+              Appointment Date
             </label>
-            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-              {chargesPerHour ? `${chargesPerHour} €` : "Loading..."}
+            <input
+              type="datetimne-local"
+              name="appointmentDateTime"
+              value={convertIsoToddmmYYYY(appointmentDateTime)}
+              onChange={(e) => setAppointmentDateTime(e.target.value)}
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              disabled
+              required
+            />
+          </div>{" "}
+          <div className="mb-4 flex gap-4">
+            <div className="w-1/2">
+              <label className="block text-white text-sm mb-2">Book Hour</label>
+              <input
+                type="text"
+                name="bookHr"
+                placeholder="Book Hour"
+                value={bookHr}
+                onChange={(e) => setBookHr(e.target.value)}
+                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                required
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="block text-white text-sm mb-2">
+                Charges per Hour
+              </label>
+              <div
+                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                disabled
+              >
+                {isLoading
+                  ? "Loading..."
+                  : customerBookingData?.addJobModel_id?.chargesPerHour ||
+                    "N/A"}
+              </div>
             </div>
           </div>
-
-          {/* Service Field */}
+          {/* New Service Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Service</label>
-            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-              {serviceName || "Loading..."}
+            <div
+              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+              disabled
+            >
+              {/* Display the service name */}
+              {isLoading
+                ? "Loading..."
+                : customerBookingData?.service_id?.name || "N/A"}
             </div>
           </div>
-
-          {/* Start Time and End Time */}
+          {/* Start Time and End Time Side by Side */}
           <div className="mb-4 flex gap-4">
             <div className="w-1/2">
               <label className="block text-white text-sm mb-2">
@@ -168,7 +232,13 @@ const BookingModal = ({
               <input
                 type="time"
                 name="startTime"
-                value={startTime}
+                value={
+                  isLoading
+                    ? "Loading..."
+                    : customerBookingData?.addJobModel_id
+                    ? formatTime(customerBookingData.addJobModel_id.startTime)
+                    : ""
+                }
                 onChange={(e) => setStartTime(e.target.value)}
                 className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                 required
@@ -179,19 +249,17 @@ const BookingModal = ({
               <input
                 type="time"
                 name="endTime"
-                value={endTime}
+                value={
+                  customerBookingData && customerBookingData.addJobModel_id
+                    ? formatTime(customerBookingData.addJobModel_id.endTime)
+                    : "Loading..."
+                }
                 onChange={(e) => setEndTime(e.target.value)}
                 className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                 required
               />
             </div>
           </div>
-
-          {/* Display Time Error if exists */}
-          {timeError && (
-            <div className="mb-4 text-red-500 text-sm">{timeError}</div>
-          )}
-
           {/* Description Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Description</label>
@@ -205,7 +273,6 @@ const BookingModal = ({
               required
             />
           </div>
-
           {/* Checkbox for Booking for Others */}
           <div className="mb-4">
             <label>
@@ -217,7 +284,6 @@ const BookingModal = ({
               <span className="ml-2 text-grey-500">Book for someone else</span>
             </label>
           </div>
-
           {isBookingForOthers && (
             <>
               <div className="mb-4">
@@ -306,11 +372,8 @@ const BookingModal = ({
                   required
                 />
               </div>
-              {/* Name, Address, Phone, etc. */}
-              {/* ... */}
             </>
           )}
-
           <div className="flex justify-end mt-4">
             <button
               type="button"
@@ -323,13 +386,16 @@ const BookingModal = ({
               type="submit"
               className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
             >
-              Confirm Booking
+              Update Booking
             </button>
           </div>
         </form>
+        {successMessage && (
+          <div className="text-secondary">{successMessage}</div>
+        )}
       </div>
     </div>
   );
 };
 
-export default BookingModal;
+export default UpdateCustomerBookingModal;

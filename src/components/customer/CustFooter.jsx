@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CustFooter = () => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (section) => {
+    navigate(`/customerDashboard?section=${section}`);
+  };
+
   return (
     <footer className="bg-primary text-white">
       <div className="bg-tertiary text-center py-7">
@@ -9,7 +16,8 @@ const CustFooter = () => {
           <span className="text-secondary">Mate</span>
         </h1>
         <p className="text-white font-secondary text-xl mt-3 ">
-          TaskMate makes finding trusted home service professionals simple and fast. <br />
+          TaskMate makes finding trusted home service professionals simple and fast.
+          <br />
           From cleaning to repairs, we've got you covered with quality, reliable service every time.
         </p>
       </div>
@@ -24,40 +32,23 @@ const CustFooter = () => {
             Happiness Guarantee
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
-          <li>
-              <Link to="/customerDashboard" className="hover:text-secondary">
-              My Dashboard
-              </Link>
+          <li onClick={() => handleNavigation("bookService")}>
+              <span className="hover:text-secondary cursor-pointer">Dashboard</span>
             </li>
-            <li>
-              <Link to="/customerbooking" className="hover:text-secondary">
-              My Booking
-              </Link>
+            <li onClick={() => handleNavigation("my-bookings")}>
+              <span className="hover:text-secondary cursor-pointer">Manage Booking</span>
             </li>
-            <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Services
-              </Link>
+            <li onClick={() => handleNavigation("Schedule")}>
+              <span className="hover:text-secondary cursor-pointer">My Booking</span>
             </li>
-            <li>
-              <Link to="/aboutus" className="hover:text-secondary">
-                About Us
-              </Link>
+            <li onClick={() => handleNavigation("bookService")}>
+              <span className="hover:text-secondary cursor-pointer">Services</span>
             </li>
-            <li>
-              <Link to="/customerfaq" className="hover:text-secondary">
-                FAQ
-              </Link>
+            <li onClick={() => handleNavigation("faq")}>
+              <span className="hover:text-secondary cursor-pointer">FAQ</span>
             </li>
-            <li>
-              <Link to="/customerhelp" className="hover:text-secondary">
-                Help
-              </Link>
-            </li>
-            <li>
-              <Link to="/contactus" className="hover:text-secondary">
-                Contact Us
-              </Link>
+            <li onClick={() => handleNavigation("help-center")}>
+              <span className="hover:text-secondary cursor-pointer">Help Center</span>
             </li>
           </ul>
         </div>
@@ -69,40 +60,32 @@ const CustFooter = () => {
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="/services/66f2cd0de6226da9aeec3043" className="hover:text-secondary">
                 Cleaning
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Handyman
+              <Link to="/services/66f29dd0eec19273c999fedf" className="hover:text-secondary">
+              Leaky Faucet Repair
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Plumbing
+              <Link to="/services/66fe9e8e0d7973a259d61276" className="hover:text-secondary">
+              Appliance Repairs
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Electrical
-              </Link>
-            </li>
-            <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="/services/66fea1f90d7973a259d6127c" className="hover:text-secondary">
                 Moving Help
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Painting
+              <Link to="/services/66f2d266e6226da9aeec305b" className="hover:text-secondary">
+              Interior Wall Painting
               </Link>
             </li>
             <li>
-              <Link
-                to="/AllCategory"
-                className="hover:text-secondary"
-              >
+              <Link to="/services/66fe962b0d7973a259d6125e"className="hover:text-secondary">
                 Furniture Assembly
               </Link>
             </li>
@@ -120,9 +103,9 @@ const CustFooter = () => {
               <li>Italy</li>
               <li>Spain</li>
               <li>Netherlands</li>
-              <li>Switzerland</li>
             </ul>
             <ul className="space-y-3 font-secondary text-sm">
+            <li>Switzerland</li>
               <li>Sweden</li>
               <li>Belgium</li>
               <li>Austria</li>
@@ -162,7 +145,7 @@ const CustFooter = () => {
       </div>
 
       {/* Footer Bottom */}
-      <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
+      <div className="bg-tertiary text-primary font-primary py-4 text-sm text-center">
         <p>
           Copyright © Task
           <span className="text-secondary">Mate</span>. 2024 All Rights

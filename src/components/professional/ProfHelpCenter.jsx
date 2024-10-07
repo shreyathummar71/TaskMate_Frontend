@@ -34,11 +34,11 @@ const ProfHelpCenter = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="help-center-container rounded-xl font-primary bg-tertiary p-8">
-        <h1 className="text-3xl font-semibold text-primary font-primary mb-6">
+      <div className="help-center-container font-primary ">
+        <h1 className="text-2xl  text-primary font-primary mb-6">
           Help Center
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Help by Us */}
           <div className="bg-primary p-6 rounded-lg font-primary shadow-md">
             <h2 className="text-xl font-primary text-white mb-4">Help by Us</h2>
@@ -46,7 +46,7 @@ const ProfHelpCenter = () => {
               Contact our support team for personalized assistance.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-secondary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleHelpByUSClick}
             >
               Help by Us
@@ -62,7 +62,7 @@ const ProfHelpCenter = () => {
               Get instant answers with our AI-powered chatbot.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-secondary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleHelpByAIClick}
             >
               Ask Now
@@ -76,7 +76,7 @@ const ProfHelpCenter = () => {
               Browse frequently asked questions for quick help.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-secondary px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleFAQClick}
             >
               View FAQs

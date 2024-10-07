@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import getCustomerIdFromToken from "../../utils/tokenUtils";
 import userImage from "/src/assets/images/user.png";
-import BookingModal from "./BookingModal";
+import UpdateCustomerBookingModal from "./UpdateCustomerBookingModal";
 
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Add state variables to manage the modal
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [activeTab, setActiveTab] = useState("confirmed"); // New state for active tab
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
@@ -42,7 +43,6 @@ const CustMyBooking = () => {
         fetchBookingDetails(cust_id);
       }
     };
-
     getCustId();
   }, []);
 
@@ -67,20 +67,20 @@ const CustMyBooking = () => {
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
     switch (status.toLowerCase()) {
-      // case "confirmed":
-      //   return "bg-green-500";
+      case "confirmed":
+        return "bg-green-500";
       case "cancelled":
         return "bg-red-500";
       case "pending":
         return "bg-yellow-500";
       default:
-        return "";
+        return "bg-gray-500";
     }
   };
 
   // Create functions to open and close the modal
-  const openModal = (booking) => {
-    setSelectedBooking(booking);
+  const openModal = (bookingDetails) => {
+    setSelectedBooking(bookingDetails);
     setIsModalOpen(true);
   };
 
@@ -106,70 +106,123 @@ const CustMyBooking = () => {
       if (!response.ok) throw new Error("Failed to update booking");
 
       // Refresh booking details after successful update
-      fetchBookingDetails(customerId);
+      await fetchBookingDetails(customerId);
       closeModal();
     } catch (error) {
       console.error("Error updating booking:", error);
     }
   };
+  const handleTabChange = (status) => {
+    setActiveTab(status);
+  };
+
+  // Filter bookings based on active tab
+  const filteredBookings = bookingDetails.filter(
+    (booking) => booking.status.toLowerCase() === activeTab
+  );
+  const getTabColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "confirmed":
+        return "text-green-500 text-gray-500";
+      case "pending":
+        return "text-yellow-500 text-gray-500";
+      case "rejected":
+        return "text-red-500 text-gray-500";
+      default:
+        return "text-gray-500 text-gray-500";
+    }
+  };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {bookingDetails.map((bookingDetail) => (
-        <div
-          key={bookingDetail._id}
-          className="flex flex-col justify-between bg-primary rounded-xl"
-        >
-          {/* Professional Profile Image */}
-          <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
-            {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
-            <img
-              src={bookingDetail.prof_id.profileImage || userImage}
-              alt={bookingDetail.prof_id.firstName}
-              className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
-            />
-          </div>
+    <>
+      <div>
+        <h2 className="text-2xl mb-8 font-primary"> Manage Bookings</h2>
+      </div>
+      {/* Booking status  Tabs */}
+      <div className="flex justify-center mb-6">
+        {["confirmed", "pending", "rejected"].map((status) => (
+          <button
+            key={status}
+            className={` px-4 font-semibold font-primary ${
+              activeTab === status
+                ? getTabColor(status)
+                : "bg-white text-gray-600"
+            }
+            ${
+              status === "pending"
+                ? "border-collapse border-l border-r border-primary"
+                : ""
+            } mx-1 capitalize`}
+            onClick={() => handleTabChange(status)}
+          >
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredBookings.map((bookingDetail) => (
+          <div
+            key={bookingDetail._id}
+            className="flex flex-col justify-between bg-primary rounded-xl"
+          >
+            {/* Professional Profile Image */}
 
-          <div className="items-center pb-4 bg-primary rounded-b-xl">
-            <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-              <span className="text-secondary">Professional Name : </span>
-              {bookingDetail.prof_id.firstName} {bookingDetail.prof_id.lastName}
-            </p>
-            <div>
+            <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
+              {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
+              <img
+                src={bookingDetail.prof_id.profileImage || userImage}
+                alt={bookingDetail.prof_id.firstName}
+                className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
+              />
+            </div>
+
+            <div className="items-center pb-4 bg-primary rounded-b-xl">
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Service Name : </span>
-                {bookingDetail.service_id.name}
+                <span className="text-secondary">Professional Name : </span>
+                {bookingDetail.prof_id.firstName}{" "}
+                {bookingDetail.prof_id.lastName}
               </p>
-            </div>
-            <div>
-              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Appointment Date : </span>
-                {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Schedule : </span>
-                {formatTime(bookingDetail.startTime)} to{" "}
-                {formatTime(bookingDetail.endTime)}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Booking Hours : </span>
-                {bookingDetail.bookHr} hours
-              </p>
-            </div>
-            <div className="float-end mr-4 mt-3">
-              <button
-                onClick={() => openModal(bookingDetail)}
-                className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-secondary hover:text-white"
-              >
-                Modify Booking
-              </button>
-            </div>
-            <div className="float-end mr-4 mt-3">
-              {bookingDetail.status.toLowerCase() !== "confirmed" && (
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Service : </span>
+                  {bookingDetail.service_id.name}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Appointment Date : </span>
+                  {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Schedule : </span>
+                  {formatTime(bookingDetail.startTime)} to{" "}
+                  {formatTime(bookingDetail.endTime)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                  <span className="text-secondary">Booking Hours : </span>
+                  {bookingDetail.bookHr} hours
+                </p>
+              </div>
+              <div className="float-end mr-4 mt-3">
+                <button
+                  onClick={() => {
+                    openModal(bookingDetail);
+                  }}
+                  disabled={bookingDetail.status.toLowerCase() === "confirmed"}
+                  className={`bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm :text-white ${
+                    bookingDetail.status.toLowerCase() === "confirmed"
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  Modify Booking
+                </button>
+              </div>
+              <div className="float-end mr-4 mt-3">
                 <button
                   className={`${getStatusButtonColor(
                     bookingDetail.status
@@ -177,28 +230,27 @@ const CustMyBooking = () => {
                 >
                   {bookingDetail.status}
                 </button>
-              )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+      {isModalOpen && selectedBooking && (
+        <UpdateCustomerBookingModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onSubmit={handleBookingUpdate}
+          professional={selectedBooking.prof_id._id}
+          serviceId={selectedBooking.service_id._id}
+          customerId={customerId}
+          bookingId={selectedBooking._id}
+          jobId={selectedBooking.addJobModel_id._id}
+          chargesPerHour={selectedBooking.addJobModel_id.chargesPerHour}
+          formattedDate={selectedBooking.addJobModel_id.date}
+        />
+      )}
+    </>
   );
-  {
-    isModalOpen && selectedBooking && (
-      <BookingModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleBookingUpdate}
-        professional={{ _id: selectedBooking.professionalId }}
-        serviceId={selectedBooking.serviceId}
-        customerId={customerId}
-        jobId={selectedBooking._id}
-        chargesPerHour={selectedBooking.chargesPerHour}
-        formattedDate={selectedBooking.appointmentDate}
-      />
-    );
-  }
 };
 
 export default CustMyBooking;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FindProfessional from "./FindProfessional";
 import ProfessionalsListByService from "./ProfessionalsListByService";
 
 const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
@@ -101,7 +100,7 @@ const CustAllCategory = () => {
         <div>
           {!selectedCategory ? (
             <div>
-              <h2 className="text-2xl mb-8 font-primary">All Categories</h2>
+              <h2 className="text-2xl mb-8 font-primary text-primary">All Categories</h2>
               <div className="grid grid-cols-3 gap-8">
                 {categories.map((category) => (
                   <div

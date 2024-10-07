@@ -29,12 +29,13 @@ const CustSchedule = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/booking/customerbooking/${cust_id}`
+        `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      console.log(data); // Add this to check the response
       setBookings(data);
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -47,7 +48,7 @@ const CustSchedule = () => {
     console.log("Cancelling booking with ID:", bookingId);
     try {
       const response = await fetch(
-        `http://localhost:8081/booking/${bookingId}`,
+        `https://backend-taskmate.onrender.com/booking/${bookingId}`,
         {
           method: "DELETE",
         }
@@ -68,13 +69,16 @@ const CustSchedule = () => {
 
   const submitFeedback = async (feedback) => {
     try {
-      const response = await fetch(`http://localhost:8081/feedback`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(feedback),
-      });
+      const response = await fetch(
+        `https://backend-taskmate.onrender.com/feedback`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(feedback),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit feedback");
@@ -114,10 +118,11 @@ const CustSchedule = () => {
             <span className="text-secondary">Service Name : </span>
             {booking.serviceName}
           </p>
+          {/* this date is fetch from addjobmodal date field */}
           <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-            <span className="text-secondary">Appointment Date : </span>
-            {booking.appointmentDate
-              ? new Date(booking.appointmentDate).toLocaleDateString("en-US", {
+            <span className="text-secondary"> Appointment Date : </span>
+            {booking.date
+              ? new Date(booking.date).toLocaleDateString("en-GB", {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
@@ -128,6 +133,11 @@ const CustSchedule = () => {
             <span className="text-secondary">Booking Hours : </span>
             {booking.bookingHours} hours
           </p>
+          {/* <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+            <span className="text-secondary">Prof ID : </span>
+            {booking.profId || "N/A"}
+          </p> */}
+
           <div className="float-end  mt-3">
             {activeTab !== "completed" ? (
               <button
@@ -165,7 +175,7 @@ const CustSchedule = () => {
         </li>
         <li className="border-collapse border-l border-r border-primary">
           <button
-            className={` px-4 font-semibold ${
+            className={` px-4 font-semibold font-primary  ${
               activeTab === "upcoming" ? " text-secondary" : "text-gray-600"
             }`}
             onClick={() => setActiveTab("upcoming")}
@@ -175,7 +185,7 @@ const CustSchedule = () => {
         </li>
         <li>
           <button
-            className={` px-4 font-semibold ${
+            className={` px-4 font-semibold font-primary  ${
               activeTab === "completed" ? " text-secondary" : "text-gray-600"
             }`}
             onClick={() => setActiveTab("completed")}
@@ -190,23 +200,24 @@ const CustSchedule = () => {
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {renderBookings(
               (booking) =>
-                new Date(booking.appointmentDate).toDateString() ===
+                new Date(booking.date).toDateString() ===
                 new Date().toDateString()
             )}
           </div>
         )}
         {activeTab === "upcoming" && (
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {renderBookings(
-              (booking) => new Date(booking.appointmentDate) > new Date()
-            )}
+            {renderBookings((booking) => new Date(booking.date) > new Date())}
           </div>
         )}
         {activeTab === "completed" && (
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {renderBookings(
-              (booking) => new Date(booking.appointmentDate) < new Date()
-            )}
+            {renderBookings((booking) => {
+              const date = new Date(booking.date);
+              const timeDiff = new Date() - date;
+              const hoursDiff = timeDiff / (1000 * 3600); // Convert milliseconds to hours
+              return date < new Date() && hoursDiff <= 48; // Completed within the last 48 hours
+            })}
           </div>
         )}
       </div>
@@ -218,8 +229,8 @@ const CustSchedule = () => {
           onClose={() => setModalOpen(false)}
           bookingId={selectedBooking.id}
           custId={customerId}
-          profId={selectedBooking.professionalId}
           onSubmitFeedback={submitFeedback}
+          profId={selectedBooking.profId}
         />
       )}
     </div>

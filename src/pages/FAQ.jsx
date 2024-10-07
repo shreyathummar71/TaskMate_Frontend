@@ -47,15 +47,15 @@ const FAQ = () => {
 
       {/* FAQs Section */}
       <div className="faq-container bg-white">
-        <div className="text-center mt-8 text-primary font-primary">
-          <h1 className="text-4xl font-bold">Frequently Asked Questions</h1>
+        <div className="text-center mt-12 text-primary font-primary">
+          <h1 className="text-3xl ">Frequently Asked Questions</h1>
         </div>
 
-        <div className="max-w-2xl mx-auto space-y-4 mt-8">
+        <div className=" p-8 ml-28 mr-28 space-y-4 mt-4">
           {faqs.map((faq) => (
-            <div key={faq._id} className="border-b border-gray-200">
+            <div key={faq._id} className="border-b border-secondary">
               <details className="group py-4">
-                <summary className="font-semibold font-primary text-primary text-lg cursor-pointer flex justify-between items-center">
+                <summary className="font-secondary text-primary text-lg cursor-pointer flex justify-between items-center">
                   {faq.question}
                   <span className="text-xl transform transition-transform group-open:rotate-45">
                     +
@@ -75,7 +75,7 @@ const FAQ = () => {
             className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
             onClick={handleSignupCustClick}
           >
-            <span className="mr-2 text-xl">Get Started</span>
+            <span className="mr-2 text-xl font-primary ">Get Started </span>
             <span>
               <img
                 src={buttonArrowImg} // Use the imported image
