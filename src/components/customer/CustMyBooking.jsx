@@ -115,9 +115,12 @@ const CustMyBooking = () => {
   const handleTabChange = (status) => {
     setActiveTab(status);
   };
+  const sortedBookings = [...bookingDetails].sort(
+    (a, b) => new Date(b.addJobModel_id.date) - new Date(a.addJobModel_id.date)
+  );
 
   // Filter bookings based on active tab
-  const filteredBookings = bookingDetails.filter(
+  const filteredBookings = sortedBookings.filter(
     (booking) => booking.status.toLowerCase() === activeTab
   );
   const getTabColor = (status) => {
@@ -136,7 +139,10 @@ const CustMyBooking = () => {
   return (
     <>
       <div>
-        <h2 className="text-2xl mb-8 font-primary"> Manage Bookings</h2>
+        <h2 className="text-2xl mb-8 font-primary text-primary">
+          {" "}
+          Manage Bookings
+        </h2>
       </div>
       {/* Booking status  Tabs */}
       <div className="flex justify-center mb-6">
