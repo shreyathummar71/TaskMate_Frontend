@@ -123,13 +123,13 @@ const CustMyBooking = () => {
   const getTabColor = (status) => {
     switch (status.toLowerCase()) {
       case "confirmed":
-        return "bg-green-500 text-white";
+        return "text-green-500 text-gray-500";
       case "pending":
-        return "bg-yellow-500 text-white";
+        return "text-yellow-500 text-gray-500";
       case "rejected":
-        return "bg-red-500 text-white";
+        return "text-red-500 text-gray-500";
       default:
-        return "bg-gray-500 text-white";
+        return "text-gray-500 text-gray-500";
     }
   };
 
@@ -143,9 +143,16 @@ const CustMyBooking = () => {
         {["confirmed", "pending", "rejected"].map((status) => (
           <button
             key={status}
-            className={` px-4 font-semibold ${
-              activeTab === "completed" ? " text-secondary" : "text-gray-600"
-            }`}
+            className={` px-4 font-semibold font-primary ${
+              activeTab === status
+                ? getTabColor(status)
+                : "bg-white text-gray-600"
+            }
+            ${
+              status === "pending"
+                ? "border-collapse border-l border-r border-primary"
+                : ""
+            } mx-1 capitalize`}
             onClick={() => handleTabChange(status)}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
