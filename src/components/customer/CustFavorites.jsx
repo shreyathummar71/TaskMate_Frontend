@@ -66,15 +66,26 @@ const CustFavorites = () => {
     return stars;
   };
 
+  // Filter out jobs with past dates
+  const today = new Date().setHours(0, 0, 0, 0); // Reset today's date to midnight for accurate comparison
+
+  const futureFavorites = favorites.filter((favorite) => {
+    const job = favorite.jobId || {}; // Fallback if jobId is undefined
+    const jobDate = job.date ? new Date(job.date).setHours(0, 0, 0, 0) : null;
+    
+    // Only keep jobs with a date in the future or today
+    return jobDate && jobDate >= today;
+  });
+
   return (
     <div>
       <h1 className="text-2xl text-primary font-primary mb-8">Your Favorite Professionals</h1>
 
-      {favorites.length === 0 ? (
-        <p className="text-xl font-secondary text-gray-500">No professionals in favorites</p>
+      {futureFavorites.length === 0 ? (
+        <p className="text-xl font-secondary text-gray-500">No upcoming jobs in favorites</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {favorites.map((favorite) => {
+          {futureFavorites.map((favorite) => {
             const job = favorite.jobId || {}; // Fallback if jobId is undefined
             const service = job.service_id || {}; // Fallback if service_id is undefined
             const professional = favorite.prof_id || {}; // Fallback if prof_id is undefined
