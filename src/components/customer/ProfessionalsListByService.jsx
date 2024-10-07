@@ -4,10 +4,11 @@ import axios from "axios";
 import userImage from "../../assets/images/user.png";
 
 const PROFESSIONAL_BY_SERVICE_ID_URL =
-  "https://backend-taskmate.onrender.com/newJob/professionals-for-service-details/";
+  "http://localhost:8081/newJob/professionals-for-service-details/";
 
 const GEONAMES_USERNAME = "dhruvi.balar";
-const EUROPEAN_COUNTRIES_API_URL = "https://restcountries.com/v3.1/region/europe";
+const EUROPEAN_COUNTRIES_API_URL =
+  "https://restcountries.com/v3.1/region/europe";
 const GEONAMES_CITIES_API_URL = (countryCode) =>
   `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
 
@@ -20,19 +21,31 @@ const formatDate = (date) => {
 // Convert date from input (yyyy-mm-dd) to dd/mm/yyyy format for comparison
 const formatInputDate = (inputDate) => {
   const date = new Date(inputDate);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
   const year = date.getFullYear();
   return `${day}/${month}/${year}`; // Return dd/mm/yyyy format
 };
 
 // Helper function to format time to 12-hour format with am/pm
-const formatTime = (time) => {
-  const [hours, minutes] = time.split(":").map(Number);
-  const ampm = hours >= 12 ? "pm" : "am";
-  const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-  return `${String(formattedHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}${ampm}`;
-};
+// const formatTime = (time) => {
+//   const [hours, minutes] = time.split(":").map(Number);
+//   const ampm = hours >= 12 ? "pm" : "am";
+//   const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+//   return `${String(formattedHours).padStart(2, "0")}:${String(minutes).padStart(
+//     2,
+//     "0"
+//   )}${ampm}`;
+// };
+
+function formatTime(timeString) {
+  const date = new Date(timeString);
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
 
 const ProfessionalsListByService = ({ serviceId }) => {
   const [professionals, setProfessionals] = useState([]);
@@ -73,7 +86,12 @@ const ProfessionalsListByService = ({ serviceId }) => {
         );
         const today = new Date().setHours(0, 0, 0, 0); // Today at midnight
         const futureProfessionals = response.data.filter((professional) => {
-          const jobDate = new Date(professional.workingDate).setHours(0, 0, 0, 0);
+          const jobDate = new Date(professional.workingDate).setHours(
+            0,
+            0,
+            0,
+            0
+          );
           return jobDate >= today; // Only include jobs on or after today
         });
         setProfessionals(futureProfessionals);
@@ -102,7 +120,9 @@ const ProfessionalsListByService = ({ serviceId }) => {
             (country) => country.name.common === filters.country
           );
           const countryCode = selectedCountry.cca2;
-          const response = await axios.get(GEONAMES_CITIES_API_URL(countryCode));
+          const response = await axios.get(
+            GEONAMES_CITIES_API_URL(countryCode)
+          );
           setCities(response.data.geonames.map((city) => city.name));
         } catch (error) {
           console.error("Failed to fetch cities:", error);
@@ -186,10 +206,14 @@ const ProfessionalsListByService = ({ serviceId }) => {
     <div>
       {/* Filter Section */}
       <div className="mb-10 p-4 bg-primary rounded-xl ">
-        <h2 className="text-lg font-primary text-white mb-3">Filter Professionals</h2>
+        <h2 className="text-lg font-primary text-white mb-3">
+          Filter Professionals
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
-            <label className="block mb-1 font-semibold font-secondary text-secondary">Country</label>
+            <label className="block mb-1 font-semibold font-secondary text-secondary">
+              Country
+            </label>
             <select
               name="country"
               value={filters.country}
@@ -206,7 +230,9 @@ const ProfessionalsListByService = ({ serviceId }) => {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold font-secondary text-secondary">City</label>
+            <label className="block mb-1 font-semibold font-secondary text-secondary">
+              City
+            </label>
             <select
               name="city"
               value={filters.city}
@@ -224,7 +250,9 @@ const ProfessionalsListByService = ({ serviceId }) => {
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold font-secondary text-secondary">Date</label>
+            <label className="block mb-1 font-semibold font-secondary text-secondary">
+              Date
+            </label>
             <input
               type="date"
               name="date"
@@ -289,7 +317,7 @@ const ProfessionalsListByService = ({ serviceId }) => {
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                   <span className="text-secondary">Working Time : </span>
-                  {formatTime(professional.workingTime.start)} -{" "}
+                  {formatTime(professional.workingTime.start)} to{" "}
                   {formatTime(professional.workingTime.end)}
                 </p>
               </div>
