@@ -143,10 +143,8 @@ const CustMyBooking = () => {
         {["confirmed", "pending", "rejected"].map((status) => (
           <button
             key={status}
-            className={`px-4 py-2 mx-2 rounded-t-lg font-primary ${
-              activeTab === status
-                ? getTabColor(status)
-                : "bg-gray-200 text-gray-700"
+            className={` px-4 font-semibold ${
+              activeTab === "completed" ? " text-secondary" : "text-gray-600"
             }`}
             onClick={() => handleTabChange(status)}
           >
