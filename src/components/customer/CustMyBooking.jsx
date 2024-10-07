@@ -8,6 +8,7 @@ const CustMyBooking = () => {
   const [bookingDetails, setBookingDetails] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Add state variables to manage the modal
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [activeTab, setActiveTab] = useState("confirmed"); // New state for active tab
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
@@ -118,6 +119,9 @@ const CustMyBooking = () => {
 
   return (
     <>
+      <div>
+        <h1>Manage Bookings</h1>
+      </div>
       {/* Booking status  Tabs */}
       <div className="flex justify-center mb-6">
         {["confirmed", "pending", "cancelled"].map((tab) => (
