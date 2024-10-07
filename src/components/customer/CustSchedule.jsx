@@ -29,7 +29,7 @@ const CustSchedule = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/booking/customerbooking/${cust_id}`
+        `https://backend-taskmate.onrender.com/booking/customerbooking/${cust_id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -48,7 +48,7 @@ const CustSchedule = () => {
     console.log("Cancelling booking with ID:", bookingId);
     try {
       const response = await fetch(
-        `http://localhost:8081/booking/${bookingId}`,
+        `https://backend-taskmate.onrender.com/booking/${bookingId}`,
         {
           method: "DELETE",
         }
@@ -69,13 +69,16 @@ const CustSchedule = () => {
 
   const submitFeedback = async (feedback) => {
     try {
-      const response = await fetch(`http://localhost:8081/feedback`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(feedback),
-      });
+      const response = await fetch(
+        `https://backend-taskmate.onrender.com/feedback`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(feedback),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit feedback");
