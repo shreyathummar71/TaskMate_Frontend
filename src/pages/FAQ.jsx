@@ -72,7 +72,7 @@ const FAQ = () => {
         {/* Call-to-Action Button */}
         <div className="text-center mt-8">
           <button
-            className="bg-tertiary  border border-secondary font-secondary font-semibold text-white py-2 px-6 rounded-xl shadow-lg mb-8 mt-5 inline-flex items-center hover:bg-secondary hover:text-white"
+            className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
             onClick={handleSignupCustClick}
           >
             <span className="mr-2 text-xl font-primary ">Get Started </span>

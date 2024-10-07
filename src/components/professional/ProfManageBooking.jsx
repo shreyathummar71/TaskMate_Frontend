@@ -173,7 +173,7 @@ const ProfManageBooking = () => {
       <h1 className="text-2xl text-primary font-primary">Manage Bookings</h1>
       <div className="flex justify-center gap-5 mb-5">
         <button
-          className={`text-xl mt-6 font-bold font-primary ${
+          className={`text-xl mt-6 font-primary ${
             view === "BookingRequests" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingRequests")}
@@ -181,7 +181,7 @@ const ProfManageBooking = () => {
           Booking Requests
         </button>
         <button
-          className={`text-xl mt-6 font-bold font-primary ${
+          className={`text-xl mt-6 font-primary ${
             view === "BookingsForOthers" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingsForOthers")}
@@ -231,18 +231,18 @@ const ProfManageBooking = () => {
                 {/* Lower half - Booking and customer Details */}
                 <div className="p-4 flex-grow">
                   <p className="text-sm mb-1">
-                    <span className="text-secondary">Name: </span>
+                    <span className="text-secondary">Name : </span>
                     {customer
                       ? `${customer.firstName} ${customer.lastName}`
                       : "N/A"}
                   </p>
                   <p className="text-sm mb-1">
-                    <span className="text-secondary">Service: </span>
+                    <span className="text-secondary">Service : </span>
                     {booking?.service_id?.name || "N/A"}
                   </p>
 
                   <p className="text-sm mb-1">
-                    <span className="text-secondary">Address: </span>
+                    <span className="text-secondary">Address : </span>
                     {customer?.address?.street
                       ? `${customer.address.street}${
                           customer.address.zipCode
@@ -252,26 +252,26 @@ const ProfManageBooking = () => {
                       : "N/A"}
                   </p>
                   <p className="text-sm mb-1">
-                    <span className="text-secondary">City: </span>
+                    <span className="text-secondary">City : </span>
                     {customer?.address?.city
                       ? `${customer.address.city}`
                       : "N/A"}
                   </p>
                   <p className="text-sm mb-1">
-                    <span className="text-secondary">Appointment Date: </span>
+                    <span className="text-secondary">Appointment Date : </span>
                     {new Date(booking.appointmentDateTime).toLocaleDateString(
                       "en-GB"
                     )}
                   </p>
 
                   <p className="text-sm mb-1">
-                    <span className="text-secondary">Schedule: </span>
+                    <span className="text-secondary">Schedule : </span>
                     {`${startTimeFormatted} to ${endTimeFormatted}`}
                   </p>
 
                   <p className="text-sm mb-1">
                     <span className="text-secondary">
-                      Total Working hours:{" "}
+                      Total Working hours :{" "}
                     </span>
                     {booking?.bookHr}
                   </p>
@@ -299,7 +299,7 @@ const ProfManageBooking = () => {
                           Accept
                         </button>
                         <button
-                          className="bg-red-800 text-white border font-primary hover:bg-red-500 py-2 px-4 rounded-lg text-sm  "
+                          className="bg-red-800 text-white font-primary hover:bg-red-500 py-2 px-4 rounded-lg text-sm  "
                           onClick={() => handleRejectBooking(booking)}
                         >
                           Reject
