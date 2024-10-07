@@ -3,7 +3,8 @@ import AddJob from "./AddJob";
 import { FaThumbtack } from "react-icons/fa";
 import userimg from "/src/assets/images/user.png";
 
-const PROFESSIONAL_JOBS_API_URL = "https://backend-taskmate.onrender.com/newJob/professional";
+const PROFESSIONAL_JOBS_API_URL =
+  "https://backend-taskmate.onrender.com/newJob/professional";
 const DELETE_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";
 const PIN_JOB_API_URL = "https://backend-taskmate.onrender.com/dashboard";
 
@@ -93,7 +94,9 @@ const ProfJobListing = () => {
   };
 
   // Sort jobs by date
-  const sortedJobs = [...jobs].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const sortedJobs = [...jobs].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
 
   // Handle pin/unpin functionality
   const handlePinJob = async (job) => {
@@ -165,7 +168,8 @@ const ProfJobListing = () => {
       try {
         if (pinnedJobs.includes(jobId)) {
           const requestBody = JSON.stringify({
-            professionalId: jobs.find((job) => job._id === jobId)?.professionalId,
+            professionalId: jobs.find((job) => job._id === jobId)
+              ?.professionalId,
             job_id: jobId,
           });
 
@@ -216,7 +220,9 @@ const ProfJobListing = () => {
 
   const handleJobSaved = (updatedJob) => {
     if (selectedJob) {
-      setJobs(jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job)));
+      setJobs(
+        jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
+      );
     } else {
       setJobs([...jobs, updatedJob]);
     }
@@ -254,12 +260,17 @@ const ProfJobListing = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-12">
         {sortedJobs.length > 0 ? (
           sortedJobs.map((job) => (
-            <div key={job._id} className="text-white rounded-lg pb-3 shadow-lg max-w-xs bg-primary relative">
+            <div
+              key={job._id}
+              className="text-white rounded-lg pb-3 shadow-lg max-w-xs bg-primary relative"
+            >
               {/* Pin Button */}
               <button
                 onClick={() => handlePinJob(job)}
                 className={`absolute top-2 right-2 text-2xl ${
-                  pinnedJobs.includes(job._id) ? "text-secondary" : "text-gray-300"
+                  pinnedJobs.includes(job._id)
+                    ? "text-secondary"
+                    : "text-gray-300"
                 }`}
               >
                 <FaThumbtack />
@@ -273,7 +284,9 @@ const ProfJobListing = () => {
                     className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
                   />
                 </div>
-                <h3 className="text-lg font-primary">{firstName || "Unknown Professional"}</h3>
+                <h3 className="text-lg font-primary">
+                  {firstName || "Unknown Professional"}
+                </h3>
               </div>
 
               <div className="p-4">

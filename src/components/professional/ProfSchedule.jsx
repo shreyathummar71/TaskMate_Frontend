@@ -110,29 +110,43 @@ const ProfSchedule = () => {
 
   // Function to filter bookings based on type
   const filterBookings = (type) => {
+    const today = new Date(); // Ensure `today` is initialized within the function
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
     return confirmedBookings.filter((booking) => {
-      const appointmentDate = new Date(booking.appointmentDateTime);
+      const appointmentDate = booking.addJobModel_id?.date
+        ? new Date(booking.addJobModel_id.date)
+        : null;
+
+      if (!appointmentDate) {
+        return false; // If there's no valid date, exclude the booking
+      }
+
       const diffInTime = today.getTime() - appointmentDate.getTime(); // Difference in milliseconds
       const diffInDays = diffInTime / (1000 * 3600 * 24); // Convert milliseconds to days
 
       switch (type) {
         case "today":
+          // Check if the appointment date matches today's date
           return (
             appointmentDate.getFullYear() === todayYear &&
             appointmentDate.getMonth() === todayMonth &&
             appointmentDate.getDate() === todayDate
           );
         case "upcoming":
-          return appointmentDate > today; // Future dates
+          // Check if the appointment date is after today (future dates)
+          return appointmentDate > today;
         case "past":
-          return (
-            appointmentDate < today && diffInDays <= 2 // Only past bookings within the last 2 days
-          );
+          // Check if the appointment date is within the last 2 days
+          return appointmentDate < today && diffInDays <= 2;
         default:
           return false; // Fallback
       }
     });
   };
+
   // Get bookings based on type
   const bookingsForToday = filterBookings("today");
   const upcomingBookings = filterBookings("upcoming");
@@ -158,7 +172,7 @@ const ProfSchedule = () => {
       {/* Buttons to switch between today, upcoming, and past bookings */}
       <div className="flex justify-center gap-5 mb-5">
         <button
-          className={`text-xl font-bold mt-6 font-primary ${
+          className={`text-xl mt-6 font-primary ${
             view === "Today" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("Today")}
@@ -166,7 +180,7 @@ const ProfSchedule = () => {
           Today |
         </button>
         <button
-          className={`text-xl font-bold mt-6 font-primary ${
+          className={`text-xl  mt-6 font-primary ${
             view === "Upcoming" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("Upcoming")}
@@ -174,7 +188,7 @@ const ProfSchedule = () => {
           Upcoming |
         </button>
         <button
-          className={`text-xl font-bold mt-6 font-primary ${
+          className={`text-xl mt-6 font-primary ${
             view === "Past" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("Past")}
@@ -207,13 +221,13 @@ const ProfSchedule = () => {
                       <img
                         src={customer.profileImage}
                         alt={`${customer.firstName}'s profile`}
-                        className="w-52 h-52 rounded-full border-2 border-secondary"
+                        className="w-52 h-52 p-2  rounded-full border-2 border-secondary"
                       />
                     ) : (
                       <img
                         src={userimg} // dummy image
                         alt="Default profile"
-                        className="w-52 h-52 rounded-full border-2 border-secondary"
+                        className="w-52 h-52 p-2 rounded-full border-2 border-secondary"
                       />
                     )}
                   </div>
@@ -232,14 +246,14 @@ const ProfSchedule = () => {
                       {bookingForOthers ? (
                         <>
                           <p className="text-sm mb-1 font-primary text-tertiary">
-                            <span className="text-white font-primary">
-                              Name:{" "}
+                            <span className="text-white font-secondary">
+                              Name :{" "}
                             </span>
                             {`${bookingForOthers.name}`}
                           </p>
                           <p className="text-sm mb-1 text-tertiary">
-                            <span className="text-white font-primary">
-                              Address:{" "}
+                            <span className="text-white font-secondary">
+                              Address :{" "}
                             </span>
                             {booking?.bookingForOthers?.address?.street
                               ? `${booking.bookingForOthers.address.street}, ${
@@ -249,29 +263,39 @@ const ProfSchedule = () => {
                               : "N/A"}
                           </p>
                           <p className="text-sm mb-1 text-tertiary">
-                            <span className="text-white ">City: </span>
+                            <span className="text-white font-secondary ">
+                              City :{" "}
+                            </span>
                             {bookingForOthers.address?.city || "N/A"}
                           </p>
                           <p className="text-sm mb-1  text-tertiary">
-                            <span className="text-white ">Phone No : </span>
+                            <span className="text-white font-secondary ">
+                              Phone No :{" "}
+                            </span>
                             {bookingForOthers.phoneNumber || "N/A"}
                           </p>
 
                           <p className="text-sm mb-1  text-tertiary">
-                            <span className="text-white ">Email: </span>
+                            <span className="text-white font-secondary ">
+                              Email :{" "}
+                            </span>
                             {bookingForOthers.email || "N/A"}
                           </p>
                         </>
                       ) : (
                         <>
                           <p className="text-sm mb-1  text-tertiary">
-                            <span className="text-white ">Name: </span>
+                            <span className="text-white font-secondary ">
+                              Name :{" "}
+                            </span>
                             {customer
                               ? `${customer.firstName} ${customer.lastName}`
                               : "N/A"}
                           </p>
                           <p className="text-sm mb-1 text-tertiary">
-                            <span className="text-white">Address: </span>
+                            <span className="text-white font-secondary">
+                              Address :{" "}
+                            </span>
                             {customer?.address?.street
                               ? `${customer.address.street}${
                                   customer.address.zipCode
@@ -281,15 +305,21 @@ const ProfSchedule = () => {
                               : "N/A"}
                           </p>
                           <p className="text-sm mb-1 text-tertiary">
-                            <span className="text-white ">City: </span>
+                            <span className="text-white font-secondary ">
+                              City :{" "}
+                            </span>
                             {customer?.address?.city || "N/A"}
                           </p>
                           <p className="text-sm mb-1 text-tertiary">
-                            <span className="text-white">Phone Number: </span>
+                            <span className="text-white font-secondary">
+                              Phone Number :{" "}
+                            </span>
                             {customer?.phoneNumber || "N/A"}
                           </p>
                           <p className="text-sm mb-1 text-tertiary">
-                            <span className="text-white ">Email: </span>
+                            <span className="text-white font-secondary">
+                              Email :{" "}
+                            </span>
                             {customer?.email || "N/A"}
                           </p>
                         </>
@@ -302,28 +332,34 @@ const ProfSchedule = () => {
                         Service Information
                       </h1>
                       <p className="text-sm mb-1 text-tertiary">
-                        <span className="text-white">Service: </span>
+                        <span className="text-white font-secondary">
+                          Service :{" "}
+                        </span>
                         {booking?.service_id?.name || "N/A"}
                       </p>
                       <p className="text-sm mb-1 text-tertiary">
-                        <span className="text-white">Appointment Date: </span>
+                        <span className="text-white font-secondary">
+                          Appointment Date :{" "}
+                        </span>
                         {new Date(
-                          booking.appointmentDateTime
+                          booking.addJobModel_id.date
                         ).toLocaleDateString("en-GB")}
                       </p>
                       <p className="text-sm mb-1 text-tertiary">
-                        <span className="text-white">Appointment Time: </span>
+                        <span className="text-white font-secondary">
+                          Appointment Time :{" "}
+                        </span>
                         {`${startTimeFormatted} to ${endTimeFormatted}`}
                       </p>
                       <p className="text-sm mb-1 text-tertiary">
-                        <span className="text-white">
-                          Total Working hours:{" "}
+                        <span className="text-white font-secondary">
+                          Total Working hours :{" "}
                         </span>
                         {booking?.bookHr}
                       </p>
-                      <p className="text-sm mb-1 font-primary text-tertiary">
-                        <span className="text-white font-primary">
-                          Charges Per Hour:{" "}
+                      <p className="text-sm mb-1 text-tertiary">
+                        <span className="text-white font-secondary">
+                          Charges Per Hour :{" "}
                         </span>
                         {`${
                           chargesPerHourData[booking?.addJobModel_id?._id]
@@ -338,7 +374,7 @@ const ProfSchedule = () => {
                       Service Description
                     </h1>
                     <p className="text-sm text-tertiary">
-                      <span className="text-white">Description: </span>
+                      <span className="text-white"></span>
                       {booking.description || "N/A"}
                     </p>
                   </div>
