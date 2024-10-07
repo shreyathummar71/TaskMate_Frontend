@@ -822,7 +822,7 @@ const MyAccountProf = () => {
                       name="bank"
                       checked={selectedPayments.bank}
                       onChange={handleCheckboxChange}
-                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-yellow-500 checked:border-[#F7D552] cursor-pointer absolute z-10"
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:border-[#F7D552] cursor-pointer absolute z-0"
                     />
                     <label
                       htmlFor="bank"
@@ -830,7 +830,7 @@ const MyAccountProf = () => {
                     >
                       {/* Show tick mark when checked */}
                       {selectedPayments.bank && (
-                        <span className="text-secondary text-lg font-bold mr-2">
+                        <span className="text-secondary text-2xl font-extrabold mr-2">
                           ✓
                         </span>
                       )}
@@ -846,14 +846,14 @@ const MyAccountProf = () => {
                       name="paypal"
                       checked={selectedPayments.paypal}
                       onChange={handleCheckboxChange}
-                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-yellow-500 checked:border-[#F7D552] cursor-pointer absolute z-10"
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:border-[#F7D552] cursor-pointer absolute z-0"
                     />
                     <label
                       htmlFor="paypal"
                       className={`box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer peer-checked:bg-[#F7D552] peer-checked:text-black`}
                     >
                       {selectedPayments.paypal && (
-                        <span className="text-secondary text-lg font-bold mr-2">
+                        <span className="text-secondary text-2xl font-extrabold mr-2">
                           ✓
                         </span>
                       )}
@@ -869,14 +869,14 @@ const MyAccountProf = () => {
                       name="cash"
                       checked={selectedPayments.creditCard}
                       onChange={handleCheckboxChange}
-                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-yellow-500 checked:border-[#F7D552] cursor-pointer absolute z-10"
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:border-[#F7D552] cursor-pointer absolute z-0"
                     />
                     <label
                       htmlFor="cash"
                       className={`box-border text-center w-full h-[45px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white flex items-center justify-center cursor-pointer peer-checked:bg-[#F7D552] peer-checked:text-black`}
                     >
                       {selectedPayments.cash && (
-                        <span className="text-secondary text-lg font-bold mr-2">
+                        <span className="text-secondary text-2xl font-extrabold mr-2">
                           ✓
                         </span>
                       )}
