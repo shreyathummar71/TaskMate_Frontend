@@ -17,6 +17,15 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-GB", options); // "en-GB" formats to "dd/mm/yyyy"
 };
 
+// Convert date from input (yyyy-mm-dd) to dd/mm/yyyy format for comparison
+const formatInputDate = (inputDate) => {
+  const date = new Date(inputDate);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`; // Return dd/mm/yyyy format
+};
+
 // Helper function to format time to 12-hour format with am/pm
 const formatTime = (time) => {
   const [hours, minutes] = time.split(":").map(Number);
@@ -55,15 +64,20 @@ const ProfessionalsListByService = ({ serviceId }) => {
     fetchCountries();
   }, []);
 
-  // Fetch professionals
+  // Fetch professionals and filter out past-date jobs
   useEffect(() => {
     const fetchProfessionals = async () => {
       try {
         const response = await axios.get(
           `${PROFESSIONAL_BY_SERVICE_ID_URL}${serviceId}`
         );
-        setProfessionals(response.data);
-        setFilteredProfessionals(response.data);
+        const today = new Date().setHours(0, 0, 0, 0); // Today at midnight
+        const futureProfessionals = response.data.filter((professional) => {
+          const jobDate = new Date(professional.workingDate).setHours(0, 0, 0, 0);
+          return jobDate >= today; // Only include jobs on or after today
+        });
+        setProfessionals(futureProfessionals);
+        setFilteredProfessionals(futureProfessionals); // Initial filtered professionals
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -100,7 +114,8 @@ const ProfessionalsListByService = ({ serviceId }) => {
     fetchCities();
   }, [filters.country, countries]);
 
-  const applyFilters = () => {
+  // Apply filters whenever filters change
+  useEffect(() => {
     const { country, city, date } = filters;
 
     const filtered = professionals.filter((professional) => {
@@ -110,13 +125,15 @@ const ProfessionalsListByService = ({ serviceId }) => {
       const matchesCity = city
         ? professional.city.toLowerCase().includes(city.toLowerCase())
         : true;
-      const matchesDate = date ? professional.workingDate === formatDate(date) : true;
+      const matchesDate = date
+        ? formatDate(professional.workingDate) === formatInputDate(date) // Compare formatted date (dd/mm/yyyy)
+        : true;
 
       return matchesCountry && matchesCity && matchesDate;
     });
 
     setFilteredProfessionals(filtered);
-  };
+  }, [filters, professionals]); // Re-run this effect when filters or professionals change
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -216,14 +233,6 @@ const ProfessionalsListByService = ({ serviceId }) => {
               className="w-full p-2 border border-secondary font-secondary rounded-lg bg-tertiary bg-opacity-50 "
             />
           </div>
-        </div>
-        <div className="flex justify-end mt-6">
-        <button
-          onClick={applyFilters}
-          className=" bg-tertiary bg-opacity-50 border border-secondary  font-secondary px-4 py-2 rounded-xl text-white hover:bg-secondary hover:text-white"
-        >
-          Apply Filters
-        </button>
         </div>
       </div>
 
