@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaThumbtack } from "react-icons/fa";
 import userimg from "/src/assets/images/user.png";
 
-// The API URL for fetching pinned jobs
+// The API URL for fetching and unpinning jobs
 const PIN_JOB_API_URL = "https://backend-taskmate.onrender.com/dashboard";
 
 // Utility function to decode JWT (Base64URL)
@@ -31,6 +31,7 @@ const ProfPinJobListing = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState(""); // State for last name
   const [profilePicture, setProfilePicture] = useState("");
 
   useEffect(() => {
@@ -44,17 +45,14 @@ const ProfPinJobListing = () => {
         try {
           const decodedToken = decodeJWT(token); // Manually decode the token to extract the professionalId
           professionalId = decodedToken._id; // Assuming _id is the professional ID in the token
-          console.log("Decoded Professional ID from Token:", professionalId); // Log the professionalId
         } catch (error) {
-          console.error("Error decoding token:", error);
           setError("Failed to decode token.");
           setLoading(false);
           return;
         }
 
-        console.log("Token:", token); // Log token
-
         setFirstName(user.firstName || "Unknown");
+        setLastName(user.lastName || ""); // Set last name from user
         setProfilePicture(user.profileImage || userimg);
 
         if (token && professionalId) {
@@ -65,45 +63,86 @@ const ProfPinJobListing = () => {
               },
             });
 
-            console.log("Response Status:", response.status); // Log the response status
-
             if (response.ok) {
               const data = await response.json();
-              console.log("Pinned Jobs Data:", data); // Log the complete response data
+              console.log("Pinned Jobs Data:", data);
 
-              // Log each job's service_id for debugging
-              data.forEach((job) => {
-                if (job.job_id?.service_id) {
-                  console.log("Service Name:", job.job_id.service_id.name); // Log the service name
-                } else {
-                  console.log("Service ID is missing or not populated");
-                }
+              // Filter out jobs with past working dates
+              const today = new Date();
+              const futureJobs = data.filter(job => {
+                const jobDate = new Date(job.job_id?.date);
+                return jobDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0); // Compare only the date
               });
 
-              setPinnedJobs(data); // Set pinned jobs data if the response is successful
+              // Sort the jobs by date
+              const sortedJobs = futureJobs.sort((a, b) => new Date(a.job_id.date) - new Date(b.job_id.date));
+
+              setPinnedJobs(sortedJobs);
+
+              // Assuming professional details are consistent across all jobs,
+              // set the firstName and lastName from the first job if available.
+              if (sortedJobs.length > 0) {
+                const professional = sortedJobs[0].professionalId;
+                setFirstName(professional?.firstName || "Unknown");
+                setLastName(professional?.lastName || "");
+                setProfilePicture(professional?.profileImage || userimg);
+              }
             } else {
-              console.error("Failed to fetch pinned jobs:", response.statusText);
               setError("Failed to fetch pinned jobs.");
             }
           } catch (error) {
-            console.error("An error occurred while fetching pinned jobs:", error);
             setError("An error occurred while fetching pinned jobs.");
           } finally {
-            setLoading(false); // Remove loading state even if there's an error
+            setLoading(false);
           }
         } else {
-          console.error("Token or professionalId is missing.");
-          setError("Professional ID or token is missing.");
-          setLoading(false); // Remove loading state if token or professionalId is missing
+          setError("Token or professionalId is missing.");
+          setLoading(false);
         }
       } else {
         setError("User is not logged in.");
-        setLoading(false); // Remove loading state if user is not logged in
+        setLoading(false);
       }
     };
 
     fetchPinnedJobs();
   }, []);
+
+  // Handle unpinning a job
+  const handleUnpinJob = async (job) => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      const token = user.token;
+      const professionalId = job.professionalId?._id || decodeJWT(token)._id;
+
+      if (!token || !professionalId) {
+        setError("User token or professional ID is missing.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${PIN_JOB_API_URL}/${professionalId}/${job.job_id._id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          // Remove the unpinned job from the state
+          setPinnedJobs(pinnedJobs.filter(pinnedJob => pinnedJob.job_id._id !== job.job_id._id));
+        } else {
+          console.error("Failed to unpin the job.");
+        }
+      } catch (error) {
+        console.error("Error unpinning job:", error);
+      }
+    } else {
+      setError("User is not logged in.");
+    }
+  };
 
   if (loading) {
     return <p>Loading pinned jobs...</p>;
@@ -123,55 +162,60 @@ const ProfPinJobListing = () => {
         {pinnedJobs.length > 0 ? (
           pinnedJobs.map((job) => (
             <div key={job.job_id._id} className="text-white rounded-lg pb-3 shadow-lg max-w-xs bg-primary relative">
-              {/* Pin Button (It's already pinned, so no click action here) */}
-              <div className="absolute top-2 right-2 text-2xl text-secondary">
+              {/* Unpin Button */}
+              <button
+                onClick={() => handleUnpinJob(job)} // Call the unpin function on click
+                className="absolute top-2 right-2 text-2xl text-secondary"
+              >
                 <FaThumbtack />
-              </div>
+              </button>
 
               {/* Job Card Content */}
               <div className="text-white rounded-lg p-4 shadow-lg max-w-xs text-center bg-tertiary">
                 <div className="flex justify-center">
                   <img
                     src={profilePicture || userimg}
-                    alt={`${firstName}'s Profile`}
+                    alt={`${firstName} ${lastName}'s Profile`} // Show full name in alt
                     className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
                   />
                 </div>
-                <h3 className="text-lg font-primary">{firstName || "Unknown Professional"}</h3>
+                <h3 className="text-lg font-primary">
+                  {`${firstName} ${lastName}` || "Unknown Professional"}
+                </h3> {/* Display full name */}
               </div>
 
               <div className="p-4">
                 {/* Service Information */}
                 <p className="text-sm mb-1">
-                  <span className="text-secondary">Service: </span>
-                  <span>{job.job_id?.service_id?.name || "N/A"}</span> 
+                  <span className="text-secondary">Service : </span>
+                  <span>{job.job_id?.service_id?.name || "N/A"}</span>
                 </p>
 
                 {/* Country and City */}
                 <p className="text-sm mb-1">
-                  <span className="text-secondary">Country: </span>
+                  <span className="text-secondary">Country : </span>
                   <span>{job.job_id?.country || "N/A"}</span>
                 </p>
                 <p className="text-sm mb-1">
-                  <span className="text-secondary">City: </span>
+                  <span className="text-secondary">City : </span>
                   <span>{job.job_id?.city || "N/A"}</span>
                 </p>
 
                 {/* Charges per hour */}
                 <p className="text-sm mb-1">
-                  <span className="text-secondary">Charges per hour: </span>
+                  <span className="text-secondary">Charges per hour : </span>
                   <span>{job.job_id?.chargesPerHour || "N/A"}€</span>
                 </p>
 
                 {/* Working Date */}
                 <p className="text-sm mb-1">
-                  <span className="text-secondary">Working Date: </span>
+                  <span className="text-secondary">Working Date : </span>
                   <span>{new Date(job.job_id?.date).toLocaleDateString("en-GB")}</span>
                 </p>
 
                 {/* Working Time */}
                 <p className="text-sm mb-1">
-                  <span className="text-secondary">Working Time: </span>
+                  <span className="text-secondary">Working Time : </span>
                   <span>
                     {formatWorkingTime(job.job_id?.startTime, job.job_id?.endTime)}
                   </span>

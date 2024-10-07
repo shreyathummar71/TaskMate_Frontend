@@ -337,6 +337,7 @@ const AddJob = ({
                   onChange={(date) =>
                     setFormData((prev) => ({ ...prev, date }))
                   }
+                  minDate={new Date()}
                   className="block w-[220%] px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                   required
                 />
