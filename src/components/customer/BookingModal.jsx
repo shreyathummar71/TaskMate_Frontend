@@ -21,13 +21,13 @@ const BookingModal = ({
   const [appointmentDateTime, setAppointmentDateTime] = useState(
     new Date().toISOString().substring(0, 10) // Format for 'date'
   );
-  const [bookHr, setBookHr] = useState("");
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
   const [confirmedJobId, setConfirmedJobId] = useState(null);
   const [serviceName, setServiceName] = useState(""); // New state for service name
+  const [timeError, setTimeError] = useState(""); // State to hold time error
 
   useEffect(() => {
     const fetchServiceName = async () => {
@@ -56,22 +56,34 @@ const BookingModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Clear previous error
+    setTimeError("");
+
     // Validation: Check if startTime and endTime are set
     if (!startTime || !endTime) {
-      console.error("Start time and end time are required.");
+      setTimeError("Start time and end time are required.");
+      return;
+    }
+
+    // Convert times to Date objects
+    const startDateTime = new Date(`${appointmentDateTime}T${startTime}`);
+    const endDateTime = new Date(`${appointmentDateTime}T${endTime}`);
+
+    // Check if startTime is less than endTime
+    if (startDateTime >= endDateTime) {
+      setTimeError("Start time should be earlier than end time.");
       return;
     }
 
     const bookingData = {
       cust_id: customerId,
-      addJobModel_id: jobId, // Use addJobModel_id instead of job_id
+      addJobModel_id: jobId,
       prof_id: professional._id,
       service_id: serviceId,
       appointmentDateTime: new Date(appointmentDateTime),
-      bookHr: new Date(appointmentDateTime).getHours(),
       status: "pending",
-      startTime: new Date(`${appointmentDateTime}T${startTime}`), // Ensure correct format
-      endTime: new Date(`${appointmentDateTime}T${endTime}`), // Ensure correct format
+      startTime: startDateTime, // Ensure correct format
+      endTime: endDateTime, // Ensure correct format
       description: description,
       bookingForOthers: isBookingForOthers
         ? {
@@ -121,59 +133,33 @@ const BookingModal = ({
           Book Appointment
         </h2>
         <form onSubmit={handleSubmit}>
-          {/* <div className="mb-4">
-            <label className="block text-white text-sm mb-2">
-              Appointment Date
-            </label>
-            <input
-              type="date"
-              name="appointmentDateTime"
-              value={appointmentDateTime}
-              onChange={(e) => setAppointmentDateTime(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              required
-            />
-          </div> */}
-          {/* New Formatted Date Field */}
+          {/* Date Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Date</label>
             <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
               {formattedDate || "Loading..."}
             </div>
           </div>
-          {/* New Charges per Hour Field */}
-          <div className="mb-4 flex gap-4">
-            <div className="w-1/2">
-              <label className="block text-white text-sm mb-2">Book Hour</label>
-              <input
-                type="text"
-                name="bookHr"
-                placeholder="Book Hour"
-                value={bookHr}
-                onChange={(e) => setBookHr(e.target.value)}
-                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                required
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="block text-white text-sm mb-2">
-                Charges per Hour
-              </label>
-              <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-                {chargesPerHour ? `${chargesPerHour} €` : "Loading..."}
-              </div>
+
+          {/* Charges per Hour Field */}
+          <div className="mb-4">
+            <label className="block text-white text-sm mb-2">
+              Charges per Hour
+            </label>
+            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
+              {chargesPerHour ? `${chargesPerHour} €` : "Loading..."}
             </div>
           </div>
-          {/* New Service Field */}
+
+          {/* Service Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Service</label>
             <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
-              {/* Display the service name */}
               {serviceName || "Loading..."}
             </div>
           </div>
 
-          {/* Start Time and End Time Side by Side */}
+          {/* Start Time and End Time */}
           <div className="mb-4 flex gap-4">
             <div className="w-1/2">
               <label className="block text-white text-sm mb-2">
@@ -200,6 +186,11 @@ const BookingModal = ({
               />
             </div>
           </div>
+
+          {/* Display Time Error if exists */}
+          {timeError && (
+            <div className="mb-4 text-red-500 text-sm">{timeError}</div>
+          )}
 
           {/* Description Field */}
           <div className="mb-4">
@@ -315,6 +306,8 @@ const BookingModal = ({
                   required
                 />
               </div>
+              {/* Name, Address, Phone, etc. */}
+              {/* ... */}
             </>
           )}
 
