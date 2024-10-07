@@ -175,7 +175,7 @@ const CustSchedule = () => {
         </li>
         <li className="border-collapse border-l border-r border-primary">
           <button
-            className={` px-4 font-semibold ${
+            className={` px-4 font-semibold font-primary  ${
               activeTab === "upcoming" ? " text-secondary" : "text-gray-600"
             }`}
             onClick={() => setActiveTab("upcoming")}
@@ -185,7 +185,7 @@ const CustSchedule = () => {
         </li>
         <li>
           <button
-            className={` px-4 font-semibold ${
+            className={` px-4 font-semibold font-primary  ${
               activeTab === "completed" ? " text-secondary" : "text-gray-600"
             }`}
             onClick={() => setActiveTab("completed")}
