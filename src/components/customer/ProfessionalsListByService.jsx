@@ -4,7 +4,7 @@ import axios from "axios";
 import userImage from "../../assets/images/user.png";
 
 const PROFESSIONAL_BY_SERVICE_ID_URL =
-  "http://localhost:8081/newJob/professionals-for-service-details/";
+  "https://backend-taskmate.onrender.com/newJob/professionals-for-service-details/";
 
 const GEONAMES_USERNAME = "dhruvi.balar";
 const EUROPEAN_COUNTRIES_API_URL =
