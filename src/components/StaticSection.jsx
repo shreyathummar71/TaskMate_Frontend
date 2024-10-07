@@ -15,20 +15,23 @@ const StaticSection = () => {
             className="max-w-full w-full h-auto"
           />
         </div>
-        <div className="w-1/2 flex flex-col justify-center p-14">
+        <div className="w-1/2 flex flex-col justify-center p-10">
           <h2 className="text-3xl font-semibold font-primary text-white ">
             Your Happiness,
           </h2>
-          <h2 className="text-3xl pb-10 pt-4 font-semibold font-primary text-secondary">
+          <h2 className="text-3xl pb-5 pt-4 font-semibold font-primary text-secondary">
             Guaranteed
           </h2>
-          <p className="mt-2 text-white font-secondary">
-            Your happiness is our goal. If you’re not happy, we’ll work to make
-            it right. Our friendly customer service agents are available 24
-            hours a day, 7 days a week. The Handy Happiness Guarantee only
-            applies when you book and pay for a service directly through the
-            Handy platform.
+          <p className=" text-white font-secondary text-justify " style={{ lineHeight: '2' }}>
+            Your happiness is our goal. If you’re not happy, we’ll work to make it right.
+             Our friendly customer service agents are available 24 hours a day, 
+             7 days a week to address any concerns, answer your questions, 
+             and ensure your experience is as smooth as possible. 
+             Whether it's a simple query or a more complex issue, we're always here to assist.
           </p>
+          <p className=" text-white font-secondary mt-6 text-justify " style={{ lineHeight: '2' }}
+          >The TaskMate Happiness Guarantee only applies when you book and pay for a service directly through the Handy platform, 
+          ensuring that every service provider meets our rigorous standards.</p>
         </div>
       </div>
       <div className="section-2 bg-tertiary float-start w-full px-20 py-7">
@@ -36,7 +39,7 @@ const StaticSection = () => {
           How <span className="text-primary font-tertiary">Task</span>
           <span className="text-secondary font-tertiary">Mate</span> Works
         </div>
-        <div className="flex items-center justify-center text-center">
+        <div className="flex items-center justify-center text-center mb-6">
           <div>
             <div className="flex items-center justify-center text-center">
               <img
@@ -44,7 +47,7 @@ const StaticSection = () => {
                 alt="calender"
               />
             </div>
-            <div className="text-primary font-primary py-3">Pick a time</div>
+            <div className="text-primary font-primary py-6">Pick a time</div>
             <p className="text-white font-secondary w-[80%] float-none m-auto">
               No more delivery windows! Select the exact day and time for your
               Furniture Assembly.
@@ -57,7 +60,7 @@ const StaticSection = () => {
                 alt="phone"
               />
             </div>
-            <div className="text-primary font-primary py-3">Book instantly</div>
+            <div className="text-primary font-primary py-6">Book instantly</div>
             <p className="text-white font-secondary w-[80%] float-none m-auto">
               We'll confirm your appointment and take care of payment
               electronically and securely.
@@ -70,7 +73,7 @@ const StaticSection = () => {
                 alt="professional"
               />
             </div>
-            <div className="text-primary font-primary py-3">
+            <div className="text-primary font-primary py-5">
               Your pro arrives
             </div>
             <p className="text-white font-secondary w-[80%] float-none m-auto">

@@ -40,24 +40,24 @@ const FAQProfessional = () => {
   }
 
   return (
-    <div className="faq-container bg-white max-w-2xl ml-0 mx-auto mt-8 text-start ">
+    <div className="faq-container bg-white  mx-auto text-start ">
       {/* Title */}
-      <h1 className="font-primary text-2xl font-bold text-primary mb-6">
+      <h1 className="font-primary text-2xl text-primary">
         Frequently Asked Questions for Professionals
       </h1>
 
       {/* FAQ List */}
-      <div className="space-y-4">
+      <div className="space-y-4 mt-8 text-start">
         {faqs.map((faq) => (
-          <div key={faq._id} className="border-b border-gray-200">
-            <details className="group py-4">
-              <summary className="font-semibold font-primary text-primary text-left text-lg cursor-pointer flex justify-between items-center">
+          <div key={faq._id} className="border-b border-secondary">
+            <details className=" group py-4">
+              <summary className=" font-secondary text-primary text-left text-lg cursor-pointer flex justify-between items-center">
                 {faq.question}
                 <span className="text-xl transform transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-2 font-normal font-secondary text-tertiary group-open:block">
+              <p className="mt-2 font-normal font-secondary text-tertiary group-open:block ">
                 {faq.answer}
               </p>
             </details>

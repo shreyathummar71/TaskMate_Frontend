@@ -8,6 +8,7 @@ import FAQProfessional from "./FAQProfessional";
 import ProfHelpCenter from "./ProfHelpCenter";
 import userimg from "/src/assets/images/user.png";
 import buttonArrow from "/src/assets/images/buttonArrow.png";
+import { useLocation } from "react-router-dom";
 
 // Import hero images for each section
 import profdashboard from "/src/assets/images/profdashboard.png";
@@ -23,6 +24,8 @@ const ProfessionalDashboard = () => {
   const [profilePicture, setProfilePicture] = useState("");
   const [profId, setProfId] = useState(""); // State to hold profId
 
+  const location = useLocation(); // Get location to check for URL parameters
+
   // Ref for scrolling to the Job Listings section
   const jobListingRef = useRef(null);
 
@@ -32,6 +35,15 @@ const ProfessionalDashboard = () => {
       jobListingRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  // Check for the `tab` parameter in the URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab) {
+      setActiveMenu(tab);
+    }
+  }, [location]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

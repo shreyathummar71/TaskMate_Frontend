@@ -91,13 +91,12 @@ const SignupCust = ({ setUser }) => {
 
         {/* Form Section */}
         <div
-          className="absolute right-40 top-1/2 w-[500px] h-[660px] text-xs  rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center"
-          style={{ backgroundColor: "rgba(183, 186, 191, 0.6)" }}
+          className="absolute right-40 top-1/2 w-[500px] h-[660px] text-xs  rounded-[30px] p-8 z-10 translate-y-[-50%] flex flex-col justify-center items-center bg-tertiary bg-opacity-60"
         >
           {/* Form Container */}
-          <div className="w-full max-w-md space-y-6">
+          <div className="w-full max-w-md space-y-4">
             <div className="flex justify-center">
-              <h2 className="text-3xl font-bold text-primary font-tertiary mt-0">
+              <h2 className="text-3xl font-bold text-primary font-tertiary ">
                 TasK<span className="text-secondary">Mate</span>
               </h2>
             </div>
@@ -117,7 +116,7 @@ const SignupCust = ({ setUser }) => {
                     onChange={(e) => setFirstName(e.target.value)}
                     value={firstName}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
-                    className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
+                    className="w-full px-4 py-2.5 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                 </div>
                 <div>
@@ -129,7 +128,7 @@ const SignupCust = ({ setUser }) => {
                     onChange={(e) => setLastName(e.target.value)}
                     value={lastName}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
-                    className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
+                    className="w-full px-4 py-2.5 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                 </div>
                 <div>
@@ -141,7 +140,7 @@ const SignupCust = ({ setUser }) => {
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
-                    className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
+                    className="w-full px-4 py-2.5 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                 </div>
                 <div className="relative">
@@ -153,7 +152,7 @@ const SignupCust = ({ setUser }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     style={{ backgroundColor: "rgba(39, 51, 67, 0.6)" }}
-                    className="w-full px-4 py-2 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
+                    className="w-full px-4 py-2.5 border text-white font-secondary border-secondary rounded-3xl focus:outline-none"
                   />
                   {/* Font Awesome Eye Icon */}
                   <div
@@ -167,10 +166,10 @@ const SignupCust = ({ setUser }) => {
                     ></i>
                   </div>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center ">
                   <button
                     type="submit"
-                    className="w-30 text-white font-primary py-2 px-4 rounded-3xl bg-primary hover:bg-secondary"
+                    className="w-30 text-white font-primary py-2 px-4 rounded-3xl bg-primary hover:bg-secondary text-lg "
                     disabled={isLoading} // Disable button while loading
                   >
                     Signup

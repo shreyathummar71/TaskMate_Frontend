@@ -30,10 +30,10 @@ const Hero = () => {
             </p>
             <div className="flex space-x-4 mt-5">
               <button
-                className="bg-tertiary  bg-opacity-50 border border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center"
+                className="bg-tertiary  bg-opacity-50 border border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg mb-8 inline-flex items-center hover:bg-secondary"
                 onClick={handleSignupCustClick}
               >
-                <span className="mr-2 text-xl">Get Started</span>
+                <span className="mr-2 text-xl ">Get Started</span>
                 <span>
                   <img src={buttonArrow} alt="arrowButton" width="20"></img>
                 </span>
@@ -41,7 +41,7 @@ const Hero = () => {
             </div>
             <div className="flex space-x-4">
               <button
-                className="bg-tertiary  bg-opacity-50 border  border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg text-xl"
+                className="bg-tertiary  bg-opacity-50 border  border-secondary font-secondary font-semibold text-white  py-2 px-6 rounded-xl shadow-lg text-xl hover:bg-secondary"
                 onClick={handleSignupProfClick}
               >
                 Join as a Professional

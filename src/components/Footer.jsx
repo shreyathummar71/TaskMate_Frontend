@@ -40,11 +40,6 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="/help" className="hover:text-secondary"> 
-                Help
-              </Link>
-            </li>
-            <li>
               <Link to="/contactus" className="hover:text-secondary">
                 Contact Us
               </Link>
@@ -59,37 +54,32 @@ const Footer = () => {
           </h3>
           <ul className="space-y-3 font-secondary text-sm">
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="/services/66f2cd0de6226da9aeec3043" className="hover:text-secondary">
                 Cleaning
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Handyman
+              <Link to="/services/66f29dd0eec19273c999fedf" className="hover:text-secondary">
+              Leaky Faucet Repairs
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Plumbing
+              <Link to="/services/66fe9e8e0d7973a259d61276" className="hover:text-secondary">
+              Appliance Repair
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Electrical
-              </Link>
-            </li>
-            <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="/services/66fea1f90d7973a259d6127c" className="hover:text-secondary">
                 Moving Help
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
-                Painting
+              <Link to="/services/66f2d266e6226da9aeec305b" className="hover:text-secondary">
+              Interior Wall Painting
               </Link>
             </li>
             <li>
-              <Link to="/AllCategory" className="hover:text-secondary">
+              <Link to="/services/66fe962b0d7973a259d6125e" className="hover:text-secondary">
                 Furniture Assembly
               </Link>
             </li>
@@ -107,9 +97,9 @@ const Footer = () => {
               <li>Italy</li>
               <li>Spain</li>
               <li>Netherlands</li>
-              <li>Switzerland</li>
             </ul>
             <ul className="space-y-3 font-secondary text-sm">
+            <li>Switzerland</li>
               <li>Sweden</li>
               <li>Belgium</li>
               <li>Austria</li>
@@ -149,7 +139,7 @@ const Footer = () => {
       </div>
 
       {/* Footer Bottom */}
-      <div className="bg-tertiary text-primary font-primary py-4 mt-8 text-sm text-center">
+      <div className="bg-tertiary text-primary font-primary py-4  text-sm text-center">
         <p>
           Copyright © Task
           <span className="text-yellow-400">Mate</span>. 2024 All Rights
