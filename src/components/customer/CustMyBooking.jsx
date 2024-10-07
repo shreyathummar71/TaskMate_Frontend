@@ -112,34 +112,50 @@ const CustMyBooking = () => {
       console.error("Error updating booking:", error);
     }
   };
+  const handleTabChange = (status) => {
+    setActiveTab(status);
+  };
+
   // Filter bookings based on active tab
   const filteredBookings = bookingDetails.filter(
     (booking) => booking.status.toLowerCase() === activeTab
   );
+  const getTabColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "confirmed":
+        return "bg-green-500 text-white";
+      case "pending":
+        return "bg-yellow-500 text-white";
+      case "rejected":
+        return "bg-red-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
 
   return (
     <>
       <div>
-        <h1>Manage Bookings</h1>
+        <h2 className="text-2xl mb-8 font-primary"> Manage Bookings</h2>
       </div>
       {/* Booking status  Tabs */}
       <div className="flex justify-center mb-6">
-        {["confirmed", "pending", "cancelled"].map((tab) => (
+        {["confirmed", "pending", "rejected"].map((status) => (
           <button
-            key={tab}
+            key={status}
             className={`px-4 py-2 mx-2 rounded-t-lg font-primary ${
-              activeTab === tab
-                ? "bg-secondary text-white"
+              activeTab === status
+                ? getTabColor(status)
                 : "bg-gray-200 text-gray-700"
             }`}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => handleTabChange(status)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
         ))}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {bookingDetails.map((bookingDetail) => (
+        {filteredBookings.map((bookingDetail) => (
           <div
             key={bookingDetail._id}
             className="flex flex-col justify-between bg-primary rounded-xl"
