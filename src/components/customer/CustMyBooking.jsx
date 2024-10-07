@@ -112,17 +112,25 @@ const CustMyBooking = () => {
       console.error("Error updating booking:", error);
     }
   };
+  const isPastDate = (dateString) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const bookingDate = new Date(dateString);
+    return bookingDate < today;
+  };
+
   const handleTabChange = (status) => {
     setActiveTab(status);
   };
-  const sortedBookings = [...bookingDetails].sort(
-    (a, b) => new Date(b.addJobModel_id.date) - new Date(a.addJobModel_id.date)
-  );
 
-  // Filter bookings based on active tab
-  const filteredBookings = sortedBookings.filter(
-    (booking) => booking.status.toLowerCase() === activeTab
-  );
+  // display cards with respect to status, sortby date orders latest should be top , past booking will not show a booking cards
+  const filteredBookings = bookingDetails
+    .filter((booking) => booking.status.toLowerCase() === activeTab)
+    .filter((booking) => !isPastDate(booking.addJobModel_id.date))
+    .sort(
+      (a, b) =>
+        new Date(b.addJobModel_id.date) - new Date(a.addJobModel_id.date)
+    );
   const getTabColor = (status) => {
     switch (status.toLowerCase()) {
       case "confirmed":
