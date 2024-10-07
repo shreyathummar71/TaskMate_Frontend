@@ -111,9 +111,29 @@ const CustMyBooking = () => {
       console.error("Error updating booking:", error);
     }
   };
+  // Filter bookings based on active tab
+  const filteredBookings = bookingDetails.filter(
+    (booking) => booking.status.toLowerCase() === activeTab
+  );
 
   return (
     <>
+      {/* Booking status  Tabs */}
+      <div className="flex justify-center mb-6">
+        {["confirmed", "pending", "cancelled"].map((tab) => (
+          <button
+            key={tab}
+            className={`px-4 py-2 mx-2 rounded-t-lg font-primary ${
+              activeTab === tab
+                ? "bg-secondary text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {bookingDetails.map((bookingDetail) => (
           <div
