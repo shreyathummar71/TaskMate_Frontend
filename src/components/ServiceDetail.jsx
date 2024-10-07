@@ -61,7 +61,7 @@ const ServiceDetail = () => {
           src={service.image}
           alt={service.name}
           className="max-w-full w-full object-cover mb-4"
-          style={{ height: '650px' }}
+          style={{ height: "650px" }}
         />
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <h2 className="absolute inset-0 flex items-center justify-center text-2xl font-bold font-primary text-white">
@@ -174,7 +174,7 @@ const ServiceDetail = () => {
       {!isCustomer && (
         <div className="flex justify-center pb-8">
           <button
-            onClick={() => navigate("/signupCust")}
+            onClick={() => navigate("/customer/signup")}
             className="bg-tertiary border border-secondary font-secondary font-semibold text-white  py-2 px-4 rounded-xl shadow-lg mb-6 inline-flex items-center"
           >
             <span className="mr-2">Get Started</span>

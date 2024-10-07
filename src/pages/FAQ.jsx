@@ -10,7 +10,7 @@ const FAQ = () => {
 
   const navigate = useNavigate();
   const handleSignupCustClick = () => {
-    navigate("/signupCust");
+    navigate("/customer/signup");
   };
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const FAQ = () => {
         className="relative faq-header-img bg-cover bg-center text-white"
         style={{
           backgroundImage: `url(${faqHeaderImg})`, // Use the imported image
-          height: '550px',
+          height: "550px",
         }}
       >
         {/* Black Overlay */}
@@ -47,7 +47,6 @@ const FAQ = () => {
 
       {/* FAQs Section */}
       <div className="faq-container bg-white">
-
         <div className="text-center mt-8 text-primary font-primary">
           <h1 className="text-4xl font-bold">Frequently Asked Questions</h1>
         </div>
