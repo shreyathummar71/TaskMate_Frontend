@@ -177,7 +177,7 @@ const CustMyBooking = () => {
               </p>
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                  <span className="text-secondary">Service Name : </span>
+                  <span className="text-secondary">Service : </span>
                   {bookingDetail.service_id.name}
                 </p>
               </div>
