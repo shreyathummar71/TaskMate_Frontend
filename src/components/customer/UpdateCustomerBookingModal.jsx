@@ -31,6 +31,7 @@ const UpdateCustomerBookingModal = ({
 
   const [customerBookingData, setCustomerBookingData] = useState(""); //New state for Customer booking
   const [isLoading, setIsLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
 
   function formatTime(timeString) {
     const date = new Date(timeString);
@@ -144,6 +145,13 @@ const UpdateCustomerBookingModal = ({
       if (response.ok) {
         const updatedBooking = await response.json();
         console.log("Booking updated successfully:", updatedBooking);
+        setSuccessMessage("Booking updated successfully!");
+
+        // Close the modal after 2 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          onClose();
+        }, 2000);
         onSubmit(updatedBooking);
       } else {
         console.error("Failed to update booking");
@@ -382,6 +390,9 @@ const UpdateCustomerBookingModal = ({
             </button>
           </div>
         </form>
+        {successMessage && (
+          <div className="text-secondary">{successMessage}</div>
+        )}
       </div>
     </div>
   );
