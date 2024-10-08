@@ -9,6 +9,7 @@ const CustMyBooking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Add state variables to manage the modal
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [activeTab, setActiveTab] = useState("confirmed"); // New state for active tab
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
@@ -105,6 +106,11 @@ const CustMyBooking = () => {
 
       if (!response.ok) throw new Error("Failed to update booking");
 
+      setAlertMessage("Booking updated successfully!");
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
+
       // Refresh booking details after successful update
       await fetchBookingDetails(customerId);
       closeModal();
@@ -128,11 +134,11 @@ const CustMyBooking = () => {
     .filter((booking) => booking.status.toLowerCase() === activeTab)
     .filter(
       (booking) =>
-        activeTab === "cancelled" || !isPastDate(booking.addJobModel_id.date)
+        activeTab === "cancelled" || !isPastDate(booking.appointmentDateTime)
     )
     .sort(
       (a, b) =>
-        new Date(a.addJobModel_id.date) - new Date(b.addJobModel_id.date)
+        new Date(a.appointmentDateTime) - new Date(b.appointmentDateTime)
     );
   const getTabColor = (status) => {
     switch (status.toLowerCase()) {
@@ -150,6 +156,12 @@ const CustMyBooking = () => {
   return (
     <>
       <div>
+        {/* Alert Message */}
+        {alertMessage && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded z-50">
+            {alertMessage}
+          </div>
+        )}
         <h2 className="text-2xl mb-8 font-primary text-primary">
           {" "}
           Manage Bookings
@@ -208,7 +220,7 @@ const CustMyBooking = () => {
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                   <span className="text-secondary">Appointment Date : </span>
-                  {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
+                  {convertIsoToddmmYYYY(bookingDetail.appointmentDateTime)}
                 </p>
               </div>
               <div>
@@ -259,7 +271,7 @@ const CustMyBooking = () => {
           bookingId={selectedBooking._id}
           jobId={selectedBooking.addJobModel_id._id}
           chargesPerHour={selectedBooking.addJobModel_id.chargesPerHour}
-          formattedDate={selectedBooking.addJobModel_id.date}
+          formattedDate={selectedBooking.appointmentDateTime}
         />
       )}
     </>
