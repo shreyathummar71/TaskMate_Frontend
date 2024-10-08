@@ -49,19 +49,19 @@ const ProfDetailPage = () => {
     year: "numeric",
   });
 
-  // Fetch professional details
   useEffect(() => {
     const fetchProfessionalDetails = async () => {
       try {
         const response = await fetch(
           `https://backend-taskmate.onrender.com/professional/${id}`
         );
-
+  
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-
+  
         const data = await response.json(); // Parse JSON data
+        console.log("Professional Data: ", data); // <-- Add this to check the response
         setProfessional(data);
       } catch (err) {
         setError(err.message);
@@ -69,10 +69,9 @@ const ProfDetailPage = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProfessionalDetails();
   }, [id]);
-
   // Fetch job details based on job_id
   useEffect(() => {
     const fetchJobDetails = async () => {
