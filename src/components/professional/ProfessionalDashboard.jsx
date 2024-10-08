@@ -8,6 +8,7 @@ import FAQProfessional from "./FAQProfessional";
 import ProfHelpCenter from "./ProfHelpCenter";
 import userimg from "/src/assets/images/user.png";
 import buttonArrow from "/src/assets/images/buttonArrow.png";
+import getProfessionalIdFromToken from "../../utils/getProfId";
 import { useLocation } from "react-router-dom";
 
 // Import hero images for each section
@@ -23,6 +24,8 @@ const ProfessionalDashboard = () => {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [profilePicture, setProfilePicture] = useState("");
   const [profId, setProfId] = useState(""); // State to hold profId
+  const [professionalId, setProfessionalId] = useState("");
+  const [rating, setRating] = useState(null);
 
   const location = useLocation(); // Get location to check for URL parameters
 
@@ -35,6 +38,34 @@ const ProfessionalDashboard = () => {
       jobListingRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  //fetching professional ratings here
+  const fetchRatingsData = async () => {
+    const id = await getProfessionalIdFromToken();
+    setProfessionalId(id);
+    console.log("prof id", professionalId);
+
+    if (professionalId) {
+      // Fetch existing user details from API
+      try {
+        const response = await fetch(
+          `https://backend-taskmate.onrender.com/professional/${professionalId}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
+
+        const RatingsData = await response.json();
+        console.log("Fetched professional ratings data:", RatingsData);
+        setRating(RatingsData.averageRating);
+        console.log(RatingsData.averageRating);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchRatingsData();
+  }, [professionalId]); // Only runs once when the component mounts
 
   // Check for the `tab` parameter in the URL
   useEffect(() => {
@@ -68,6 +99,36 @@ const ProfessionalDashboard = () => {
     HelpCenter: helpCenterHero,
   };
 
+  // Render stars
+  const renderStars = (rating) => {
+    const stars = [];
+    const filledStars = Math.floor(rating);
+    const halfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < 5; i++) {
+      if (i < filledStars) {
+        stars.push(
+          <span key={i} className="text-yellow-500 text-5xl mx-1">
+            ★
+          </span>
+        );
+      } else if (i === filledStars && halfStar) {
+        stars.push(
+          <span key={i} className="text-yellow-500 text-5xl mx-1">
+            ☆
+          </span>
+        );
+      } else {
+        stars.push(
+          <span key={i} className="text-gray-400 text-4xl mx-1">
+            ☆
+          </span>
+        );
+      }
+    }
+    return stars;
+  };
+
   return (
     <>
       <div className="relative">
@@ -80,16 +141,22 @@ const ProfessionalDashboard = () => {
         />
 
         <div className="absolute inset-0 bg-black bg-opacity-60 text-white flex">
-          <div className="w-1/3 flex justify-center items-center pl-10">
+          <div className="w-1/3 flex flex-col justify-center items-center pl-10">
             <img
               src={profilePicture || userimg}
               alt="dashboard illustration"
               className="rounded-full w-[50%] h-auto p-3 border-2 border-secondary overflow-hidden"
             />
+
+            <p className="mt-4 text-center">
+              {renderStars(rating || 0)}
+              {/* Render average rating */}
+            </p>
           </div>
           <div className="flex flex-col justify-center items-start mt-16 animate-slideUp">
             <h1 className="text-4xl font-semibold text-secondary font-primary">
-              Welcome to Your {activeMenu === "dashboard" ? "Dashboard" : activeMenu}!
+              Welcome to Your{" "}
+              {activeMenu === "dashboard" ? "Dashboard" : activeMenu}!
             </h1>
             {activeMenu === "dashboard" && (
               <>
