@@ -11,7 +11,6 @@ const GEONAMES_CITIES_API_URL = (countryCode) =>
 const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
 const SERVICES_API_URL = "https://backend-taskmate.onrender.com/services";
 const ADD_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";
-
 const AddJob = ({
   isModalOpen,
   handleCloseModal,
@@ -31,7 +30,7 @@ const AddJob = ({
     referenceImage: null,
     chargesPerHour: "",
   });
-
+  const [alertMessage, setAlertMessage] = useState("");
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
@@ -208,11 +207,13 @@ const AddJob = ({
 
       if (response.ok) {
         const result = await response.json();
-        console.log(
-          job ? "Job updated successfully" : "Job added successfully",
-          result
+        setAlertMessage(
+          job ? "Job updated successfully!" : "Job added successfully!"
         );
         handleCloseModal();
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
         onJobSaved(result.job); // Call callback to update the job list in parent component
       } else {
         console.error("Failed to save job:", response.statusText);
@@ -224,6 +225,12 @@ const AddJob = ({
 
   return (
     <>
+      {/* Alert message */}
+      {alertMessage && (
+        <div className="absolute top-0 right-0 bg-green-500 text-white p-2 rounded-lg shadow-md">
+          {alertMessage}
+        </div>
+      )}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-primary p-8 rounded-lg shadow-lg w-[90%] max-w-lg h-[80%] max-h-[700px] overflow-auto">
