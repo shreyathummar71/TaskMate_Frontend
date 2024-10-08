@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import contactUsImage from "../assets/images/contact us.webp";
 
 const ContactUs = () => {
-  // State to manage form input values
   const [formData, setFormData] = useState({
     subject: "",
     email: "",
@@ -148,65 +147,58 @@ const ContactUs = () => {
             {error && <p className="text-red-500">{error}</p>}
 
             <form onSubmit={handleSubmit}>
-              <table className="w-full">
-                <tbody>
-                  <tr>
-                    <td className="font-semibold text-white font-primary">Subject</td>
-                    <td>
-                      <input
-                        className="form-input block w-full mt-1 bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        placeholder="Enter your subject here"
-                        required
-                      />
-                    </td>
-                  </tr>
+              {/* Subject Field */}
+              <div className="mb-3">
+                <label className="block text-sm font-secondary mb-2 text-white">Subject</label>
+                <input
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder="Enter your subject here"
+                  required
+                />
+              </div>
 
-                  <tr>
-                    <td className="font-semibold text-white pr-4 py-2 font-primary">Email Address</td>
-                    <td>
-                      <input
-                        className="form-input block w-full mt-1 bg-white border p-2 mb-3 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="your@email.com"
-                        required
-                      />
-                    </td>
-                  </tr>
+              {/* Email Field */}
+              <div className="mb-3">
+                <label className="block text-sm font-secondary mb-2 text-white">Email Address</label>
+                <input
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
 
-                  <tr>
-                    <td className="font-semibold text-white pr-4 py-2 font-primary">Attachment</td>
-                    <td>
-                      <input
-                        type="file"
-                        name="referenceImage"
-                        onChange={handleFileChange}
-                        className="p-2 mb-3"
-                      />
-                    </td>
-                  </tr>
+              {/* File Upload */}
+              <div className="mb-3">
+                <label className="block text-sm font-secondary mb-2 text-white">Attachment</label>
+                <input
+                  type="file"
+                  name="referenceImage"
+                  onChange={handleFileChange}
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                />
+              </div>
 
-                  <tr>
-                    <td className="font-semibold text-white pr-4 py-2 align-top font-primary">Message</td>
-                    <td>
-                      <textarea
-                        className="form-textarea block w-full mt-1 border border-gray-300 p-2 mb-3 bg-white rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        placeholder="How can we help?"
-                        rows="3"
-                        required
-                      ></textarea>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              {/* Message Field */}
+              <div className="mb-3">
+                <label className="block text-sm font-secondary mb-2 text-white">Message</label>
+                <textarea
+                  className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="How can we help?"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+
               <div className="flex flex-col items-end mt-4">
                 <button
                   type="submit"
