@@ -27,17 +27,6 @@ const formatInputDate = (inputDate) => {
   return `${day}/${month}/${year}`; // Return dd/mm/yyyy format
 };
 
-// Helper function to format time to 12-hour format with am/pm
-// const formatTime = (time) => {
-//   const [hours, minutes] = time.split(":").map(Number);
-//   const ampm = hours >= 12 ? "pm" : "am";
-//   const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-//   return `${String(formattedHours).padStart(2, "0")}:${String(minutes).padStart(
-//     2,
-//     "0"
-//   )}${ampm}`;
-// };
-
 function formatTime(timeString) {
   const date = new Date(timeString);
   return date.toLocaleTimeString("en-US", {
@@ -77,39 +66,45 @@ const ProfessionalsListByService = ({ serviceId }) => {
     fetchCountries();
   }, []);
 
-  // Fetch professionals and filter out past-date jobs
-  useEffect(() => {
-    const fetchProfessionals = async () => {
-      try {
-        const response = await axios.get(
-          `${PROFESSIONAL_BY_SERVICE_ID_URL}${serviceId}`
-        );
-        const today = new Date().setHours(0, 0, 0, 0); // Today at midnight
-        const futureProfessionals = response.data.filter((professional) => {
-          const jobDate = new Date(professional.workingDate).setHours(
-            0,
-            0,
-            0,
-            0
-          );
-          return jobDate >= today; // Only include jobs on or after today
-        });
-        setProfessionals(futureProfessionals);
-        setFilteredProfessionals(futureProfessionals); // Initial filtered professionals
-      } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            "No professionals available for this service"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+// Fetch professionals and filter out past-date jobs
+useEffect(() => {
+  const fetchProfessionals = async () => {
+    try {
+      const response = await axios.get(
+        `${PROFESSIONAL_BY_SERVICE_ID_URL}${serviceId}`
+      );
+      const today = new Date().setHours(0, 0, 0, 0); // Today at midnight
 
-    if (serviceId) {
-      fetchProfessionals();
-    }
-  }, [serviceId]);
+      // Filter out professionals whose workingDate is before today
+      const futureProfessionals = response.data.filter((professional) => {
+        const jobDate = new Date(professional.workingDate).setHours(0, 0, 0, 0);
+        return jobDate >= today; // Only include jobs on or after today
+      });
+
+      // Sort professionals by workingDate in ascending order
+      const sortedProfessionals = futureProfessionals.sort((a, b) => {
+        const dateA = new Date(a.workingDate);
+        const dateB = new Date(b.workingDate);
+        return dateA - dateB; // Ascending order
+      });
+
+      setProfessionals(sortedProfessionals);
+      setFilteredProfessionals(sortedProfessionals); // Initial filtered professionals
+       } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "No professionals available for this service"
+      );
+       } finally {
+        setLoading(false);
+       }
+      };
+
+     if (serviceId) {
+       fetchProfessionals();
+      }
+      }, [serviceId]);
+
 
   // Fetch cities when a country is selected
   useEffect(() => {
