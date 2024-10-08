@@ -225,17 +225,6 @@ const CustMyBooking = () => {
                 </p>
               </div>
               <div className="float-end mr-4 mt-3">
-                {/* <button
-                  onClick={() => {
-                    openModal(bookingDetail);
-                  }}
-                  disabled={bookingDetail.status.toLowerCase() === "confirmed"}
-                  className={`bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-xl font-primary text-sm :text-white ${
-                    bookingDetail.status.toLowerCase() === "confirmed"
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                > */}
                 {bookingDetail.status.toLowerCase() !== "confirmed" &&
                   bookingDetail.status.toLowerCase() !== "cancelled" && (
                     <button
