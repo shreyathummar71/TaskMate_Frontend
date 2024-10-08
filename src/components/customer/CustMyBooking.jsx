@@ -126,7 +126,10 @@ const CustMyBooking = () => {
   // display cards with respect to status, sortby date orders latest should be top , past booking will not show a booking cards
   const filteredBookings = bookingDetails
     .filter((booking) => booking.status.toLowerCase() === activeTab)
-    .filter((booking) => !isPastDate(booking.addJobModel_id.date))
+    .filter(
+      (booking) =>
+        activeTab === "cancelled" || !isPastDate(booking.addJobModel_id.date)
+    )
     .sort(
       (a, b) =>
         new Date(a.addJobModel_id.date) - new Date(b.addJobModel_id.date)
@@ -137,7 +140,7 @@ const CustMyBooking = () => {
         return "text-green-500 text-gray-500";
       case "pending":
         return "text-yellow-500 text-gray-500";
-      case "rejected":
+      case "cancelled":
         return "text-red-500 text-gray-500";
       default:
         return "text-gray-500 text-gray-500";
@@ -154,7 +157,7 @@ const CustMyBooking = () => {
       </div>
       {/* Booking status  Tabs */}
       <div className="flex justify-center mb-6">
-        {["confirmed", "pending", "rejected"].map((status) => (
+        {["confirmed", "pending", "cancelled"].map((status) => (
           <button
             key={status}
             className={` px-4 font-semibold font-primary ${
@@ -184,8 +187,8 @@ const CustMyBooking = () => {
             <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
               {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
               <img
-                src={bookingDetail.prof_id.profileImage || userImage}
-                alt={bookingDetail.prof_id.firstName}
+                src={bookingDetail.prof_id?.profileImage || userImage}
+                alt={bookingDetail.prof_id?.firstName || "No Name"}
                 className="w-40 h-40 m-auto rounded-full text-center mt-4 p-1 border-2 border-secondary"
               />
             </div>
@@ -193,8 +196,8 @@ const CustMyBooking = () => {
             <div className="items-center pb-4 bg-primary rounded-b-xl">
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Professional Name : </span>
-                {bookingDetail.prof_id.firstName}{" "}
-                {bookingDetail.prof_id.lastName}
+                {bookingDetail.prof_id?.firstName}{" "}
+                {bookingDetail.prof_id?.lastName}
               </p>
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
