@@ -115,36 +115,45 @@ const ProfSchedule = () => {
     const todayMonth = today.getMonth();
     const todayDate = today.getDate();
 
-    return confirmedBookings.filter((booking) => {
-      const appointmentDate = booking.addJobModel_id?.date
-        ? new Date(booking.addJobModel_id.date)
-        : null;
+    return confirmedBookings
+      .filter((booking) => {
+        const appointmentDate = booking.addJobModel_id?.date
+          ? new Date(booking.addJobModel_id.date)
+          : null;
 
-      if (!appointmentDate) {
-        return false; // If there's no valid date, exclude the booking
-      }
+        if (!appointmentDate) {
+          return false; // If there's no valid date, exclude the booking
+        }
 
-      const diffInTime = today.getTime() - appointmentDate.getTime(); // Difference in milliseconds
-      const diffInDays = diffInTime / (1000 * 3600 * 24); // Convert milliseconds to days
+        const diffInTime = today.getTime() - appointmentDate.getTime(); // Difference in milliseconds
+        const diffInDays = diffInTime / (1000 * 3600 * 24); // Convert milliseconds to days
 
-      switch (type) {
-        case "today":
-          // Check if the appointment date matches today's date
-          return (
-            appointmentDate.getFullYear() === todayYear &&
-            appointmentDate.getMonth() === todayMonth &&
-            appointmentDate.getDate() === todayDate
-          );
-        case "upcoming":
-          // Check if the appointment date is after today (future dates)
-          return appointmentDate > today;
-        case "past":
-          // Check if the appointment date is within the last 2 days
-          return appointmentDate < today && diffInDays <= 2;
-        default:
-          return false; // Fallback
-      }
-    });
+        switch (type) {
+          case "today":
+            // Check if the appointment date matches today's date
+            return (
+              appointmentDate.getFullYear() === todayYear &&
+              appointmentDate.getMonth() === todayMonth &&
+              appointmentDate.getDate() === todayDate
+            );
+          case "upcoming":
+            // Check if the appointment date is after today (future dates)
+            return appointmentDate > today;
+          case "past":
+            // Check if the appointment date is within the last 2 days
+            return appointmentDate < today && diffInDays <= 2;
+          default:
+            return false; // Fallback
+        }
+      })
+      .sort((a, b) => {
+        if (type === "upcoming") {
+          const dateA = new Date(a.addJobModel_id?.date);
+          const dateB = new Date(b.addJobModel_id?.date);
+          return dateA - dateB; // Sort in ascending order by date
+        }
+        return 0; // No sorting for other types
+      });
   };
 
   // Get bookings based on type
