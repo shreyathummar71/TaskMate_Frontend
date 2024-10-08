@@ -607,12 +607,12 @@ const MyAccountCust = () => {
                   <button
                     type="submit"
                     onClick={handleBackButton}
-                    className=" flex text-center text-white font-primary rounded-md py-2 px-2 mx-4 transition duration-200"
+                    className=" flex text-center text-white font-primary rounded-md py-2 px-2 mx-4 transition duration-200 hover:text-secondary"
                   >
                     <img
                       src={BackArrow}
                       alt="Back Arrow"
-                      className="mr-2  w-4 h-4"
+                      className="mr-2 mt-1 w-4 h-4"
                     />
                     Back to Dashboard
                   </button>

@@ -46,7 +46,7 @@ const ProfHelpCenter = () => {
               Contact our support team for personalized assistance.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleHelpByUSClick}
             >
               Help by Us
@@ -55,14 +55,14 @@ const ProfHelpCenter = () => {
 
           {/* Help by AI */}
           <div className="bg-primary p-6 rounded-lg font-primary shadow-md">
-            <h2 className="text-xl font-primary font- text-white mb-4">
+            <h2 className="text-xl font-primary  text-white mb-4">
               Help by AI
             </h2>
             <p className="font-secondary text-white mb-2 font-normal ">
               Get instant answers with our AI-powered chatbot.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleHelpByAIClick}
             >
               Ask Now
@@ -76,7 +76,7 @@ const ProfHelpCenter = () => {
               Browse frequently asked questions for quick help.
             </p>
             <button
-              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-primary px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
+              className="mt-2 bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded-lg font-primary text-sm hover:bg-secondary hover:text-white"
               onClick={handleFAQClick}
             >
               View FAQs

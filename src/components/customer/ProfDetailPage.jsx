@@ -62,6 +62,7 @@ const ProfDetailPage = () => {
         }
 
         const data = await response.json(); // Parse JSON data
+        console.log("Fetched Professional Data:", data); // Add this line
         setProfessional(data);
       } catch (err) {
         setError(err.message);
@@ -262,16 +263,23 @@ const ProfDetailPage = () => {
         <div className="justify-around items-center flex">
           {/* Part 1: Image */}
           <div className="text-center mb-5">
-            {professional.profileImage && (
+            {professional.profileImage ? (
               <img
-                src={professional.profileImage || userImage}
+                src={professional.profileImage}
                 alt={`${professional.firstName}'s profile`}
+                className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden object-cover mx-auto"
+              />
+            ) : (
+              <img
+                src={userImage}
+                alt="Default User"
                 className="rounded-full w-40 h-40 border-2 border-secondary overflow-hidden object-cover mx-auto"
               />
             )}
 
             <p className="mt-4 text-center">
-              {renderStars(professional.averageRating)}
+              {renderStars(professional.averageRating || 0)}
+              {/* Render average rating */}
             </p>
           </div>
 

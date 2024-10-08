@@ -186,7 +186,6 @@ const UpdateCustomerBookingModal = ({
               value={convertIsoToddmmYYYY(appointmentDateTime)}
               onChange={(e) => setAppointmentDateTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              disabled
               required
             />
           </div>{" "}
@@ -195,10 +194,7 @@ const UpdateCustomerBookingModal = ({
               <label className="block text-white text-sm mb-2">
                 Charges per Hour
               </label>
-              <div
-                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                disabled
-              >
+              <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
                 {isLoading
                   ? "Loading..."
                   : customerBookingData?.addJobModel_id?.chargesPerHour ||
@@ -209,10 +205,7 @@ const UpdateCustomerBookingModal = ({
           {/* New Service Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Service</label>
-            <div
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              disabled
-            >
+            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
               {/* Display the service name */}
               {isLoading
                 ? "Loading..."

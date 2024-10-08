@@ -84,8 +84,6 @@ const Feedback = () => {
                 ? `${cust_id.firstName} ${cust_id.lastName}`
                 : "Anonymous";
 
-            const ratingStatus = "Rating28";
-
             return (
               <div
                 key={item._id}
@@ -97,8 +95,8 @@ const Feedback = () => {
                   <div className="bg-tertiary flex items-center justify-center p-4 rounded-2xl h-60">
                     <div className="flex flex-col items-center">
                       <img
-                        className="w-32 h-32 mb-4 object-cover"
-                        src={prof_id?.image || userImage} // Optional chaining here
+                        className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
+                        src={prof_id?.profileImage || userImage} // Optional chaining here
                         alt={professionalName}
                       />
                       <h2 className="text-xl font-semibold font-primary text-white text-center">
@@ -138,7 +136,9 @@ const Feedback = () => {
 
                     {/* Rating Status */}
                     <p className="text-right font-primary text-white text-xs mt-8">
-                      {ratingStatus}
+                      {prof_id?.averageRating != null
+                        ? `Rating: ${prof_id.averageRating.toFixed(1)}`
+                        : "Not available"}
                     </p>
                   </div>
                 </div>
