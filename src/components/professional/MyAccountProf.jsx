@@ -396,7 +396,7 @@ const MyAccountProf = () => {
   };
 
   return (
-    <div className="relative flex justify-start items-center min-h-screen bg-primary py-16 mb-28">
+    <div className="relative flex justify-start items-center min-h-screen bg-primary py-14 pb-32 ">
       <div className="flex flex-col w-96 items-center -mt-80 -mx-12 h-screen">
         <img
           src={profileImage || userImage}
@@ -509,7 +509,7 @@ const MyAccountProf = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2"
+                      className="w-4 h-3 absolute right-2 mr-2 mt-2"
                       onClick={handleDropdownClick}
                     />
                   </div>
@@ -546,7 +546,8 @@ const MyAccountProf = () => {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="box-border text-center mt-2 w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                    className="box-border text-center mt-2 w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    disabled
                   />
                 </div>
                 <div className="flex flex-col w-full">
@@ -637,7 +638,7 @@ const MyAccountProf = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      className="w-4 h-3 absolute right-2 mr-2 mt-2 cursor-pointer"
                       onClick={() => {
                         const selectElement =
                           document.getElementById("country");
@@ -677,7 +678,7 @@ const MyAccountProf = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      className="w-4 h-3 absolute right-2 mr-2 mt-2 cursor-pointer"
                       onClick={() => {
                         const selectElement = document.getElementById("city");
                         selectElement.focus();
@@ -707,7 +708,7 @@ const MyAccountProf = () => {
 
               {/* Job Profile Section */}
               <label
-                className="text-primary font-primary -my-12 -mt-32 text-xl"
+                className="text-primary font-primary text-xl"
                 htmlFor="address"
               >
                 Job Profile
@@ -717,10 +718,10 @@ const MyAccountProf = () => {
                   {" "}
                   {/* Set width to 1/4 for Experience */}
                   <label
-                    className="text-white font-primary mt-4"
+                    className="text-white font-primary mt-3"
                     htmlFor="experience"
                   >
-                    Experience
+                    Experience in years
                   </label>
                   <input
                     type="text"
@@ -759,7 +760,7 @@ const MyAccountProf = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      className="w-4 h-3 mt-2 absolute right-2 mr-2 cursor-pointer"
                       onClick={() => document.getElementById("skills").focus()}
                     />
                   </div>
@@ -805,7 +806,7 @@ const MyAccountProf = () => {
                   </div>
                 </div>
               </div>
-
+             {/* payment option */}
               <div className="flex flex-col w-full">
                 <label
                   className="text-white mt-4 font-primary"
@@ -822,7 +823,7 @@ const MyAccountProf = () => {
                       name="bank"
                       checked={selectedPayments.bank}
                       onChange={handleCheckboxChange}
-                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:border-[#F7D552] cursor-pointer absolute z-0"
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-[#F7D552] cursor-pointer absolute z-0"
                     />
                     <label
                       htmlFor="bank"
@@ -846,7 +847,7 @@ const MyAccountProf = () => {
                       name="paypal"
                       checked={selectedPayments.paypal}
                       onChange={handleCheckboxChange}
-                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:border-[#F7D552] cursor-pointer absolute z-0"
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-[#F7D552] cursor-pointer absolute z-0"
                     />
                     <label
                       htmlFor="paypal"
@@ -867,9 +868,9 @@ const MyAccountProf = () => {
                       type="checkbox"
                       id="cash"
                       name="cash"
-                      checked={selectedPayments.creditCard}
+                      checked={selectedPayments.cash}
                       onChange={handleCheckboxChange}
-                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:border-[#F7D552] cursor-pointer absolute z-0"
+                      className="appearance-none h-5 w-5 border mx-2 border-secondary rounded-sm checked:bg-[#F7D552] cursor-pointer absolute z-0"
                     />
                     <label
                       htmlFor="cash"
@@ -892,12 +893,12 @@ const MyAccountProf = () => {
                   <button
                     type="submit"
                     onClick={handleBackButton}
-                    className=" flex text-center text-white font-primary rounded-md py-2 px-2 mx-4 transition duration-200  absolute top-2"
+                    className=" flex text-center text-white font-primary rounded-md py-2 px-2 mx-4 transition duration-200  absolute top-2 hover:text-secondary"
                   >
                     <img
                       src={BackArrow}
                       alt="Back Arrow"
-                      className="mr-2  w-4 h-4"
+                      className="mr-2 mt-1 w-4 h-4"
                     />
                     Back to Dashboard
                   </button>
