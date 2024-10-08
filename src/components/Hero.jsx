@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import hero_background from "../assets/images/hero_background.png";
+import hero_background from "../assets/images/landingpagebg.jpg";
 import buttonArrow from "../assets/images/buttonArrow.png";
 
 const Hero = () => {
