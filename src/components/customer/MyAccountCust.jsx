@@ -35,7 +35,7 @@ const MyAccountCust = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [SelectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
-
+  const [alertMessage, setAlertMessage] = useState(""); // New state for alert message
   const navigate = useNavigate();
 
   //fetching countries
@@ -240,7 +240,10 @@ const MyAccountCust = () => {
         const data = await response.json();
         setError(data.error || "Failed to update details");
       } else {
-        setSuccess("Details updated successfully!");
+        setAlertMessage("Details updated successfully!!");
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
       }
     } catch (error) {
       setError("Something went wrong. Please try again later.");
@@ -285,6 +288,12 @@ const MyAccountCust = () => {
 
   return (
     <div className="relative flex justify-start items-center min-h-screen bg-primary py-16 mb-28">
+      {/* Alert message */}
+      {alertMessage && (
+        <div className="absolute top-20 right-4 bg-green-500 text-white p-2 rounded-lg shadow-md">
+          {alertMessage}
+        </div>
+      )}
       <div className="flex flex-col w-96 items-center mb-96 -mx-12 -mt-28">
         <img
           src={profileImage || userImage}

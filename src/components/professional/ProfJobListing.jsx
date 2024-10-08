@@ -1,360 +1,144 @@
-import React, { useState, useEffect } from "react";
-import AddJob from "./AddJob";
-import { FaThumbtack } from "react-icons/fa";
-import userimg from "/src/assets/images/user.png";
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2"; // Import Bar chart from Chart.js
+import getProfessionalIdFromToken from "../../utils/getProfId";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-const PROFESSIONAL_JOBS_API_URL =
-  "https://backend-taskmate.onrender.com/newJob/professional";
-const DELETE_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";
-const PIN_JOB_API_URL = "https://backend-taskmate.onrender.com/dashboard";
+// Register the necessary chart components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-// Utility function to format time
-const formatTime = (dateString) => {
-  const date = new Date(dateString);
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hours >= 12 ? "PM" : "AM";
-  const formattedHours = hours % 12 || 12;
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  return `${formattedHours}:${formattedMinutes} ${ampm}`;
-};
-
-const ProfJobListing = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState(""); // New state for last name
-  const [profilePicture, setProfilePicture] = useState("");
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [pinnedJobs, setPinnedJobs] = useState([]);
+const ProfEarning = () => {
+  const [professionalId, setProfessionalId] = useState(null); // State to hold profId
+  const [earningsData, setEarningsData] = useState(null); // State to hold earnings data
+  const [loading, setLoading] = useState(true); // State to manage loading state
+  const [timeFrame, setTimeFrame] = useState("weekly"); // State to manage the selected time frame
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      const token = user.token;
+    const fetchEarningsData = async () => {
+      const id = await getProfessionalIdFromToken();
+      setProfessionalId(id);
 
-      if (token) {
-        fetchJobs(token);
-      } else {
-        console.error("Token is missing.");
-      }
-    } else {
-      console.error("User is not logged in.");
-    }
-  }, []);
-
-  // Fetch jobs and professional details
-  const fetchJobs = async (token) => {
-    try {
-      const response = await fetch(PROFESSIONAL_JOBS_API_URL, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // Filter out jobs with dates in the past
-        const filteredJobs = data.filter((job) => {
-          const jobDate = new Date(job.date);
-          const today = new Date();
-          // Compare only the date, ignoring time
-          return jobDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0);
-        });
-
-        setJobs(filteredJobs);
-
-        if (filteredJobs.length > 0) {
-          const professional = filteredJobs[0].professionalId;
-          setFirstName(professional.firstName || "Unknown");
-          setLastName(professional.lastName || "");
-          setProfilePicture(professional.profileImage || userimg);
-
-          fetchPinnedJobs(filteredJobs[0].professionalId._id, token);
+      if (id) {
+        try {
+          const response = await fetch(
+            `http://localhost:8081/booking/professional/${id}/earnings?timeFrame=${timeFrame}`
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          console.log("API Response Data:", data);
+          setEarningsData(data);
+        } catch (error) {
+          console.error("Error fetching earnings data:", error);
+        } finally {
+          setLoading(false);
         }
-      } else {
-        setError("Failed to fetch job listings");
       }
-    } catch (error) {
-      setError("An error occurred while fetching jobs.");
-    } finally {
-      setLoading(false);
-    }
+    };
+    fetchEarningsData(); // Fetch earnings data only if profId is available
+  }, [professionalId, timeFrame]); // Dependency array includes profId and timeFrame
+
+  // Show loading message while data is being fetched
+  if (loading) return <p className="text-center text-xl">Loading...</p>;
+
+  // Handle case where no earnings data is available
+  if (!earningsData || Object.keys(earningsData).length === 0) {
+    return <p className="text-center text-xl">No earnings data available</p>; // Display message if no data
+  }
+
+  // Prepare data for the chart
+  const dates = Object.keys(earningsData); // Extract dates from earnings data
+  const earnings = Object.values(earningsData); // Extract earnings values
+
+  // Function to format dates to DD-MM-YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0"); // Ensure two digits
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`; // Return formatted date
   };
 
-  // Fetch pinned jobs function
-  const fetchPinnedJobs = async (professionalId, token) => {
-    try {
-      const response = await fetch(`${PIN_JOB_API_URL}/${professionalId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const pinnedJobsData = await response.json();
-        const pinnedJobIds = pinnedJobsData.map((job) => job.job_id._id);
-        setPinnedJobs(pinnedJobIds);
-      } else {
-        console.error("Failed to fetch pinned jobs.");
-      }
-    } catch (error) {
-      console.error("Error fetching pinned jobs:", error);
-    }
-  };
+  // Combine and sort dates and earnings together
+  const sortedData = dates
+    .map((date, index) => ({
+      date: new Date(date), // Convert date string to Date object
+      earnings: parseFloat(earnings[index]) || 0, // Parse earnings as float or default to 0
+    }))
+    .sort((a, b) => a.date - b.date); // Sort by date in ascending order
 
-  // Sort jobs by date
-  const sortedJobs = [...jobs].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
+  // Extract sorted dates and earnings back into separate arrays
+  const sortedDates = sortedData.map((data) => formatDate(data.date)); // Format date to DD-MM-YYYY
+  const sortedEarnings = sortedData.map((data) => data.earnings); // Get the sorted earnings
+
+  // Calculate total earnings
+  const totalEarnings = sortedEarnings.reduce(
+    (total, amount) => total + amount,
+    0
   );
 
-  // Handle pin/unpin functionality
-  const handlePinJob = async (job) => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      const token = user.token;
-
-      if (!token) {
-        console.error("User token is missing.");
-        return;
-      }
-
-      const isPinned = pinnedJobs.includes(job._id);
-
-      try {
-        const apiUrl = isPinned
-          ? `${PIN_JOB_API_URL}/${job.professionalId._id}/${job._id}` // Use the correct URL for DELETE
-          : PIN_JOB_API_URL;
-
-        const response = isPinned
-          ? await fetch(apiUrl, {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            })
-          : await fetch(PIN_JOB_API_URL, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                professionalId: job.professionalId._id,
-                job_id: job._id,
-              }),
-            });
-
-        if (response.ok) {
-          const updatedPinnedJobs = isPinned
-            ? pinnedJobs.filter((id) => id !== job._id)
-            : [...pinnedJobs, job._id];
-          setPinnedJobs(updatedPinnedJobs);
-        } else {
-          console.error("Failed to pin/unpin job.");
-        }
-      } catch (error) {
-        console.error("Error pinning/unpinning job:", error);
-      }
-    }
+  // Configure chart data
+  const data = {
+    labels: sortedDates, // Set X-axis labels to sorted dates
+    datasets: [
+      {
+        label: "Earnings (€)", // Label for the dataset
+        data: sortedEarnings, // Set Y-axis data to sorted earnings
+        backgroundColor: "rgba(39, 51, 67, 0.6)", // Bar color using the specified hex code with alpha for transparency
+        borderColor: "rgba(39, 51, 67, 1)", // Border color using the specified hex code
+        borderWidth: 1, // Border width
+      },
+    ],
   };
 
-  // Handle deleting a job
-  const handleDeleteJob = async (jobId) => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      const token = user.token;
-
-      if (!token) {
-        setError("User is not logged in.");
-        return;
-      }
-
-      try {
-        if (pinnedJobs.includes(jobId)) {
-          const requestBody = JSON.stringify({
-            professionalId: jobs.find((job) => job._id === jobId)
-              ?.professionalId,
-            job_id: jobId,
-          });
-
-          const pinResponse = await fetch(PIN_JOB_API_URL, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: requestBody,
-          });
-
-          if (pinResponse.ok) {
-            setPinnedJobs(pinnedJobs.filter((id) => id !== jobId));
-          } else {
-            console.error("Failed to remove job from pinned jobs.");
-          }
-        }
-
-        const response = await fetch(`${DELETE_JOB_API_URL}/${jobId}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          setJobs(jobs.filter((job) => job._id !== jobId));
-        } else {
-          setError("Failed to delete job.");
-        }
-      } catch (error) {
-        setError("An error occurred while deleting the job.");
-      }
-    }
+  // Chart options configuration
+  const options = {
+    responsive: true, // Make chart responsive
+    plugins: {
+      legend: {
+        position: "top", // Position legend at the top
+      },
+      title: {
+        display: true, // Show title
+        text: "Professional Earnings by Date", // Title text
+      },
+    },
   };
 
-  // Handle editing a job
-  const handleEditJob = (job) => {
-    setSelectedJob(job);
-    setIsModalOpen(true);
-  };
-
-  // Handle adding a job without pinning it
-  const handleAddJob = (newJob) => {
-    setJobs([...jobs, newJob]);
-  };
-
-  const handleJobSaved = (updatedJob) => {
-    if (selectedJob) {
-      setJobs(
-        jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
-      );
-    } else {
-      setJobs([...jobs, updatedJob]);
-    }
-  };
-
-  if (loading) {
-    return <p>Loading job listings...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
+  // Render the chart
   return (
-    <div className="relative">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl text-primary font-primary">Job Listings</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-primary text-white font-medium font-primary py-2 px-4 rounded-lg shadow-md hover:bg-secondary"
-        >
-          <i className="fas fa-plus mr-2 text-secondary"></i>
-          Add Job
-        </button>
+    <div className="mx-auto p-4 bg-white">
+      <h2 className="text-2xl font-primary text-primary mb-6">
+        Earnings Overview
+      </h2>
+
+      <div className="bg-gray-100 p-4 rounded-lg">
+        <Bar data={data} options={options} /> {/* Render Bar chart */}
       </div>
 
-      <AddJob
-        isModalOpen={isModalOpen}
-        handleCloseModal={() => setIsModalOpen(false)}
-        job={selectedJob}
-        clearFormOnAdd={true}
-        onJobSaved={handleJobSaved} // Callback to update the job list
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-12">
-        {sortedJobs.length > 0 ? (
-          sortedJobs.map((job) => (
-            <div
-              key={job._id}
-              className="text-white rounded-lg pb-3 shadow-lg max-w-xs bg-primary relative"
-            >
-              {/* Pin Button */}
-              <button
-                onClick={() => handlePinJob(job)}
-                className={`absolute top-2 right-2 text-2xl ${
-                  pinnedJobs.includes(job._id)
-                    ? "text-secondary"
-                    : "text-gray-300"
-                }`}
-              >
-                <FaThumbtack />
-              </button>
-
-              <div className="text-white rounded-lg p-4 shadow-lg max-w-xs text-center bg-tertiary">
-                <div className="flex justify-center">
-                  <img
-                    src={profilePicture || userimg}
-                    alt={`${firstName} ${lastName}'s Profile`} // Show full name in alt
-                    className="w-40 h-40 rounded-full p-1 border-2 border-secondary"
-                  />
-                </div>
-                <h3 className="text-lg font-primary">
-                  {`${firstName} ${lastName}` || "Unknown Professional"}
-                </h3>{" "}
-                {/* Display full name */}
-              </div>
-
-              <div className="p-4">
-                <p className="text-sm mb-1">
-                  <span className="text-secondary">Service : </span>
-                  <span>{job.service_id?.name || "N/A"}</span>
-                </p>
-                <p className="text-sm mb-1">
-                  <span className="text-secondary">Country : </span>
-                  <span>{job.country || "N/A"}</span>
-                </p>
-                <p className="text-sm mb-1">
-                  <span className="text-secondary">City : </span>
-                  <span>{job.city || "N/A"}</span>
-                </p>
-                <p className="text-sm mb-1">
-                  <span className="text-secondary">Charges per hour : </span>
-                  <span>{job.chargesPerHour || "N/A"}€</span>
-                </p>
-                <p className="text-sm mb-1">
-                  <span className="text-secondary">Working Date : </span>
-                  <span>{new Date(job.date).toLocaleDateString("en-GB")}</span>
-                </p>
-                <p className="text-sm mb-1">
-                  <span className="text-secondary">Working Time : </span>
-                  <span>
-                    {formatTime(job.startTime)} to {formatTime(job.endTime)}
-                  </span>
-                </p>
-              </div>
-
-              {/* Edit and Remove Buttons */}
-              <div className="pr-4">
-                <div className="flex justify-end space-x-3">
-                  <button
-                    className="bg-tertiary text-primary py-2 px-4 rounded-lg text-sm hover:bg-secondary hover:text-white"
-                    onClick={() => handleEditJob(job)}
-                  >
-                    Edit Job
-                  </button>
-                  <button
-                    className="bg-tertiary text-primary py-2 px-4 rounded-lg text-sm hover:bg-secondary hover:text-white"
-                    onClick={() => handleDeleteJob(job._id)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No job listings available. Start by adding your first job!</p>
-        )}
+      {/* Display total earnings as a button */}
+      <div className="mt-4 text-right">
+        <button className="bg-primary text-white px-4 py-2 rounded">
+          Total Earnings: €{totalEarnings.toFixed(2)}
+        </button>
       </div>
     </div>
   );
 };
 
-export default ProfJobListing;
+export default ProfEarning; // Export the component

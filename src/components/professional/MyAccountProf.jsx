@@ -46,6 +46,7 @@ const MyAccountProf = () => {
     paypal: false,
     cash: false,
   });
+  const [alertMessage, setAlertMessage] = useState(""); // New state for alert message
 
   const navigate = useNavigate();
 
@@ -352,7 +353,10 @@ const MyAccountProf = () => {
         const data = await response.json();
         setError(data.error || "Failed to update details");
       } else {
-        setSuccess("Details updated successfully!");
+        setAlertMessage("Details updated successfully!!");
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
       }
     } catch (error) {
       setError("Something went wrong. Please try again later.");
@@ -397,6 +401,12 @@ const MyAccountProf = () => {
 
   return (
     <div className="relative flex justify-start items-center min-h-screen bg-primary py-16 mb-28">
+      {/* Alert message */}
+      {alertMessage && (
+        <div className="absolute top-20 right-4 bg-green-500 text-white p-2 rounded-lg shadow-md">
+          {alertMessage}
+        </div>
+      )}
       <div className="flex flex-col w-96 items-center -mt-80 -mx-12 h-screen">
         <img
           src={profileImage || userImage}
