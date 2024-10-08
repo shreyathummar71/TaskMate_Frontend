@@ -154,26 +154,31 @@ const ProfManageBooking = () => {
     }
   };
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   // Filter pending bookings where bookingForOthers is falsy (Booking Requests)
   const BookingRequests = bookingDetails.filter(
     (booking) =>
       (booking.status === "pending" || visibleBookings[booking._id]) && // Status is pending or visible temporarily
-      !booking.bookingForOthers // bookingForOthers is falsy
+      !booking.bookingForOthers &&
+      new Date(booking.appointmentDateTime) >= today // bookingForOthers is falsy
   );
 
   // Filter pending bookings where bookingForOthers is truthy (Bookings for Others)
   const bookingsForOthers = bookingDetails.filter(
     (booking) =>
       (booking.status === "pending" || visibleBookings[booking._id]) && // Status is pending or visible temporarily
-      booking.bookingForOthers // bookingForOthers exists (truthy)
+      booking.bookingForOthers && // bookingForOthers exists (truthy)
+      new Date(booking.appointmentDateTime) >= today // Only bookings on or after today
   );
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <h1 className="text-2xl text-primary font-primary">Manage Bookings</h1>
       <div className="flex justify-center gap-5 mb-5">
         <button
-          className={`text-xl mt-6 font-primary ${
+          className={`text-xl mt-4 font-primary ${
             view === "BookingRequests" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingRequests")}
@@ -181,7 +186,7 @@ const ProfManageBooking = () => {
           Booking Requests
         </button>
         <button
-          className={`text-xl mt-6 font-primary ${
+          className={`text-xl mt-4 font-primary ${
             view === "BookingsForOthers" ? "text-secondary" : "text-primary"
           }`}
           onClick={() => setView("BookingsForOthers")}
@@ -195,7 +200,7 @@ const ProfManageBooking = () => {
           BookingRequests.length > 0 &&
           BookingRequests.sort(
             (a, b) =>
-              new Date(b.appointmentDateTime) - new Date(a.appointmentDateTime)
+              new Date(a.appointmentDateTime) - new Date(b.appointmentDateTime)
           ).map((booking) => {
             const customer = customerData.find(
               (cust) => cust._id === booking.cust_id?._id
@@ -246,7 +251,7 @@ const ProfManageBooking = () => {
                     {customer?.address?.street
                       ? `${customer.address.street}${
                           customer.address.zipCode
-                            ? `, ${customer.address.zipCode}`
+                            ? ` , ${customer.address.zipCode}`
                             : ""
                         }`
                       : "N/A"}
@@ -256,7 +261,7 @@ const ProfManageBooking = () => {
                     {customer?.address?.city
                       ? `${customer.address.city}${
                           customer.address.country
-                            ? `, ${customer.address.country}`
+                            ? ` , ${customer.address.country}`
                             : ""
                         }`
                       : "N/A"}
@@ -283,7 +288,7 @@ const ProfManageBooking = () => {
 
                 {/* Accept/Reject Buttons */}
                 <div className="pr-4 ">
-                  <div className="mt-3 flex justify-end space-x-3">
+                  <div className="flex justify-end space-x-3">
                     {bookingStatus[booking._id] === "confirmed" && (
                       <p className="text-green-500 font-bold  font-primary">
                         Booking accepted
@@ -297,7 +302,7 @@ const ProfManageBooking = () => {
                     {!bookingStatus[booking._id] && (
                       <>
                         <button
-                          className="bg-green-900 text-white font-primary hover:bg-green-500 py-1 px-4 rounded-lg text-sm "
+                          className="bg-green-900 text-white font-primary hover:bg-green-500 py-2 px-4 rounded-lg text-sm  "
                           onClick={() => handleAcceptBooking(booking)}
                         >
                           Accept
@@ -323,8 +328,8 @@ const ProfManageBooking = () => {
           bookingsForOthers
             .sort(
               (a, b) =>
-                new Date(b.appointmentDateTime) -
-                new Date(a.appointmentDateTime)
+                new Date(a.appointmentDateTime) -
+                new Date(b.appointmentDateTime)
             )
             .map((booking) => {
               const customer = customerData.find(
@@ -382,21 +387,26 @@ const ProfManageBooking = () => {
                     <p className="text-sm mb-1">
                       <span className="text-secondary">City : </span>
                       {booking?.bookingForOthers?.address?.city
-                        ? `${booking?.bookingForOthers?.address?.city}`
+                        ? `${booking.bookingForOthers.address.city}${
+                            booking.bookingForOthers.address.state
+                              ? ` , ${booking.bookingForOthers.address.state}` // Use 'state' as the country
+                              : ""
+                          }`
                         : "N/A"}
                     </p>
+
                     <p className="text-sm mb-1">
                       <span className="text-secondary">
                         Appointment Date :{" "}
                       </span>
                       {new Date(booking.appointmentDateTime).toLocaleDateString(
-                        "de-DE"
+                        "en-Gb"
                       )}
                     </p>
 
                     <p className="text-sm mb-1">
                       <span className="text-secondary">Schedule : </span>
-                      {`${startTimeFormatted} - ${endTimeFormatted}`}
+                      {`${startTimeFormatted} to ${endTimeFormatted}`}
                     </p>
 
                     <p className="text-sm mb-1">
@@ -409,7 +419,7 @@ const ProfManageBooking = () => {
 
                   {/* Accept/Reject Buttons */}
                   <div className="pr-4 ">
-                    <div className="mt-3 flex justify-end space-x-3">
+                    <div className="flex justify-end space-x-3">
                       {bookingStatus[booking._id] === "confirmed" && (
                         <p className="text-green-500 font-bold">
                           Booking accepted
@@ -429,7 +439,7 @@ const ProfManageBooking = () => {
                             Accept
                           </button>
                           <button
-                            className="bg-red-800 text-white border font-primary hover:bg-red-500 py-2 px-4 rounded-lg text-sm  "
+                            className="bg-red-800 text-white font-primary hover:bg-red-500 py-2 px-4 rounded-lg text-sm  "
                             onClick={() => handleRejectBooking(booking)}
                           >
                             Reject
