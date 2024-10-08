@@ -254,7 +254,11 @@ const ProfManageBooking = () => {
                   <p className="text-sm mb-1">
                     <span className="text-secondary">City : </span>
                     {customer?.address?.city
-                      ? `${customer.address.city}`
+                      ? `${customer.address.city}${
+                          customer.address.country
+                            ? `, ${customer.address.country}`
+                            : ""
+                        }`
                       : "N/A"}
                   </p>
                   <p className="text-sm mb-1">
@@ -293,7 +297,7 @@ const ProfManageBooking = () => {
                     {!bookingStatus[booking._id] && (
                       <>
                         <button
-                          className="bg-green-900 text-white font-primary hover:bg-green-500 py-2 px-4 rounded-lg text-sm "
+                          className="bg-green-900 text-white font-primary hover:bg-green-500 py-1 px-4 rounded-lg text-sm "
                           onClick={() => handleAcceptBooking(booking)}
                         >
                           Accept
@@ -357,18 +361,18 @@ const ProfManageBooking = () => {
                   {/* Lower half - Booking and customer Details */}
                   <div className="p-4 flex-grow">
                     <p className="text-sm mb-1">
-                      <span className="text-secondary">Name: </span>
+                      <span className="text-secondary">Name : </span>
                       {booking?.bookingForOthers?.name
                         ? `${booking.bookingForOthers.name}`
                         : "N/A"}
                     </p>
                     <p className="text-sm mb-1">
-                      <span className="text-secondary">Service: </span>
+                      <span className="text-secondary">Service : </span>
                       {booking?.service_id?.name || "N/A"}
                     </p>
 
                     <p className="text-sm mb-1">
-                      <span className="text-secondary">Address: </span>
+                      <span className="text-secondary">Address : </span>
                       {booking?.bookingForOthers?.address?.street
                         ? `${booking.bookingForOthers.address.street}, ${
                             booking.bookingForOthers.address.zipcode || "N/A"
@@ -376,26 +380,28 @@ const ProfManageBooking = () => {
                         : "N/A"}
                     </p>
                     <p className="text-sm mb-1">
-                      <span className="text-secondary">City: </span>
+                      <span className="text-secondary">City : </span>
                       {booking?.bookingForOthers?.address?.city
                         ? `${booking?.bookingForOthers?.address?.city}`
                         : "N/A"}
                     </p>
                     <p className="text-sm mb-1">
-                      <span className="text-secondary">Appointment Date: </span>
+                      <span className="text-secondary">
+                        Appointment Date :{" "}
+                      </span>
                       {new Date(booking.appointmentDateTime).toLocaleDateString(
                         "de-DE"
                       )}
                     </p>
 
                     <p className="text-sm mb-1">
-                      <span className="text-secondary">Schedule: </span>
+                      <span className="text-secondary">Schedule : </span>
                       {`${startTimeFormatted} - ${endTimeFormatted}`}
                     </p>
 
                     <p className="text-sm mb-1">
                       <span className="text-secondary">
-                        Total Working hours:{" "}
+                        Total Working hours :{" "}
                       </span>
                       {booking?.bookHr}
                     </p>
