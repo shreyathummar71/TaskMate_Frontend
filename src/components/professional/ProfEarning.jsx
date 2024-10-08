@@ -26,6 +26,7 @@ const ProfEarning = () => {
   const [earningsData, setEarningsData] = useState(null); // State to hold earnings data
   const [loading, setLoading] = useState(true); // State to manage loading state
   const [timeFrame, setTimeFrame] = useState("weekly"); // State to manage the selected time frame
+  const BAR_LIMIT = 10; // Set the limit for number of bars displayed
 
   useEffect(() => {
     const fetchEarningsData = async () => {
@@ -65,16 +66,36 @@ const ProfEarning = () => {
   const dates = Object.keys(earningsData); // Extract dates from earnings data
   const earnings = Object.values(earningsData); // Extract earnings values
 
-  // Calculate total earnings
-  const totalEarnings = earnings.reduce((total, amount) => total + amount, 0);
+  // Combine dates and earnings into an array of objects for sorting
+  const sortedData = dates.map((date, index) => ({
+    date,
+    earnings: earnings[index],
+  }));
+
+  // Sort the combined data by date
+  sortedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Extract sorted dates and earnings
+  const sortedDates = sortedData.map((item) => item.date);
+  const sortedEarnings = sortedData.map((item) => item.earnings);
+
+  // Limit the number of entries to BAR_LIMIT
+  const limitedDates = sortedDates.slice(-BAR_LIMIT);
+  const limitedEarnings = sortedEarnings.slice(-BAR_LIMIT);
+
+  // Calculate total earnings for the limited entries
+  const totalEarnings = limitedEarnings.reduce(
+    (total, amount) => total + amount,
+    0
+  );
 
   // Configure chart data
   const data = {
-    labels: dates, // Set X-axis labels to dates
+    labels: limitedDates, // Set X-axis labels to limited dates
     datasets: [
       {
         label: "Earnings (€)", // Label for the dataset
-        data: earnings, // Set Y-axis data to earnings
+        data: limitedEarnings, // Set Y-axis data to limited earnings
         backgroundColor: "rgba(39, 51, 67, 0.6)", // Bar color using the specified hex code with alpha for transparency
         borderColor: "rgba(39, 51, 67, 1)", // Border color using the specified hex code
         borderWidth: 1, // Border width
@@ -98,13 +119,13 @@ const ProfEarning = () => {
 
   // Render the chart
   return (
-    <div className=" mx-auto p-4 bg-white">
+    <div className="mx-auto p-4 bg-white">
       <h2 className="text-2xl font-primary text-primary mb-6">
         Earnings Overview
       </h2>
 
-      {/* Tabs for weekly, monthly, and yearly earnings
-      <div className="flex justify-center space-x-4 mb-4">
+      {/* Uncomment to display tabs for weekly, monthly, and yearly earnings */}
+      {/* <div className="flex justify-center space-x-4 mb-4">
         <button
           onClick={() => setTimeFrame("weekly")}
           className={`px-4 py-2 rounded ${
