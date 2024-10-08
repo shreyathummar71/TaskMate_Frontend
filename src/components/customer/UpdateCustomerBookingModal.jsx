@@ -31,7 +31,7 @@ const UpdateCustomerBookingModal = ({
 
   const [customerBookingData, setCustomerBookingData] = useState(""); //New state for Customer booking
   const [isLoading, setIsLoading] = useState(true);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   function formatTime(timeString) {
     const date = new Date(timeString);
@@ -145,14 +145,17 @@ const UpdateCustomerBookingModal = ({
       if (response.ok) {
         const updatedBooking = await response.json();
         console.log("Booking updated successfully:", updatedBooking);
-        setSuccessMessage("Booking updated successfully!");
-
-        // Close the modal after 2 seconds
-        setTimeout(() => {
-          setSuccessMessage("");
-          onClose();
-        }, 2000);
         onSubmit(updatedBooking);
+        // Show success alert
+
+        // console.log(setAlertMessage("Booking confirmed successfully!"));
+
+        setAlertMessage("Booking confirmed successfully!");
+
+        // Clear alert after 3 seconds
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
       } else {
         console.error("Failed to update booking");
       }
@@ -164,6 +167,11 @@ const UpdateCustomerBookingModal = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto">
+        {alertMessage && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded z-50">
+            {alertMessage}
+          </div>
+        )}
         <h2 className="text-xl font-primary text-secondary text-center mb-4">
           Book Appointment
         </h2>
@@ -178,7 +186,6 @@ const UpdateCustomerBookingModal = ({
               value={convertIsoToddmmYYYY(appointmentDateTime)}
               onChange={(e) => setAppointmentDateTime(e.target.value)}
               className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              disabled
               required
             />
           </div>{" "}
@@ -187,10 +194,7 @@ const UpdateCustomerBookingModal = ({
               <label className="block text-white text-sm mb-2">
                 Charges per Hour
               </label>
-              <div
-                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                disabled
-              >
+              <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
                 {isLoading
                   ? "Loading..."
                   : customerBookingData?.addJobModel_id?.chargesPerHour ||
@@ -201,10 +205,7 @@ const UpdateCustomerBookingModal = ({
           {/* New Service Field */}
           <div className="mb-4">
             <label className="block text-white text-sm mb-2">Service</label>
-            <div
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              disabled
-            >
+            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
               {/* Display the service name */}
               {isLoading
                 ? "Loading..."
@@ -378,9 +379,6 @@ const UpdateCustomerBookingModal = ({
             </button>
           </div>
         </form>
-        {successMessage && (
-          <div className="text-secondary">{successMessage}</div>
-        )}
       </div>
     </div>
   );
