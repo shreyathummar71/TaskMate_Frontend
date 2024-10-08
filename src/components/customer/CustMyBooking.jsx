@@ -9,6 +9,7 @@ const CustMyBooking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Add state variables to manage the modal
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [activeTab, setActiveTab] = useState("confirmed"); // New state for active tab
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Fetch Booking Details
   const fetchBookingDetails = async (cust_id) => {
@@ -105,6 +106,11 @@ const CustMyBooking = () => {
 
       if (!response.ok) throw new Error("Failed to update booking");
 
+      setAlertMessage("Booking updated successfully!");
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
+
       // Refresh booking details after successful update
       await fetchBookingDetails(customerId);
       closeModal();
@@ -150,6 +156,12 @@ const CustMyBooking = () => {
   return (
     <>
       <div>
+        {/* Alert Message */}
+        {alertMessage && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded z-50">
+            {alertMessage}
+          </div>
+        )}
         <h2 className="text-2xl mb-8 font-primary text-primary">
           {" "}
           Manage Bookings

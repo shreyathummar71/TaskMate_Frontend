@@ -31,7 +31,7 @@ const UpdateCustomerBookingModal = ({
   const [timeError, setTimeError] = useState(""); // State to hold time error
   const [customerBookingData, setCustomerBookingData] = useState(""); //New state for Customer booking
   const [isLoading, setIsLoading] = useState(true);
-  const [alertMessage, setAlertMessage] = useState("");
+  // const [alertMessage, setAlertMessage] = useState("");
 
   function formatTime(timeString) {
     const date = new Date(timeString);
@@ -146,8 +146,6 @@ const UpdateCustomerBookingModal = ({
     return updatedDate.toISOString();
   }
 
-  // ----------------------------
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -219,18 +217,6 @@ const UpdateCustomerBookingModal = ({
         const updatedBooking = await response.json();
         console.log("Booking updated successfully:", updatedBooking);
         onSubmit(updatedBooking);
-        // Show success alert
-
-        // console.log(setAlertMessage("Booking confirmed successfully!"));
-
-        setAlertMessage("Booking confirmed successfully!");
-
-        // Use setTimeout to clear the alert message and close the modal
-        setTimeout(() => {
-          setAlertMessage("");
-          onSubmit(updatedBooking);
-          onClose();
-        }, 5000);
       } else {
         console.error("Failed to update booking");
       }
@@ -242,11 +228,6 @@ const UpdateCustomerBookingModal = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto">
-        {alertMessage && (
-          <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded z-50">
-            {alertMessage}
-          </div>
-        )}
         <h2 className="text-xl font-primary text-secondary text-center mb-4">
           Book Appointment
         </h2>
