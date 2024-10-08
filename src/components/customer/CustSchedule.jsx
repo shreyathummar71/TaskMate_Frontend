@@ -104,7 +104,12 @@ const CustSchedule = () => {
     setSelectedBooking(booking); // Save the selected booking details
     setModalOpen(true); // Open the modal
   };
-
+  const handleFeedbackSuccess = () => {
+    setAlertMessage("Feedback submitted successfully!"); // Set the success alert message
+    setTimeout(() => {
+      setAlertMessage(""); // Clear the message after 3 seconds
+    }, 3000);
+  };
   // Submit feedback
   const submitFeedback = async (feedback) => {
     try {
@@ -122,7 +127,10 @@ const CustSchedule = () => {
       if (!response.ok) {
         throw new Error("Failed to submit feedback");
       }
-      console.log("Feedback submitted successfully");
+      setAlertMessage("Feedback submitted successfully");
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
       return true; // Return true to indicate success
     } catch (error) {
       console.error("Error submitting feedback:", error);
@@ -139,7 +147,10 @@ const CustSchedule = () => {
       return <p className="text-gray-500">No bookings found</p>;
 
     return filteredBookings.map((booking) => {
-      const { startTime, endTime } = parseSchedule(booking.schedule); // Parse the schedule
+      // Here we directly use booking.startTime and booking.endTime
+      const formattedStartTime = formatTime(booking.startTime); // Format start time
+      const formattedEndTime = formatTime(booking.endTime); // Format end time
+
       return (
         <div
           key={booking.id}
@@ -175,7 +186,7 @@ const CustSchedule = () => {
             <div>
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                 <span className="text-secondary">Schedule : </span>
-                {startTime} to {endTime}
+                {formattedStartTime} to {formattedEndTime}
               </p>
             </div>
             <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
@@ -282,6 +293,7 @@ const CustSchedule = () => {
           onSubmitFeedback={submitFeedback}
           profId={selectedBooking.profId}
           setAlertMessage={setAlertMessage} // Pass the alert function
+          onSuccess={handleFeedbackSuccess}
         />
       )}
     </div>

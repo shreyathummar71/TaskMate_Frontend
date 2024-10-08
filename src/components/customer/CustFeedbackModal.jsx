@@ -1,4 +1,3 @@
-// FeedbackModal.js
 import React, { useState } from "react";
 
 const CustFeedbackModal = ({
@@ -8,6 +7,7 @@ const CustFeedbackModal = ({
   custId,
   profId,
   onSubmitFeedback,
+  onSuccess, // New prop for success callback
 }) => {
   const [rating, setRating] = useState(0); // Start with no rating
   const [hoverRating, setHoverRating] = useState(0); // Track hover rating
@@ -15,7 +15,7 @@ const CustFeedbackModal = ({
 
   if (!isOpen) return null; // Modal is hidden when isOpen is false
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const feedback = {
       booking_id: bookingId,
       cust_id: custId,
@@ -23,7 +23,20 @@ const CustFeedbackModal = ({
       rating,
       reviewText,
     };
-    onSubmitFeedback(feedback); // Submit feedback to parent component
+
+    try {
+      await onSubmitFeedback(feedback); // Submit feedback to parent component
+      onSuccess(); // Call the success callback after submission
+
+      // Reset the feedback form fields
+      setRating(0); // Reset rating to 0
+      setHoverRating(0); // Reset hover rating to 0
+      setReviewText(""); // Clear the review text
+    } catch (error) {
+      // Handle any errors (optional)
+      console.error("Error submitting feedback:", error);
+    }
+
     onClose(); // Close modal after submission
   };
 
