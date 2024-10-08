@@ -128,11 +128,11 @@ const CustMyBooking = () => {
     .filter((booking) => booking.status.toLowerCase() === activeTab)
     .filter(
       (booking) =>
-        activeTab === "cancelled" || !isPastDate(booking.addJobModel_id.date)
+        activeTab === "cancelled" || !isPastDate(booking.appointmentDateTime)
     )
     .sort(
       (a, b) =>
-        new Date(a.addJobModel_id.date) - new Date(b.addJobModel_id.date)
+        new Date(a.appointmentDateTime) - new Date(b.appointmentDateTime)
     );
   const getTabColor = (status) => {
     switch (status.toLowerCase()) {
@@ -208,7 +208,7 @@ const CustMyBooking = () => {
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
                   <span className="text-secondary">Appointment Date : </span>
-                  {convertIsoToddmmYYYY(bookingDetail.addJobModel_id.date)}
+                  {convertIsoToddmmYYYY(bookingDetail.appointmentDateTime)}
                 </p>
               </div>
               <div>
@@ -259,7 +259,7 @@ const CustMyBooking = () => {
           bookingId={selectedBooking._id}
           jobId={selectedBooking.addJobModel_id._id}
           chargesPerHour={selectedBooking.addJobModel_id.chargesPerHour}
-          formattedDate={selectedBooking.addJobModel_id.date}
+          formattedDate={selectedBooking.appointmentDateTime}
         />
       )}
     </>
