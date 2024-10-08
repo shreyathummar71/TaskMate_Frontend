@@ -26,6 +26,10 @@ const ProfDetailPage = () => {
   const [isFavorite, setIsFavorite] = useState(false); // State to track favorite status
   const [favoriteLoading, setFavoriteLoading] = useState(true); // Loading state for favorites
   const [favoriteId, setFavoriteId] = useState(null); // Store favorite ID for removing
+  const [startTime, setStartTime] = useState(null); // State for start time
+  const [endTime, setEndTime] = useState(null); // State for end time
+  const [alertMessage, setAlertMessage] = useState("");
+
   const navigate = useNavigate();
 
   // Fetch customer ID from the token
@@ -88,6 +92,8 @@ const ProfDetailPage = () => {
         setChargesPerHour(data.chargesPerHour); // Set charges per hour
         setDate(data.date); // Set job date
         setReferenceImage(data.referenceImage); // Set reference image
+        setStartTime(data.startTime); // Set start time
+        setEndTime(data.endTime); // Set end time
       } catch (err) {
         setJobError(err.message);
       } finally {
@@ -98,37 +104,38 @@ const ProfDetailPage = () => {
     fetchJobDetails();
   }, [job_id]);
 
-// Check if the job is already a favorite
-useEffect(() => {
-  const checkIfFavorite = async () => {
-    if (!customerId || !job_id) return;
+  // Check if the job is already a favorite
+  useEffect(() => {
+    const checkIfFavorite = async () => {
+      if (!customerId || !job_id) return;
 
-    try {
-      setFavoriteLoading(true); // Set loading to true when checking favorites
-      const response = await axios.get(
-        `https://backend-taskmate.onrender.com/favourite/customer/${customerId}`
-      );
+      try {
+        setFavoriteLoading(true); // Set loading to true when checking favorites
+        const response = await axios.get(
+          `https://backend-taskmate.onrender.com/favourite/customer/${customerId}`
+        );
 
-      // Ensure both jobId._id and job_id are compared as strings
-      const favorite = response.data.find((fav) => fav.jobId._id.toString() === job_id.toString());
+        // Ensure both jobId._id and job_id are compared as strings
+        const favorite = response.data.find(
+          (fav) => fav.jobId._id.toString() === job_id.toString()
+        );
 
-      if (favorite) {
-        setIsFavorite(true);  // The job is already a favorite
-        setFavoriteId(favorite._id);  // Set the favorite ID for removal later
-      } else {
-        setIsFavorite(false); // The job is not in favorites
-        setFavoriteId(null);  // No favorite ID exists
+        if (favorite) {
+          setIsFavorite(true); // The job is already a favorite
+          setFavoriteId(favorite._id); // Set the favorite ID for removal later
+        } else {
+          setIsFavorite(false); // The job is not in favorites
+          setFavoriteId(null); // No favorite ID exists
+        }
+      } catch (error) {
+        console.error("Error checking favorite status:", error);
+      } finally {
+        setFavoriteLoading(false); // Stop loading once favorite check is done
       }
-    } catch (error) {
-      console.error("Error checking favorite status:", error);
-    } finally {
-      setFavoriteLoading(false); // Stop loading once favorite check is done
-    }
-  };
+    };
 
-  checkIfFavorite();
-}, [customerId, job_id]);
-
+    checkIfFavorite();
+  }, [customerId, job_id]);
 
   // Fetch feedback based on professionalId
   const feedbackUrl = `https://backend-taskmate.onrender.com/feedback/professional/${id}`;
@@ -150,48 +157,52 @@ useEffect(() => {
   // Handle booking submission
   const handleBookingSubmit = (bookingData) => {
     setIsModalOpen(false); // Close the modal after submission
+    setAlertMessage("Booking confirmed successfully!");
+    setTimeout(() => {
+      setAlertMessage("");
+    }, 3000);
   };
 
-// Handle Add/Remove to/from Favorite based on job_id
-const handleToggleFavorite = async () => {
-  try {
-    if (isFavorite) {
-      // Remove from favorites
-      const deleteResponse = await axios.delete(
-        `https://backend-taskmate.onrender.com/favourite/${favoriteId}`
-      );
+  // Handle Add/Remove to/from Favorite based on job_id
+  const handleToggleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        // Remove from favorites
+        const deleteResponse = await axios.delete(
+          `https://backend-taskmate.onrender.com/favourite/${favoriteId}`
+        );
 
-      if (deleteResponse.status === 200) {
-        setIsFavorite(false);  // Update favorite status to false
-        setFavoriteId(null);   // Clear favorite ID
-      } else {
-        alert("Failed to remove from favorites");
-      }
-    } else {
-      // Add to favorite if not already a favorite
-      const response = await axios.post(
-        "https://backend-taskmate.onrender.com/favourite",
-        {
-          cust_id: customerId,
-          prof_id: id,
-          jobId: job_id, // Add the specific job to favorites
+        if (deleteResponse.status === 200) {
+          setIsFavorite(false); // Update favorite status to false
+          setFavoriteId(null); // Clear favorite ID
+        } else {
+          alert("Failed to remove from favorites");
         }
-      );
-
-      if (response.status === 201) {
-        setIsFavorite(true);  // Update favorite status to true
-        setFavoriteId(response.data._id);  // Store the favorite ID
-      } else if (response.status === 400) {
-        alert("This job is already in your favorites.");
       } else {
-        alert("Failed to add to favorites");
+        // Add to favorite if not already a favorite
+        const response = await axios.post(
+          "https://backend-taskmate.onrender.com/favourite",
+          {
+            cust_id: customerId,
+            prof_id: id,
+            jobId: job_id, // Add the specific job to favorites
+          }
+        );
+
+        if (response.status === 201) {
+          setIsFavorite(true); // Update favorite status to true
+          setFavoriteId(response.data._id); // Store the favorite ID
+        } else if (response.status === 400) {
+          alert("This job is already in your favorites.");
+        } else {
+          alert("Failed to add to favorites");
+        }
       }
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+      alert("Error toggling favorite status");
     }
-  } catch (error) {
-    console.error("Error toggling favorite status:", error);
-    alert("Error toggling favorite status");
-  }
-};
+  };
 
   if (loading || feedbackLoading || jobLoading || favoriteLoading) {
     return <div>Loading...</div>;
@@ -241,6 +252,12 @@ const handleToggleFavorite = async () => {
 
   return (
     <>
+      {/* Alert Message */}
+      {alertMessage && (
+        <div className="absolute top-20 right-4 bg-green-500 text-white p-2 rounded z-50">
+          {alertMessage}
+        </div>
+      )}
       <div className="bg-primary text-white pt-14 mb-14 float-start w-full">
         <div className="justify-around items-center flex">
           {/* Part 1: Image */}
@@ -261,30 +278,46 @@ const handleToggleFavorite = async () => {
           {/* Part 2: Personal Information */}
           <div className="text-left mb-5">
             <h1 className="text-2xl font-semibold text-secondary font-primary mb-4">{`${professional.firstName} ${professional.lastName}`}</h1>
-            <p className="mb-4">Email: {professional.email}</p>
+            <p className="mb-4">Email : {professional.email}</p>
             <p className="mb-4">
               {professional.jobProfile.experience} years of experience
             </p>
             {chargesPerHour && (
-              <p className="mb-4">Charges per Hour: {chargesPerHour} €</p>
+              <p className="mb-4">Charges per Hour : {chargesPerHour} €</p>
             )}
-            {date && <p className="mb-4">Date: {formattedDate}</p>}
+            {date && <p className="mb-4">Date : {formattedDate}</p>}
+            <p className="mb-4">
+              Schedule :{" "}
+              {
+                startTime && endTime
+                  ? `${new Date(startTime).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })} to ${new Date(endTime).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })}`
+                  : "N/A" // Fallback in case startTime or endTime is not available
+              }
+            </p>
           </div>
 
           {/* Part 3: Location and Buttons */}
           <div className="text-left mb-5">
             <div>
               <p className="text-2xl font-semibold text-secondary font-primary mb-4">
-                Location:
+                Location
               </p>
 
               <span className="float-start w-full mb-2">
-                City: {professional.jobProfile.city || "Unknown"}
+                City : {professional.jobProfile.city || "Unknown"}
               </span>
               <span className="float-start w-full mb-7">
-                Country: {professional.jobProfile.country || "Unknown"}
+                Country : {professional.jobProfile.country || "Unknown"}
               </span>
-              <p className="mb-4">Phone: {professional.phoneNumber}</p>
+              <p className="mb-4">Phone : {professional.phoneNumber}</p>
             </div>
             <button
               onClick={handleToggleFavorite}
@@ -453,8 +486,8 @@ const handleToggleFavorite = async () => {
       {/* Booking Modal */}
       <BookingModal
         isOpen={isModalOpen}
-        onClose={handleModalClose}
-        onSubmit={handleBookingSubmit}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleBookingSubmit} // Pass the submit handler
         professional={professional}
         serviceId={service_id}
         customerId={customerId}

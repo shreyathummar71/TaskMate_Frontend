@@ -12,6 +12,7 @@ const CustSchedule = () => {
   const [customerId, setCustomerId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(""); // State for alert message
 
   useEffect(() => {
     const getCustId = async () => {
@@ -25,6 +26,28 @@ const CustSchedule = () => {
     getCustId();
   }, []);
 
+  // Format the time to "hh:mm AM/PM" format
+  function formatTime(timeString) {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  // Parse the schedule from the format "10:30 AM - 2:30 PM"
+  function parseSchedule(schedule) {
+    if (!schedule) return { startTime: "N/A", endTime: "N/A" };
+
+    const times = schedule.split(" - ");
+    if (times.length !== 2) return { startTime: "N/A", endTime: "N/A" };
+
+    const [startTime, endTime] = times;
+    return { startTime, endTime };
+  }
+
+  // Fetch bookings based on customer ID
   const fetchBookings = async (cust_id) => {
     setLoading(true);
     try {
@@ -35,8 +58,12 @@ const CustSchedule = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log(data); // Add this to check the response
-      setBookings(data);
+
+      // Sort bookings by date in ascending order
+      const sortedBookings = data.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+      setBookings(sortedBookings);
     } catch (error) {
       console.error("Error fetching bookings:", error);
     } finally {
@@ -44,8 +71,8 @@ const CustSchedule = () => {
     }
   };
 
+  // Cancel booking
   const handleCancel = async (bookingId) => {
-    console.log("Cancelling booking with ID:", bookingId);
     try {
       const response = await fetch(
         `https://backend-taskmate.onrender.com/booking/${bookingId}`,
@@ -56,17 +83,29 @@ const CustSchedule = () => {
       if (!response.ok) {
         throw new Error("Failed to cancel booking");
       }
-      fetchBookings(customerId);
+      setAlertMessage("Booking cancelled successfully!"); // Set the alert message
+      fetchBookings(customerId); // Refresh the booking list after cancellation
+
+      // Clear the alert message after 3 seconds
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
     } catch (error) {
       console.error("Error cancelling booking:", error);
+      setAlertMessage("Failed to cancel booking."); // Set error message
+      setTimeout(() => {
+        setAlertMessage("");
+      }, 3000);
     }
   };
 
+  // Open the feedback modal
   const handleFeedback = (booking) => {
     setSelectedBooking(booking); // Save the selected booking details
     setModalOpen(true); // Open the modal
   };
 
+  // Submit feedback
   const submitFeedback = async (feedback) => {
     try {
       const response = await fetch(
@@ -84,11 +123,14 @@ const CustSchedule = () => {
         throw new Error("Failed to submit feedback");
       }
       console.log("Feedback submitted successfully");
+      return true; // Return true to indicate success
     } catch (error) {
       console.error("Error submitting feedback:", error);
+      throw error; // Rethrow the error to be handled in the modal
     }
   };
 
+  // Render the bookings
   const renderBookings = (filterCondition) => {
     if (loading) return <p className="text-gray-500">Loading bookings...</p>;
 
@@ -96,72 +138,82 @@ const CustSchedule = () => {
     if (filteredBookings.length === 0)
       return <p className="text-gray-500">No bookings found</p>;
 
-    return filteredBookings.map((booking) => (
-      <div
-        key={booking.id}
-        className="flex flex-col justify-between bg-primary rounded-xl p-4 mb-4"
-      >
-        <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
-          <img
-            src={booking.profileImage || userImage}
-            alt={booking.professionalName}
-            className="w-40 h-40 m-auto rounded-full mt-4 p-1 border-2 border-secondary object-cover"
-          />
-        </div>
+    return filteredBookings.map((booking) => {
+      const { startTime, endTime } = parseSchedule(booking.schedule); // Parse the schedule
+      return (
+        <div
+          key={booking.id}
+          className="flex flex-col justify-between bg-primary rounded-xl mb-4"
+        >
+          <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
+            <img
+              src={booking.profileImage || userImage}
+              alt={booking.professionalName}
+              className="w-40 h-40 m-auto rounded-full mt-4 p-1 border-2 border-secondary object-cover"
+            />
+          </div>
 
-        <div className="items-center bg-primary rounded-b-xl">
-          <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-            <span className="text-secondary">Name : </span>
-            {booking.professionalName}
-          </p>
-          <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-            <span className="text-secondary">Service Name : </span>
-            {booking.serviceName}
-          </p>
-          {/* this date is fetch from addjobmodal date field */}
-          <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-            <span className="text-secondary"> Appointment Date : </span>
-            {booking.date
-              ? new Date(booking.date).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })
-              : "N/A"}
-          </p>
-          <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-            <span className="text-secondary">Booking Hours : </span>
-            {booking.bookingHours} hours
-          </p>
-          {/* <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-            <span className="text-secondary">Prof ID : </span>
-            {booking.profId || "N/A"}
-          </p> */}
+          <div className="items-center bg-primary rounded-b-xl">
+            <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+              <span className="text-secondary">Name : </span>
+              {booking.professionalName}
+            </p>
+            <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+              <span className="text-secondary">Service : </span>
+              {booking.serviceName}
+            </p>
+            <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+              <span className="text-secondary">Appointment Date : </span>
+              {booking.date
+                ? new Date(booking.date).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                : "N/A"}
+            </p>
+            <div>
+              <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+                <span className="text-secondary">Schedule : </span>
+                {startTime} to {endTime}
+              </p>
+            </div>
+            <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
+              <span className="text-secondary">Booking Hours : </span>
+              {booking.bookingHours} hours
+            </p>
 
-          <div className="float-end  mt-3">
-            {activeTab !== "completed" ? (
-              <button
-                onClick={() => handleCancel(booking.id)}
-                className="bg-tertiary bg-opacity-60 border border-secondary text-white py-1 px-4 rounded-lg hover:bg-secondary hover:border-white"
-              >
-                Cancel Booking
-              </button>
-            ) : (
-              <button
-                onClick={() => handleFeedback(booking)}
-                className="bg-tertiary bg-opacity-60 border border-secondary text-white py-1 px-4 rounded-lg hover:bg-secondary hover:border-white"
-              >
-                Give Feedback
-              </button>
-            )}
+            <div className="float-end my-3 mr-4">
+              {activeTab !== "completed" ? (
+                <button
+                  onClick={() => handleCancel(booking.id)}
+                  className="bg-tertiary bg-opacity-60 border border-secondary text-white py-1 px-4 rounded-lg hover:bg-secondary hover:border-white"
+                >
+                  Cancel Booking
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleFeedback(booking)}
+                  className="bg-tertiary bg-opacity-60 border border-secondary text-white py-1 px-4 rounded-lg hover:bg-secondary hover:border-white"
+                >
+                  Give Feedback
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    ));
+      );
+    });
   };
 
   return (
-    <div>
+    <div className="relative">
+      {/* Alert message */}
+      {alertMessage && (
+        <div className="absolute top-0 right-4 bg-green-500 text-white p-2 rounded-lg shadow-md">
+          {alertMessage}
+        </div>
+      )}
       <ul className="flex items-center justify-center mb-7">
         <li>
           <button
@@ -194,7 +246,6 @@ const CustSchedule = () => {
           </button>
         </li>
       </ul>
-
       <div>
         {activeTab === "today" && (
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -221,7 +272,6 @@ const CustSchedule = () => {
           </div>
         )}
       </div>
-
       {/* Feedback Modal */}
       {selectedBooking && (
         <CustFeedbackModal
@@ -231,6 +281,7 @@ const CustSchedule = () => {
           custId={customerId}
           onSubmitFeedback={submitFeedback}
           profId={selectedBooking.profId}
+          setAlertMessage={setAlertMessage} // Pass the alert function
         />
       )}
     </div>
