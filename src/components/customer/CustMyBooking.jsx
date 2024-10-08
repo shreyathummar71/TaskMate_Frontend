@@ -129,7 +129,7 @@ const CustMyBooking = () => {
     .filter((booking) => !isPastDate(booking.addJobModel_id.date))
     .sort(
       (a, b) =>
-        new Date(b.addJobModel_id.date) - new Date(a.addJobModel_id.date)
+        new Date(a.addJobModel_id.date) - new Date(b.addJobModel_id.date)
     );
   const getTabColor = (status) => {
     switch (status.toLowerCase()) {
