@@ -284,7 +284,7 @@ const MyAccountCust = () => {
   };
 
   return (
-    <div className="relative flex justify-start items-center min-h-screen bg-primary py-16 mb-28">
+    <div className="relative flex justify-start items-center min-h-screen bg-primary  py-14 pb-32">
       <div className="flex flex-col w-96 items-center mb-96 -mx-12 -mt-28">
         <img
           src={profileImage || userImage}
@@ -395,7 +395,7 @@ const MyAccountCust = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2"
+                      className="w-4 h-3 absolute right-2 mr-2 mt-2"
                       onClick={handleDropdownClick}
                     />
                   </div>
@@ -432,7 +432,8 @@ const MyAccountCust = () => {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="box-border text-center mt-2 w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                    className="box-border text-center mt-2 w-[307px] h-[45px] left-[392px] top-[224px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    disabled={true}
                   />
                 </div>
                 <div className="flex flex-col w-full">
@@ -523,7 +524,7 @@ const MyAccountCust = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      className="w-4 h-3 absolute right-2 mr-2 mt-2 cursor-pointer"
                       onClick={() => {
                         const selectElement =
                           document.getElementById("country");
@@ -563,7 +564,7 @@ const MyAccountCust = () => {
                     <img
                       src={Dropdown}
                       alt="Dropdown"
-                      className="w-5 h-4 absolute right-2 mr-2 cursor-pointer"
+                      className="w-4 h-3 absolute right-2 mr-2 mt-2 cursor-pointer"
                       onClick={() => {
                         const selectElement = document.getElementById("city");
                         selectElement.focus();
