@@ -35,7 +35,7 @@ const ProfEarning = () => {
       if (id) {
         try {
           const response = await fetch(
-            `http://localhost:8081/booking/professional/${id}/earnings?timeFrame=${timeFrame}`
+            `https://backend-taskmate.onrender.com/booking/professional/${id}/earnings?timeFrame=${timeFrame}`
           );
           if (!response.ok) {
             throw new Error("Network response was not ok");
