@@ -14,6 +14,7 @@ import ContactUs from "./pages/ContactUs";
 import AllCategory from "./components/AllCategory";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Blogs from "./components/Blogs";
+import BlogDetail from "./components/BlogDetail";
 import ServiceDetail from "./components/ServiceDetail";
 import SignupCust from "./components/customer/SignupCust";
 import SignupProf from "./components/professional/SignupProf";
@@ -71,6 +72,7 @@ const App = () => {
           <Route path="/allcategory" element={<AllCategory />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
 
           {/* <Routes for Customer for login and password  */}
           <Route
