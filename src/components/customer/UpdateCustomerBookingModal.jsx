@@ -28,7 +28,7 @@ const UpdateCustomerBookingModal = ({
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
   const [serviceName, setServiceName] = useState(""); // New state for service name
-
+  const [timeError, setTimeError] = useState(""); // State to hold time error
   const [customerBookingData, setCustomerBookingData] = useState(""); //New state for Customer booking
   const [isLoading, setIsLoading] = useState(true);
   const [alertMessage, setAlertMessage] = useState("");
@@ -89,31 +89,104 @@ const UpdateCustomerBookingModal = ({
       setZipcode(customerBookingData.bookingForOthers?.address?.zipcode || "");
       setPhoneNumber(customerBookingData.bookingForOthers?.phoneNumber || "");
       setEmail(customerBookingData.bookingForOthers?.email || "");
-      setAppointmentDateTime(customerBookingData.addJobModel_id?.date || "");
+      setAppointmentDateTime(customerBookingData.appointmentDateTime || "");
       setBookHr(customerBookingData.bookHr || "");
       setIsBookingForOthers(!!customerBookingData.bookingForOthers);
-      setStartTime(customerBookingData.addJobModel_id?.startTime || "");
-      setEndTime(customerBookingData.addJobModel_id?.endTime || "");
+      setStartTime(customerBookingData.startTime || "");
+      setEndTime(customerBookingData.endTime || "");
       setDescription(customerBookingData.description || "");
       setServiceName(customerBookingData.service_id?.name || "");
-      setAppointmentDateTime(customerBookingData.addJobModel_id?.date || "");
     }
   }, [customerBookingData]);
 
   if (!isOpen) return null;
 
+  function convertAppointmentTime(appointmentDateTime, startTime) {
+    // Parse the original appointment datetime to UTC
+    const originalDate = new Date(appointmentDateTime);
+
+    // Extract hours and minutes from startTime
+    const [hours, minutes] = startTime.split(":").map(Number);
+
+    // Function to determine if the given date is in CEST (DST)
+    function isDateInCEST(date) {
+      const year = date.getUTCFullYear();
+      const lastSundayMarch = new Date(
+        year,
+        2,
+        31 - ((new Date(year, 2, 31).getUTCDay() + 1) % 7)
+      );
+      const lastSundayOctober = new Date(
+        year,
+        9,
+        31 - ((new Date(year, 9, 31).getUTCDay() + 1) % 7)
+      );
+
+      const cestStart = new Date(
+        Date.UTC(year, 2, lastSundayMarch.getDate(), 1, 0)
+      );
+      const cestEnd = new Date(
+        Date.UTC(year, 9, lastSundayOctober.getDate(), 1, 0)
+      );
+
+      return date >= cestStart && date < cestEnd;
+    }
+
+    // Determine CET or CEST offset
+    const offset = isDateInCEST(originalDate) ? 2 : 1;
+
+    // Convert CET/CEST time to UTC
+    const utcHours = (hours - offset + 24) % 24;
+
+    // Create a new date object with the updated time
+    const updatedDate = new Date(originalDate);
+    updatedDate.setUTCHours(utcHours, minutes);
+
+    // Format the updated date back to ISO string
+    return updatedDate.toISOString();
+  }
+
+  // ----------------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Clear previous error
+    setTimeError("");
+
+    // Validation: Check if startTime and endTime are set
+    if (!startTime || !endTime) {
+      setTimeError("Start time and end time are required.");
+      return;
+    }
+
+    // Convert date and time to UTC from CET(UTC+1)/CEST(UTC+2)
+    const startDateTime = convertAppointmentTime(
+      appointmentDateTime,
+      startTime
+    );
+
+    const endDateTime = convertAppointmentTime(appointmentDateTime, endTime);
+
+    console.log("Start Time:", startDateTime);
+    console.log("End Time:", endDateTime);
+
+    // Check if startTime is less than endTime
+    if (startDateTime >= endDateTime) {
+      setTimeError("Start time should be earlier than end time.");
+      return;
+    }
+
     const updatedBookingData = {
       cust_id: customerId,
       addJobModel_id: jobId, // Use addJobModel_id instead of job_id
       prof_id: professional._id,
       service_id: serviceId,
-      appointmentDateTime: new Date(appointmentDateTime),
+      appointmentDateTime: appointmentDateTime,
       bookHr: bookHr,
       status: "pending",
-      startTime: new Date(`${appointmentDateTime}T${startTime}`), // Ensure correct format
-      endTime: new Date(`${appointmentDateTime}T${endTime}`), // Ensure correct format
+      startTime: startDateTime,
+      endTime: endDateTime,
       description: description,
       bookingForOthers: isBookingForOthers
         ? {
@@ -152,10 +225,12 @@ const UpdateCustomerBookingModal = ({
 
         setAlertMessage("Booking confirmed successfully!");
 
-        // Clear alert after 3 seconds
+        // Use setTimeout to clear the alert message and close the modal
         setTimeout(() => {
           setAlertMessage("");
-        }, 3000);
+          onSubmit(updatedBooking);
+          onClose();
+        }, 5000);
       } else {
         console.error("Failed to update booking");
       }
@@ -221,13 +296,7 @@ const UpdateCustomerBookingModal = ({
               <input
                 type="time"
                 name="startTime"
-                value={
-                  isLoading
-                    ? "Loading..."
-                    : customerBookingData?.addJobModel_id
-                    ? formatTime(customerBookingData.addJobModel_id.startTime)
-                    : ""
-                }
+                value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                 required
@@ -238,11 +307,7 @@ const UpdateCustomerBookingModal = ({
               <input
                 type="time"
                 name="endTime"
-                value={
-                  customerBookingData && customerBookingData.addJobModel_id
-                    ? formatTime(customerBookingData.addJobModel_id.endTime)
-                    : "Loading..."
-                }
+                value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
                 required
