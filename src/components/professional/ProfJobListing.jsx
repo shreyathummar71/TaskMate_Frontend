@@ -29,7 +29,7 @@ const ProfJobListing = () => {
   const [profilePicture, setProfilePicture] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
   const [pinnedJobs, setPinnedJobs] = useState([]);
-
+  const [alertMessage, setAlertMessage] = useState("");
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -209,6 +209,10 @@ const ProfJobListing = () => {
 
         if (response.ok) {
           setJobs(jobs.filter((job) => job._id !== jobId));
+          setAlertMessage("Job deleted successfully!");
+          setTimeout(() => {
+            setAlertMessage("");
+          }, 3000);
         } else {
           setError("Failed to delete job.");
         }
@@ -249,6 +253,12 @@ const ProfJobListing = () => {
 
   return (
     <div className="relative">
+      {/* Alert message */}
+      {alertMessage && (
+        <div className="absolute top-0 right-0 bg-green-500 text-white p-2 rounded-lg shadow-md">
+          {alertMessage}
+        </div>
+      )}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl text-primary font-primary">Job Listings</h1>
         <button
