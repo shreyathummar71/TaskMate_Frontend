@@ -28,6 +28,7 @@ const BookingModal = ({
   const [confirmedJobId, setConfirmedJobId] = useState(null);
   const [serviceName, setServiceName] = useState(""); // New state for service name
   const [timeError, setTimeError] = useState(""); // State to hold time error
+  const [alertMessage, setAlertMessage] = useState(""); // New state for alert message
 
   useEffect(() => {
     const fetchServiceName = async () => {
@@ -116,6 +117,14 @@ const BookingModal = ({
         const data = await response.json();
         console.log("Booking confirmed:", data);
         onSubmit(data); // Call onSubmit with the booking data received from backend
+
+        // Show success alert
+        setAlertMessage("Booking confirmed successfully!");
+
+        // Clear alert after 3 seconds
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
       } else {
         const errorData = await response.text();
         console.error("Failed to create booking", errorData);
@@ -128,7 +137,14 @@ const BookingModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto">
+      <div className="bg-primary rounded-lg p-6 w-1/3 max-h-full overflow-y-auto relative">
+        {/* Alert Message */}
+        {alertMessage && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded z-50">
+            {alertMessage}
+          </div>
+        )}
+
         <h2 className="text-xl font-primary text-secondary text-center mb-4">
           Book Appointment
         </h2>
@@ -214,7 +230,7 @@ const BookingModal = ({
                 checked={isBookingForOthers}
                 onChange={() => setIsBookingForOthers(!isBookingForOthers)}
               />
-              <span className="ml-2 text-grey-500">Book for someone else</span>
+              <span className="ml-2 text-tertiary">Book for someone else</span>
             </label>
           </div>
 
@@ -306,8 +322,6 @@ const BookingModal = ({
                   required
                 />
               </div>
-              {/* Name, Address, Phone, etc. */}
-              {/* ... */}
             </>
           )}
 

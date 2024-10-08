@@ -38,7 +38,7 @@ const CustFeedbackModal = ({
           onMouseLeave={() => setHoverRating(0)} // Reset hover rating on mouse leave
           style={{
             cursor: "pointer",
-            fontSize: "24px",
+            fontSize: "36px",
             color: starValue <= (hoverRating || rating) ? "#FFD700" : "#ccc", // Yellow if selected or hovered
           }}
         >
@@ -51,15 +51,17 @@ const CustFeedbackModal = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-primary rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4 text-center text-secondary">
+        <h2 className="text-xl font-semibold mb-4 text-center text-secondary font-primary">
           Give Feedback
         </h2>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Rating</label>
+          <label className="block text-sm font-medium text-white">Rating</label>
           <div className="flex mt-2">{renderStars()}</div>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Review</label>
+          <label className="block text-sm font-medium text-white mb-3">
+            Review
+          </label>
           <textarea
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
