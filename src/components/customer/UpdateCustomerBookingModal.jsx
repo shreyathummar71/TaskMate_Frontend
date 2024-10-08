@@ -183,19 +183,7 @@ const UpdateCustomerBookingModal = ({
             />
           </div>{" "}
           <div className="mb-4 flex gap-4">
-            <div className="w-1/2">
-              <label className="block text-white text-sm mb-2">Book Hour</label>
-              <input
-                type="text"
-                name="bookHr"
-                placeholder="Book Hour"
-                value={bookHr}
-                onChange={(e) => setBookHr(e.target.value)}
-                className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-                required
-              />
-            </div>
-            <div className="w-1/2">
+            <div className="w-full">
               <label className="block text-white text-sm mb-2">
                 Charges per Hour
               </label>
@@ -281,7 +269,7 @@ const UpdateCustomerBookingModal = ({
                 checked={isBookingForOthers}
                 onChange={() => setIsBookingForOthers(!isBookingForOthers)}
               />
-              <span className="ml-2 text-grey-500">Book for someone else</span>
+              <span className="ml-2 text-white">Book for someone else</span>
             </label>
           </div>
           {isBookingForOthers && (
