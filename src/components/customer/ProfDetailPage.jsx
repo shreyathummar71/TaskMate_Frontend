@@ -29,7 +29,8 @@ const ProfDetailPage = () => {
   const [startTime, setStartTime] = useState(null); // State for start time
   const [endTime, setEndTime] = useState(null); // State for end time
   const [alertMessage, setAlertMessage] = useState("");
-
+  const [currentIndex, setCurrentIndex] = useState(0); // Moved up here
+  const feedbackPerView = 4; // Number of feedbacks to show at a time
   const navigate = useNavigate();
 
   // Fetch customer ID from the token
@@ -138,13 +139,43 @@ const ProfDetailPage = () => {
     checkIfFavorite();
   }, [customerId, job_id]);
 
-  // Fetch feedback based on professionalId
+  // Feedback handling and carousel logic
   const feedbackUrl = `https://backend-taskmate.onrender.com/feedback/professional/${id}`;
   const {
     feedback,
     loading: feedbackLoading,
     error: feedbackError,
   } = useFetchFeedback(feedbackUrl);
+  // Add the auto-sliding logic for the feedback carousel
+  useEffect(() => {
+    const autoSlideInterval = setInterval(() => {
+      handleNext(); // Automatically go to the next feedback set
+    }, 5000); // Change slides every 5 seconds
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(autoSlideInterval);
+  }, [feedback, currentIndex]); // Dependencies include `feedback` and `currentIndex`
+  const handleNext = () => {
+    if (feedback && feedback.length > 0) {
+      setCurrentIndex(
+        (prevIndex) => (prevIndex + feedbackPerView) % feedback.length
+      );
+    }
+  };
+
+  const handlePrev = () => {
+    if (feedback && feedback.length > 0) {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0
+          ? feedback.length - feedbackPerView
+          : prevIndex - feedbackPerView
+      );
+    }
+  };
+
+  const visibleFeedback = feedback
+    ? feedback.slice(currentIndex, currentIndex + feedbackPerView)
+    : [];
 
   // Handle modal open/close
   const handleModalOpen = () => {
@@ -428,63 +459,79 @@ const ProfDetailPage = () => {
         </div>
       </div>
 
-      {/* Feedback Section */}
-      <div className="my-8 px-8">
+      {/* Feedback Section with Carousel */}
+      <div className="my-8 px-8 relative">
+        <h2 className="text-2xl font-semibold font-primary text-primary mb-5">
+          Feedback
+        </h2>
         {feedbackError ? (
           <p>Error fetching feedback: {feedbackError}</p>
         ) : feedback && feedback.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {feedback.map((fb) => (
-              <div
-                key={fb._id}
-                className="text-center flex flex-col justify-between rounded-md bg-primary"
-              >
-                {/* Customer Profile Image */}
-                <div className="items-center pb-4 text-center bg-tertiary rounded-md">
-                  {fb.cust_id ? ( // Check if cust_id is not null
-                    <img
-                      src={fb.cust_id.profileImage || userImage}
-                      alt={`${fb.cust_id.firstName}'s profile`}
-                      className="w-32 h-32 m-auto rounded-full"
-                    />
-                  ) : (
-                    <img
-                      src={userImage} // Fallback image when cust_id is null
-                      alt="Default Profile"
-                      className="w-32 h-32 m-auto rounded-full"
-                    />
-                  )}
-                  <div>
-                    {fb.cust_id ? (
-                      <p className="text-sm mt-2 text-gray-700">
-                        {fb.cust_id.firstName} {fb.cust_id.lastName}
-                      </p>
+          <div className="relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {visibleFeedback.map((fb, index) => (
+                <div key={fb._id} className="text-center rounded-md bg-primary">
+                  {/* Customer Profile Image */}
+                  <div className="items-center py-4 text-center bg-tertiary rounded-md">
+                    {fb.cust_id ? ( // Check if cust_id is not null
+                      <img
+                        src={fb.cust_id.profileImage || userImage}
+                        alt={`${fb.cust_id.firstName}'s profile`}
+                        className="w-32 h-32 m-auto rounded-full"
+                      />
                     ) : (
-                      <p className="text-sm mt-2 text-gray-700">Anonymous</p> // Fallback text when cust_id is null
+                      <img
+                        src={userImage} // Fallback image when cust_id is null
+                        alt="Default Profile"
+                        className="w-32 h-32 m-auto rounded-full"
+                      />
                     )}
+                    <div>
+                      {fb.cust_id ? (
+                        <p className="text-sm mt-2 text-gray-700">
+                          {fb.cust_id.firstName} {fb.cust_id.lastName}
+                        </p>
+                      ) : (
+                        <p className="text-sm mt-2 text-gray-700">Anonymous</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Rating Section */}
+                  <div className="p-5">
+                    <div className="mb-2 text-center">
+                      <div className="text-center">
+                        {renderStars(fb.rating)}
+                      </div>
+                    </div>
+
+                    {/* Review Text */}
+                    <div className="mb-2">
+                      <p className="text-sm mt-2 text-white">{fb.reviewText}</p>
+                    </div>
+
+                    {/* Review Date */}
+                    <div className="text-right">
+                      <p className="text-sm text-white">
+                        {new Date(fb.createdAt).toLocaleDateString("en-GB")}
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                {/* Rating Section */}
-                <div className="p-5">
-                  <div className="mb-2 text-center">
-                    <div className="text-center">{renderStars(fb.rating)}</div>
-                  </div>
-
-                  {/* Review Text */}
-                  <div className="mb-2">
-                    <p className="text-sm mt-2 text-white">{fb.reviewText}</p>
-                  </div>
-
-                  {/* Review Date */}
-                  <div className="text-right">
-                    <p className="text-sm text-white">
-                      {new Date(fb.createdAt).toLocaleDateString("en-GB")}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            {/* <button
+              className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-secondary text-white p-2 rounded-full"
+              onClick={handlePrev}
+            >
+              Prev
+            </button>
+            <button
+              className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-secondary text-white p-2 rounded-full"
+              onClick={handleNext}
+            >
+              Next
+            </button> */}
           </div>
         ) : (
           <p>No feedback available.</p>
