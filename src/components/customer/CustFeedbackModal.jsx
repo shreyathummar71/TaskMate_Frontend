@@ -51,8 +51,9 @@ const CustFeedbackModal = ({
           onMouseLeave={() => setHoverRating(0)} // Reset hover rating on mouse leave
           style={{
             cursor: "pointer",
-            fontSize: "36px",
+            fontSize: "40px",
             color: starValue <= (hoverRating || rating) ? "#FFD700" : "#ccc", // Yellow if selected or hovered
+            marginRight: "8px",
           }}
         >
           ★
@@ -68,11 +69,11 @@ const CustFeedbackModal = ({
           Give Feedback
         </h2>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-white">Rating</label>
-          <div className="flex mt-2">{renderStars()}</div>
+          <label className="block text-sm font-secondary text-white">Rating</label>
+          <div className="flex mt-2 ">{renderStars()}</div>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-white mb-3">
+          <label className="block text-sm font-secondary text-white mb-3">
             Review
           </label>
           <textarea
@@ -85,13 +86,13 @@ const CustFeedbackModal = ({
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 mr-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
+            className="bg-tertiary bg-opacity-60 border border-secondary text-white font-secondary py-2 mr-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="bg-tertiary bg-opacity-60 border border-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
+            className="bg-tertiary bg-opacity-60 border border-secondary font-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:border-white"
           >
             Submit
           </button>

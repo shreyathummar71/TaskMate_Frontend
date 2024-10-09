@@ -120,7 +120,7 @@ const ProfessionalDashboard = () => {
         );
       } else {
         stars.push(
-          <span key={i} className="text-gray-400 text-4xl mx-1">
+          <span key={i} className="text-gray-400 text-5xl mx-1">
             ☆
           </span>
         );
