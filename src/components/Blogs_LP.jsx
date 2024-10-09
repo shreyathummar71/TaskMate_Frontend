@@ -61,22 +61,22 @@ const Blog_LP = () => {
             blog.coverImage || "https://via.placeholder.com/150";
 
           return (
-            <div key={index} className="w-1/4 px-3 text-center">
+            <div key={index} className="w-1/4 px-3">
               {/* Card with flex-grow to stretch the card */}
               <div className="bg-primary shadow-md rounded-xl hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
                 <img
                   src={coverImage}
                   alt={blog.title || "Blog Image"}
-                  className="w-full h-48 object-cover rounded-xl"
+                  className="w-full h-48 object-cover rounded-t-xl"
                 />
-                <div className="p-3">
+                <div className="p-3 flex flex-col flex-grow">
                   <h2 className="font-secondary mb-2 text-secondary text-md">
                     {blog.title || "Untitled Blog"}
                   </h2>
                   <p className="text-white font-secondary mb-2 text-sm flex-grow">
                     {blog.excerpt || "No excerpt available."}
                   </p>
-                  <div className="mt-auto">
+                  <div className="mt-auto flex justify-end">
                     <Link
                       to={`/blog/${blog._id}`}
                       className="text-white font-secondary border-b border-secondary text-sm hover:text-secondary"
