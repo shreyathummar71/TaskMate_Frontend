@@ -230,7 +230,7 @@ const ProfSchedule = () => {
               >
                 {/* Customer Image */}
                 <div className="flex-shrink-0 w-1/3 flex justify-center items-center">
-                  <div className="bg-tertiary border-spacing-6 rounded-2xl ">
+                  <div className="bg-tertiary border-spacing-6 rounded-2xl p-5 ">
                     {customer?.profileImage ? (
                       <img
                         src={customer.profileImage}
