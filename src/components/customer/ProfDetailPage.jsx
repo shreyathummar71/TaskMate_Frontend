@@ -273,7 +273,7 @@ const ProfDetailPage = () => {
         );
       } else {
         stars.push(
-          <span key={i} className="text-gray-400 text-4xl mx-1">
+          <span key={i} className="text-gray-400 text-5xl mx-1">
             ☆
           </span>
         );
@@ -321,12 +321,9 @@ const ProfDetailPage = () => {
             <p className="mb-4">
               {professional.jobProfile.experience} years of experience
             </p>
-            {chargesPerHour && (
-              <p className="mb-4">Charges per Hour : {chargesPerHour} €</p>
-            )}
-            {date && <p className="mb-4">Date : {formattedDate}</p>}
+            {date && <p className="mb-4">Professional Available Date : {formattedDate}</p>}
             <p className="mb-4">
-              Schedule :{" "}
+            professional Availability :{" "}
               {
                 startTime && endTime
                   ? `${new Date(startTime).toLocaleTimeString("en-US", {
@@ -341,6 +338,18 @@ const ProfDetailPage = () => {
                   : "N/A" // Fallback in case startTime or endTime is not available
               }
             </p>
+            {chargesPerHour && (
+              <p className="mb-4">Charges per Hour : {chargesPerHour} €</p>
+            )}
+            
+            {/* New Section: Payment Options */}
+            {professional.jobProfile.paymentOption && professional.jobProfile.paymentOption.length > 0 && (
+                         <p className="mb-4">
+                             Payment Options : {professional.jobProfile.paymentOption
+                                  .map(option => option.charAt(0).toUpperCase() + option.slice(1))
+                                  .join(", ")}
+                         </p>
+                    )}
           </div>
 
           {/* Part 3: Location and Buttons */}
@@ -363,14 +372,14 @@ const ProfDetailPage = () => {
               className={`${
                 isFavorite
                   ? "bg-red-600 text-white" // Remove from favorite (red button)
-                  : "bg-tertiary text-black hover:bg-secondary" // Add to favorite (default)
+                  : "bg-tertiary bg-opacity-50 border border-secondary text-white hover:bg-secondary" // Add to favorite (default)
               } px-4 py-2 rounded mr-5`}
             >
               {isFavorite ? "Remove from Favorite" : "Add to Favorite"}
             </button>
             <button
               onClick={handleModalOpen}
-              className="bg-tertiary text-black px-4 py-2 rounded hover:bg-secondary"
+              className="bg-tertiary bg-opacity-50 border border-secondary text-white px-4 py-2 rounded hover:bg-secondary"
             >
               Book Now
             </button>
@@ -379,9 +388,9 @@ const ProfDetailPage = () => {
         <button
           type="submit"
           onClick={handleBackButton}
-          className=" flex text-center text-white font-primary rounded-md py-2 px-2 text-sm mx-4 mb-5 transition duration-200"
+          className=" flex text-center text-white font-primary rounded-md py-2 px-2  mx-4 mb-5 transition duration-200"
         >
-          <img src={BackArrow} alt="Back Arrow" className="mr-2  w-4 h-4" />
+          <img src={BackArrow} alt="Back Arrow" className="mr-2 mt-1 w-4 h-4" />
           Back to Dashboard
         </button>
       </div>
@@ -470,14 +479,14 @@ const ProfDetailPage = () => {
           <div className="relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {visibleFeedback.map((fb, index) => (
-                <div key={fb._id} className="text-center rounded-md bg-primary">
+                <div key={fb._id} className=" rounded-2xl bg-primary">
                   {/* Customer Profile Image */}
-                  <div className="items-center py-4 text-center bg-tertiary rounded-md">
+                  <div className="items-center py-4 text-center bg-tertiary rounded-2xl">
                     {fb.cust_id ? ( // Check if cust_id is not null
                       <img
                         src={fb.cust_id.profileImage || userImage}
                         alt={`${fb.cust_id.firstName}'s profile`}
-                        className="w-32 h-32 m-auto rounded-full"
+                        className="w-40 h-40 m-auto rounded-full p-1 border-2 border-secondary"
                       />
                     ) : (
                       <img
@@ -488,17 +497,22 @@ const ProfDetailPage = () => {
                     )}
                     <div>
                       {fb.cust_id ? (
-                        <p className="text-sm mt-2 text-gray-700">
-                          {fb.cust_id.firstName} {fb.cust_id.lastName}
+                        <p className="text-xl font-semibold font-primary text-white text-center">
+                          {`${professional.firstName} ${professional.lastName}`}
                         </p>
                       ) : (
-                        <p className="text-sm mt-2 text-gray-700">Anonymous</p>
+                        <p className="text-xl font-semibold font-primary text-white text-center">Anonymous</p>
                       )}
                     </div>
                   </div>
 
+                    {/* Customer Name */}
+                    <h6 className="text-center text-xs font-primary mt-2 text-white ">
+                      Review by: {fb.cust_id.firstName} {fb.cust_id.lastName}
+                    </h6>
+
                   {/* Rating Section */}
-                  <div className="p-5">
+                  <div className="mt-1">
                     <div className="mb-2 text-center">
                       <div className="text-center">
                         {renderStars(fb.rating)}
@@ -506,13 +520,13 @@ const ProfDetailPage = () => {
                     </div>
 
                     {/* Review Text */}
-                    <div className="mb-2">
-                      <p className="text-sm mt-2 text-white">{fb.reviewText}</p>
+                    <div className="mb-2 ml-7 mt-4">
+                      <p className="font-secondary text-white text-sm text-justify h-auto overflow-hidden text-ellipsis">{fb.reviewText}</p>
                     </div>
 
                     {/* Review Date */}
-                    <div className="text-right">
-                      <p className="text-sm text-white">
+                    <div className="text-right mr-4 mb-2">
+                      <p className="text-xs text-white">
                         {new Date(fb.createdAt).toLocaleDateString("en-GB")}
                       </p>
                     </div>
