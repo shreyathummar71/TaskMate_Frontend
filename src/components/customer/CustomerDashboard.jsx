@@ -57,7 +57,7 @@ const CustomerDashboard = () => {
             <img
               src={profilePicture || userimg}
               alt="dashboard illustration"
-              className="rounded-full w-[50%] h-auto p-3 border-2 border-secondary overflow-hidden "
+              className="rounded-full w-[50%] h-[50%] p-3 border-2 border-secondary overflow-hidden "
             />
           </div>
           <div className="flex flex-col justify-center items-start mt-16 animate-slideUp">

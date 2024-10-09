@@ -321,9 +321,13 @@ const ProfDetailPage = () => {
             <p className="mb-4">
               {professional.jobProfile.experience} years of experience
             </p>
-            {date && <p className="mb-4">Professional Available Date : {formattedDate}</p>}
+            {date && (
+              <p className="mb-4">
+                Professional Available Date : {formattedDate}
+              </p>
+            )}
             <p className="mb-4">
-            professional Availability :{" "}
+              professional Availability :{" "}
               {
                 startTime && endTime
                   ? `${new Date(startTime).toLocaleTimeString("en-US", {
@@ -341,15 +345,20 @@ const ProfDetailPage = () => {
             {chargesPerHour && (
               <p className="mb-4">Charges per Hour : {chargesPerHour} €</p>
             )}
-            
+
             {/* New Section: Payment Options */}
-            {professional.jobProfile.paymentOption && professional.jobProfile.paymentOption.length > 0 && (
-                         <p className="mb-4">
-                             Payment Options : {professional.jobProfile.paymentOption
-                                  .map(option => option.charAt(0).toUpperCase() + option.slice(1))
-                                  .join(", ")}
-                         </p>
-                    )}
+            {professional.jobProfile.paymentOption &&
+              professional.jobProfile.paymentOption.length > 0 && (
+                <p className="mb-4">
+                  Payment Options :{" "}
+                  {professional.jobProfile.paymentOption
+                    .map(
+                      (option) =>
+                        option.charAt(0).toUpperCase() + option.slice(1)
+                    )
+                    .join(", ")}
+                </p>
+              )}
           </div>
 
           {/* Part 3: Location and Buttons */}
@@ -501,15 +510,17 @@ const ProfDetailPage = () => {
                           {`${professional.firstName} ${professional.lastName}`}
                         </p>
                       ) : (
-                        <p className="text-xl font-semibold font-primary text-white text-center">Anonymous</p>
+                        <p className="text-xl font-semibold font-primary text-white text-center">
+                          Anonymous
+                        </p>
                       )}
                     </div>
                   </div>
 
-                    {/* Customer Name */}
-                    <h6 className="text-center text-xs font-primary mt-2 text-white ">
-                      Review by: {fb.cust_id.firstName} {fb.cust_id.lastName}
-                    </h6>
+                  {/* Customer Name */}
+                  <h6 className="text-center text-xs font-primary mt-2 text-white ">
+                    Review by: {fb.cust_id.firstName} {fb.cust_id.lastName}
+                  </h6>
 
                   {/* Rating Section */}
                   <div className="mt-1">
@@ -520,8 +531,10 @@ const ProfDetailPage = () => {
                     </div>
 
                     {/* Review Text */}
-                    <div className="mb-2 ml-7 mt-4">
-                      <p className="font-secondary text-white text-sm text-justify h-auto overflow-hidden text-ellipsis">{fb.reviewText}</p>
+                    <div className="p-4">
+                      <p className="font-secondary text-white text-sm text-justify h-auto overflow-hidden text-ellipsis">
+                        {fb.reviewText}
+                      </p>
                     </div>
 
                     {/* Review Date */}

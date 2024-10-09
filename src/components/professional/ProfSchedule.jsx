@@ -226,11 +226,11 @@ const ProfSchedule = () => {
             return (
               <div
                 key={booking._id}
-                className="flex justify-evenly bg-primary text-white rounded-lg pb-3 min-w-max h-80"
+                className="flex justify-evenly bg-primary text-white rounded-lg pb-3 h-80"
               >
                 {/* Customer Image */}
                 <div className="flex-shrink-0 w-1/3 flex justify-center items-center">
-                  <div className="bg-tertiary mt-3 mx-2 py-6 px-8 border-spacing-6 rounded-2xl ">
+                  <div className="bg-tertiary border-spacing-6 rounded-2xl ">
                     {customer?.profileImage ? (
                       <img
                         src={customer.profileImage}
