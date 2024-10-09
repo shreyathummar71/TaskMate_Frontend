@@ -20,7 +20,7 @@ const UpdateCustomerBookingModal = ({
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [appointmentDateTime, setAppointmentDateTime] = useState(
-    new Date().toISOString().substring(0, 10) // Format for 'date'
+    formattedDate || new Date().toISOString().substring(0, 10)
   );
   const [bookHr, setBookHr] = useState("");
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
@@ -236,14 +236,13 @@ const UpdateCustomerBookingModal = ({
             <label className="block text-white text-sm mb-2">
               Appointment Date
             </label>
-            <input
-              type="datetimne-local"
-              name="appointmentDateTime"
-              value={convertIsoToddmmYYYY(appointmentDateTime)}
-              onChange={(e) => setAppointmentDateTime(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary"
-              required
-            />
+            <div className="block w-full px-3 py-2 text-sm border rounded-md border-secondary bg-tertiary bg-opacity-60 text-primary">
+              {isLoading
+                ? "Loading..."
+                : convertIsoToddmmYYYY(
+                    customerBookingData?.addJobModel_id?.date || ""
+                  )}
+            </div>
           </div>{" "}
           <div className="mb-4 flex gap-4">
             <div className="w-full">

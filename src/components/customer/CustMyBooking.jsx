@@ -6,9 +6,9 @@ import UpdateCustomerBookingModal from "./UpdateCustomerBookingModal";
 const CustMyBooking = () => {
   const [customerId, setCustomerId] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Add state variables to manage the modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [activeTab, setActiveTab] = useState("confirmed"); // New state for active tab
+  const [activeTab, setActiveTab] = useState("confirmed");
   const [alertMessage, setAlertMessage] = useState("");
 
   // Fetch Booking Details
@@ -25,10 +25,28 @@ const CustMyBooking = () => {
       }
       const bookingData = await response.json();
       console.log("Fetched booking data:", bookingData);
-      console.log("CustomerID", cust_id);
 
       if (bookingData && Array.isArray(bookingData)) {
-        setBookingDetails(bookingData);
+        const bookingsWithAddJobDetails = await Promise.all(
+          bookingData.map(async (booking) => {
+            // Check if addJobModel_id is defined
+            if (booking.addJobModel_id && booking.addJobModel_id._id) {
+              const addJobDetailsResponse = await fetch(
+                `https://backend-taskmate.onrender.com/newJob/${booking.addJobModel_id._id}`
+              );
+              const addJobDetails = await addJobDetailsResponse.json();
+              console.log("Add Job Details:", addJobDetails);
+
+              return {
+                ...booking,
+                addJobDetails,
+              };
+            }
+            return booking;
+          })
+        );
+
+        setBookingDetails(bookingsWithAddJobDetails);
       }
     } catch (error) {
       console.log("Something went wrong", error);
@@ -36,17 +54,18 @@ const CustMyBooking = () => {
   };
 
   useEffect(() => {
-    // Fetch Customer ID first
     const getCustId = async () => {
-      const cust_id = await getCustomerIdFromToken(); // Fetch cust_id
+      const cust_id = await getCustomerIdFromToken();
       if (cust_id) {
         setCustomerId(cust_id);
         fetchBookingDetails(cust_id);
       }
+      console.log("customer id", customerId);
     };
     getCustId();
   }, []);
 
+  // Format time function
   function formatTime(timeString) {
     const date = new Date(timeString);
     return date.toLocaleTimeString("en-US", {
@@ -56,7 +75,7 @@ const CustMyBooking = () => {
     });
   }
 
-  //To convert the ISO date string  for example "2024-10-24T12:19:53.000Z" to the dd/mm/YYYY format
+  // Convert ISO date to dd/mm/YYYY format
   function convertIsoToddmmYYYY(isoDate) {
     const date = new Date(isoDate);
     const day = date.getUTCDate().toString().padStart(2, "0");
@@ -65,6 +84,7 @@ const CustMyBooking = () => {
 
     return `${day}/${month}/${year}`;
   }
+
   // Function to determine button color based on status
   const getStatusButtonColor = (status) => {
     switch (status.toLowerCase()) {
@@ -76,6 +96,20 @@ const CustMyBooking = () => {
         return "bg-yellow-500";
       default:
         return "bg-gray-500";
+    }
+  };
+
+  // Get color for tabs based on status
+  const getTabColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "confirmed":
+        return "text-green-500";
+      case "pending":
+        return "text-yellow-500";
+      case "cancelled":
+        return "text-red-500";
+      default:
+        return "text-gray-500";
     }
   };
 
@@ -118,6 +152,7 @@ const CustMyBooking = () => {
       console.error("Error updating booking:", error);
     }
   };
+
   const isPastDate = (dateString) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -129,29 +164,19 @@ const CustMyBooking = () => {
     setActiveTab(status);
   };
 
-  // display cards with respect to status, sortby date orders latest should be top , past booking will not show a booking cards
+  // Filter bookings based on status and sort by date
   const filteredBookings = bookingDetails
     .filter((booking) => booking.status.toLowerCase() === activeTab)
     .filter(
       (booking) =>
-        activeTab === "cancelled" || !isPastDate(booking.appointmentDateTime)
+        activeTab === "cancelled" || !isPastDate(booking.addJobDetails?.date)
     )
     .sort(
       (a, b) =>
-        new Date(a.appointmentDateTime) - new Date(b.appointmentDateTime)
+        new Date(a.addJobDetails?.date) - new Date(b.addJobDetails?.date)
     );
-  const getTabColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "confirmed":
-        return "text-green-500 text-gray-500";
-      case "pending":
-        return "text-yellow-500 text-gray-500";
-      case "cancelled":
-        return "text-red-500 text-gray-500";
-      default:
-        return "text-gray-500 text-gray-500";
-    }
-  };
+
+  console.log("filtered booking", filteredBookings);
 
   return (
     <>
@@ -163,21 +188,19 @@ const CustMyBooking = () => {
           </div>
         )}
         <h2 className="text-2xl mb-8 font-primary text-primary">
-          {" "}
           Manage Bookings
         </h2>
       </div>
-      {/* Booking status  Tabs */}
+      {/* Booking status Tabs */}
       <div className="flex justify-center mb-6">
         {["confirmed", "pending", "cancelled"].map((status) => (
           <button
             key={status}
-            className={` px-4 font-semibold font-primary ${
+            className={`px-4 font-semibold font-primary ${
               activeTab === status
                 ? getTabColor(status)
                 : "bg-white text-gray-600"
-            }
-            ${
+            } ${
               status === "pending"
                 ? "border-collapse border-l border-r border-primary"
                 : ""
@@ -194,10 +217,7 @@ const CustMyBooking = () => {
             key={bookingDetail._id}
             className="flex flex-col justify-between bg-primary rounded-xl"
           >
-            {/* Professional Profile Image */}
-
             <div className="items-center pb-4 text-center bg-tertiary rounded-xl">
-              {/* <span className="text-red-600">{bookingDetail.professionalId}</span> */}
               <img
                 src={bookingDetail.prof_id?.profileImage || userImage}
                 alt={bookingDetail.prof_id?.firstName || "No Name"}
@@ -207,32 +227,32 @@ const CustMyBooking = () => {
 
             <div className="items-center pb-4 bg-primary rounded-b-xl">
               <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                <span className="text-secondary">Professional Name : </span>
+                <span className="text-secondary">Professional Name: </span>
                 {bookingDetail.prof_id?.firstName}{" "}
                 {bookingDetail.prof_id?.lastName}
               </p>
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                  <span className="text-secondary">Service : </span>
+                  <span className="text-secondary">Service: </span>
                   {bookingDetail.service_id.name}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                  <span className="text-secondary">Appointment Date : </span>
-                  {convertIsoToddmmYYYY(bookingDetail.appointmentDateTime)}
+                  <span className="text-secondary">Appointment Date: </span>
+                  {convertIsoToddmmYYYY(bookingDetail.addJobDetails?.date)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                  <span className="text-secondary">Schedule : </span>
+                  <span className="text-secondary">Schedule: </span>
                   {formatTime(bookingDetail.startTime)} to{" "}
                   {formatTime(bookingDetail.endTime)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-left mt-2 ml-3 text-white font-secondary">
-                  <span className="text-secondary">Booking Hours : </span>
+                  <span className="text-secondary">Booking Hours: </span>
                   {bookingDetail.bookHr} hours
                 </p>
               </div>
@@ -251,7 +271,7 @@ const CustMyBooking = () => {
                 <button
                   className={`${getStatusButtonColor(
                     bookingDetail.status
-                  )}  text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-opacity-80`}
+                  )} text-white px-4 py-2 rounded-xl font-primary text-sm hover:bg-opacity-80`}
                 >
                   {bookingDetail.status}
                 </button>

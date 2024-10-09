@@ -9,6 +9,7 @@ const ProfManageBooking = () => {
   const [bookingStatus, setBookingStatus] = useState({});
   const [view, setView] = useState("BookingRequests");
   const [visibleBookings, setVisibleBookings] = useState({});
+  const [jobId, setJobId] = useState([]); // Change to an array
 
   // Fetch Booking Details
   const fetchBookingDetails = async (prof_id) => {
@@ -26,8 +27,14 @@ const ProfManageBooking = () => {
         const custIds = bookingData
           .map((booking) => booking.cust_id?._id)
           .filter((id) => id); // Extract cust_ids
-        console.log("cust ids", custIds);
+        console.log("Customer IDs:", custIds);
         fetchCustomerDetails(custIds); // Fetch customer details using cust_ids
+
+        const addJobModelIds = bookingData
+          .map((booking) => booking.addJobModel_id?._id)
+          .filter((id) => id); // Ensure you only get valid job IDs
+        console.log("Job Model IDs:", addJobModelIds);
+        fetchAddJobModelIds(addJobModelIds);
       }
     } catch (error) {
       console.log("Something went wrong", error);
@@ -52,6 +59,28 @@ const ProfManageBooking = () => {
       console.log("Fetched customer data:", customerDataResponses);
     } catch (error) {
       console.log("Something went wrong", error);
+    }
+  };
+
+  const fetchAddJobModelIds = async (addJobModelIds) => {
+    try {
+      const jobDataArray = await Promise.all(
+        addJobModelIds.map(async (jobId) => {
+          const response = await fetch(
+            `https://backend-taskmate.onrender.com/newJob/${jobId}`
+          );
+          if (!response.ok)
+            throw new Error(`Failed to fetch job data for ${jobId}`);
+          const jobData = await response.json();
+          console.log("Job Data:", jobData); // Log the fetched job data
+          return jobData._id; // Just return the jobId
+        })
+      );
+
+      setJobId(jobDataArray.filter((id) => id)); // Ensure only valid IDs are set
+      console.log("Accumulated Job IDs:", jobDataArray); // Log accumulated job IDs
+    } catch (error) {
+      console.log("Something went wrong while fetching job IDs", error);
     }
   };
 
@@ -162,7 +191,7 @@ const ProfManageBooking = () => {
     (booking) =>
       (booking.status === "pending" || visibleBookings[booking._id]) && // Status is pending or visible temporarily
       !booking.bookingForOthers &&
-      new Date(booking.appointmentDateTime) >= today // bookingForOthers is falsy
+      new Date(booking.addJobModel_id?.date) >= today // bookingForOthers is falsy
   );
 
   // Filter pending bookings where bookingForOthers is truthy (Bookings for Others)
@@ -170,7 +199,7 @@ const ProfManageBooking = () => {
     (booking) =>
       (booking.status === "pending" || visibleBookings[booking._id]) && // Status is pending or visible temporarily
       booking.bookingForOthers && // bookingForOthers exists (truthy)
-      new Date(booking.appointmentDateTime) >= today // Only bookings on or after today
+      new Date(booking.addJobModel_id?.date) >= today // Only bookings on or after today
   );
 
   return (
@@ -200,7 +229,8 @@ const ProfManageBooking = () => {
           BookingRequests.length > 0 &&
           BookingRequests.sort(
             (a, b) =>
-              new Date(a.appointmentDateTime) - new Date(b.appointmentDateTime)
+              new Date(a.addJobModel_id?.date) -
+              new Date(b.addJobModel_id?.date)
           ).map((booking) => {
             const customer = customerData.find(
               (cust) => cust._id === booking.cust_id?._id
@@ -268,7 +298,7 @@ const ProfManageBooking = () => {
                   </p>
                   <p className="text-sm mb-1">
                     <span className="text-secondary">Appointment Date : </span>
-                    {new Date(booking.appointmentDateTime).toLocaleDateString(
+                    {new Date(booking.addJobModel_id?.date).toLocaleDateString(
                       "en-GB"
                     )}
                   </p>
@@ -328,8 +358,8 @@ const ProfManageBooking = () => {
           bookingsForOthers
             .sort(
               (a, b) =>
-                new Date(a.appointmentDateTime) -
-                new Date(b.appointmentDateTime)
+                new Date(a.addJobModel_id?.date) -
+                new Date(b.addJobModel_id?.date)
             )
             .map((booking) => {
               const customer = customerData.find(
@@ -399,7 +429,7 @@ const ProfManageBooking = () => {
                       <span className="text-secondary">
                         Appointment Date :{" "}
                       </span>
-                      {new Date(booking.appointmentDateTime).toLocaleDateString(
+                      {new Date(booking.addJobModel_id.date).toLocaleDateString(
                         "en-Gb"
                       )}
                     </p>
