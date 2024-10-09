@@ -3,11 +3,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // API URLs
-const GEONAMES_USERNAME = "dhruvi.balar";
 const EUROPEAN_COUNTRIES_API_URL =
   "https://restcountries.com/v3.1/region/europe";
-const GEONAMES_CITIES_API_URL = (countryCode) =>
-  `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
+  const GEONAMES_CITIES_API_URL = (countryCode) =>
+    `https://backend-taskmate.onrender.com/geonames?countryCode=${countryCode}`;
 const CATEGORIES_API_URL = "https://backend-taskmate.onrender.com/categories";
 const SERVICES_API_URL = "https://backend-taskmate.onrender.com/services";
 const ADD_JOB_API_URL = "https://backend-taskmate.onrender.com/newJob";

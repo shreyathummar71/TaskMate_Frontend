@@ -6,7 +6,6 @@ import BackArrow from "../../assets/images/Back_Arrow.png";
 import Dropdown from "../../assets/images/Dropdown.png";
 
 // API URLs
-const geoNamesUsername = "dhruvi.balar";
 const EUROPEAN_COUNTRIES_API_URL =
   "https://restcountries.com/v3.1/region/europe";
 
@@ -139,7 +138,7 @@ const MyAccountProf = () => {
       if (countryCode) {
         // Fetch cities based on the selected country code
         fetch(
-          `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${geoNamesUsername}`
+          `https://backend-taskmate.onrender.com/geonames?countryCode=${countryCode}`
         )
           .then((response) => {
             if (!response.ok) {
