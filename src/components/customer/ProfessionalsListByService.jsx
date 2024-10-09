@@ -10,7 +10,7 @@ const GEONAMES_USERNAME = "dhruvi.balar";
 const EUROPEAN_COUNTRIES_API_URL =
   "https://restcountries.com/v3.1/region/europe";
 const GEONAMES_CITIES_API_URL = (countryCode) =>
-  `https://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
+  `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
 
 // Helper function to format date to dd/mm/yyyy
 const formatDate = (date) => {
@@ -66,45 +66,49 @@ const ProfessionalsListByService = ({ serviceId }) => {
     fetchCountries();
   }, []);
 
-// Fetch professionals and filter out past-date jobs
-useEffect(() => {
-  const fetchProfessionals = async () => {
-    try {
-      const response = await axios.get(
-        `${PROFESSIONAL_BY_SERVICE_ID_URL}${serviceId}`
-      );
-      const today = new Date().setHours(0, 0, 0, 0); // Today at midnight
+  // Fetch professionals and filter out past-date jobs
+  useEffect(() => {
+    const fetchProfessionals = async () => {
+      try {
+        const response = await axios.get(
+          `${PROFESSIONAL_BY_SERVICE_ID_URL}${serviceId}`
+        );
+        const today = new Date().setHours(0, 0, 0, 0); // Today at midnight
 
-      // Filter out professionals whose workingDate is before today
-      const futureProfessionals = response.data.filter((professional) => {
-        const jobDate = new Date(professional.workingDate).setHours(0, 0, 0, 0);
-        return jobDate >= today; // Only include jobs on or after today
-      });
+        // Filter out professionals whose workingDate is before today
+        const futureProfessionals = response.data.filter((professional) => {
+          const jobDate = new Date(professional.workingDate).setHours(
+            0,
+            0,
+            0,
+            0
+          );
+          return jobDate >= today; // Only include jobs on or after today
+        });
 
-      // Sort professionals by workingDate in ascending order
-      const sortedProfessionals = futureProfessionals.sort((a, b) => {
-        const dateA = new Date(a.workingDate);
-        const dateB = new Date(b.workingDate);
-        return dateA - dateB; // Ascending order
-      });
+        // Sort professionals by workingDate in ascending order
+        const sortedProfessionals = futureProfessionals.sort((a, b) => {
+          const dateA = new Date(a.workingDate);
+          const dateB = new Date(b.workingDate);
+          return dateA - dateB; // Ascending order
+        });
 
-      setProfessionals(sortedProfessionals);
-      setFilteredProfessionals(sortedProfessionals); // Initial filtered professionals
-       } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "No professionals available for this service"
-      );
-       } finally {
+        setProfessionals(sortedProfessionals);
+        setFilteredProfessionals(sortedProfessionals); // Initial filtered professionals
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            "No professionals available for this service"
+        );
+      } finally {
         setLoading(false);
-       }
-      };
-
-     if (serviceId) {
-       fetchProfessionals();
       }
-      }, [serviceId]);
+    };
 
+    if (serviceId) {
+      fetchProfessionals();
+    }
+  }, [serviceId]);
 
   // Fetch cities when a country is selected
   useEffect(() => {
