@@ -10,7 +10,7 @@ const GEONAMES_USERNAME = "dhruvi.balar";
 const EUROPEAN_COUNTRIES_API_URL =
   "https://restcountries.com/v3.1/region/europe";
 const GEONAMES_CITIES_API_URL = (countryCode) =>
-  `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
+  `https://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${GEONAMES_USERNAME}`;
 
 // Helper function to format date to dd/mm/yyyy
 const formatDate = (date) => {

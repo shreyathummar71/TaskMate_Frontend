@@ -139,7 +139,7 @@ const MyAccountProf = () => {
       if (countryCode) {
         // Fetch cities based on the selected country code
         fetch(
-          `http://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${geoNamesUsername}`
+          `https://api.geonames.org/searchJSON?country=${countryCode}&featureClass=P&maxRows=100&username=${geoNamesUsername}`
         )
           .then((response) => {
             if (!response.ok) {
