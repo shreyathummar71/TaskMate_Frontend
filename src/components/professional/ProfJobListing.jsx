@@ -265,7 +265,7 @@ const ProfJobListing = () => {
           onClick={() => setIsModalOpen(true)}
           className="bg-primary text-white font-medium font-primary py-2 px-4 rounded-lg shadow-md hover:bg-secondary"
         >
-          <i className="fas fa-plus mr-2 text-secondary"></i>
+          <i className="fas fa-plus mr-2 text-secondary hover:text-white"></i>
           Add Job
         </button>
       </div>
