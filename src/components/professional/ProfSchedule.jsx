@@ -38,9 +38,10 @@ const ProfSchedule = () => {
       fetchCustomerDetails(custIds);
 
       //fetxhing charges from addJobmodelid
-      const addJobModelIds = bookingData.map(
-        (booking) => booking.addJobModel_id?._id
-      );
+      const addJobModelIds = bookingData
+        .map((booking) => booking.addJobModel_id?._id)
+        .filter((id) => id);
+
       fetchChargesPerHour(addJobModelIds);
     } catch (error) {
       console.log("Something went wrong", error);
@@ -74,11 +75,16 @@ const ProfSchedule = () => {
           const response = await fetch(
             `https://backend-taskmate.onrender.com/newJob/${jobId}`
           );
-          if (!response.ok)
+          if (!response.ok) {
+            console.error(
+              `Error fetching job data for ${jobId}`,
+              response.statusText
+            );
             throw new Error(`Failed to fetch job data for ${jobId}`);
+          }
           const jobData = await response.json();
-          console.log("Job Data:", jobData); // <-- Add this log
-          return { jobId, chargesPerHour: jobData?.chargesPerHour }; // Extract the chargesPerHour
+          console.log("Job Data for ID", jobId, ":", jobData); // Log the job data for debugging
+          return { jobId, chargesPerHour: jobData?.chargesPerHour };
         })
       );
 
@@ -88,7 +94,6 @@ const ProfSchedule = () => {
         chargesMap[data.jobId] = data.chargesPerHour;
       });
       setChargesPerHourData(chargesMap); // Step 3: Store in state
-      console.log("Booking addJobModel_id:", booking.addJobModel_id);
       console.log("Charges Per Hour Data:", chargesPerHourData);
     } catch (error) {
       console.log("Something went wrong while fetching chargesPerHour", error);
@@ -368,11 +373,14 @@ const ProfSchedule = () => {
                       </p>
                       <p className="text-sm mb-1 text-tertiary">
                         <span className="text-white font-secondary">
-                          Charges Per Hour :{" "}
+                          Charges Per Hour:{" "}
                         </span>
-                        {`${
-                          chargesPerHourData[booking?.addJobModel_id?._id]
-                        }€` || "N/A"}
+                        {chargesPerHourData[booking?.addJobModel_id?._id] !==
+                        undefined
+                          ? `${
+                              chargesPerHourData[booking?.addJobModel_id?._id]
+                            }€`
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
