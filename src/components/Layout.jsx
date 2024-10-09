@@ -6,6 +6,7 @@ import Partners from "./Partners";
 import Feedback from "./Feedback";
 import AboutSection from "./AboutSection";
 import TaskmateBanner from "./TaskmateBanner";
+import Blogs_LP from "./Blogs_LP";
 
 const Layout = () => {
   return (
@@ -17,6 +18,7 @@ const Layout = () => {
       <Feedback />
       <AboutSection />
       <Partners />
+      <Blogs_LP />
       <TaskmateBanner />
     </div>
   );
