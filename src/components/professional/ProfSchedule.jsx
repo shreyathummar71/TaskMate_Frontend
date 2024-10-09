@@ -226,7 +226,7 @@ const ProfSchedule = () => {
             return (
               <div
                 key={booking._id}
-                className="flex justify-evenly bg-primary text-white rounded-lg pb-3 h-80"
+                className="flex justify-evenly bg-primary text-white rounded-lg pb-3 h-auto"
               >
                 {/* Customer Image */}
                 <div className="flex-shrink-0 w-1/3 flex justify-center items-center">
