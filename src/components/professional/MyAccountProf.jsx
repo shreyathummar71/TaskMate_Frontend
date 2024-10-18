@@ -399,18 +399,18 @@ const MyAccountProf = () => {
   };
 
   return (
-    <div className="relative flex justify-start items-center min-h-screen bg-primary py-14 pb-32 ">
+    <div className="relative flex justify-start min-h-screen bg-primary py-14 pb-32 ">
       {/* Alert message */}
       {alertMessage && (
-        <div className="absolute top-20 right-4 bg-green-500 text-white p-2 rounded-lg shadow-md">
+        <div className="absolute top-20 right-4 bg-secondary text-white p-2 rounded-lg shadow-md">
           {alertMessage}
         </div>
       )}
-      <div className="flex flex-col w-96 items-center -mt-80 -mx-12 h-screen">
+      <div className="flex flex-col w-96 items-center mt-10 -mx-12 h-screen">
         <img
           src={profileImage || userImage}
           alt="Profile"
-          className="rounded-full w-52 h-52 object-cover mb-4 border-secondary border-4 p-2" // Changed mb-40 to mb-4
+          className="rounded-full w-52 h-52 object-cover mb-4 border-secondary border-4 p-2" 
         />
         <input
           type="file"
@@ -441,7 +441,7 @@ const MyAccountProf = () => {
         <h1 className="text-white font-primary font-bold text-2xl top-1 left-16 relative">
           My Account
         </h1>
-        <div className="relative bg-[rgba(217,217,217,0.5)] rounded-3xl top-5 left-14">
+        <div className="relative bg-[rgba(217,217,217,0.5)] rounded-3xl top-5 left-14 w-[1100px] max-w-[1100px]">
           <div className="absolute  inset-0 bg-opacity-30 z-10 rounded-2xl" />
           <form
             onSubmit={handleSubmit}
@@ -526,7 +526,7 @@ const MyAccountProf = () => {
               </div>
 
               {/* Second Row */}
-              <div className="flex space-x-4">
+              <div className="flex space-x-7">
                 <div className="flex flex-col w-full">
                   <label
                     className="text-white font-primary mt-4"
@@ -578,12 +578,12 @@ const MyAccountProf = () => {
 
               {/* Third Row: Address */}
               <label
-                className="text-primary font-primary -my-12 -mt-32 text-xl"
+                className="text-primary font-primary text-xl"
                 htmlFor="address"
               >
                 Address
               </label>
-              <div className="flex space-x-2">
+              <div className="flex space-x-5">
                 <div className="flex flex-col w-full">
                   <label
                     className="text-white py-1 font-primary"
@@ -621,7 +621,7 @@ const MyAccountProf = () => {
                 {/* <div className="flex flex-col w-full font-primary"> */}
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white -py-1" htmlFor="country">
+                  <label className="text-white " htmlFor="country">
                     Country
                   </label>
                   <div className="flex items-center gap-2 relative">
@@ -659,7 +659,7 @@ const MyAccountProf = () => {
                 </div>
 
                 <div className="flex flex-col w-full font-primary">
-                  <label className="text-white -py-1" htmlFor="city">
+                  <label className="text-white " htmlFor="city">
                     City
                   </label>
                   <div className="flex items-center gap-2 relative">
@@ -710,7 +710,7 @@ const MyAccountProf = () => {
                   id="aboutMe"
                   value={aboutMe}
                   onChange={(e) => setAboutMe(e.target.value)}
-                  className="box-border p-3 mt-2 w-[1007px] h-[345px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
+                  className="box-border p-3 mt-2 w-[1050px] h-[345px] left-[392px] top-[190px] bg-[rgba(39,51,67,0.6)] border border-[#F7D552] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[10px] text-white"
                   rows="4"
                 />
               </div>
